@@ -116,7 +116,11 @@
     },
     "combined": {
         "summaryTitle": "📋 AI 工作摘要",
-        "feedbackTitle": "💬 提供回饋"
+        "feedbackTitle": "💬 提供回饋",
+        "copySummary": "複製摘要",
+        "copyAll": "一鍵複製全部",
+        "copySummarySuccess": "摘要已複製到剪貼板",
+        "copyAllSuccess": "工作區內容已複製到剪貼板"
     },
     "settingsUI": {
         "title": "⚙️ 設定",

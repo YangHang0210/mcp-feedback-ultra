@@ -600,8 +600,18 @@
                 <div class="combined-content">
                     <!-- AI 摘要區域 -->
                     <div class="combined-section">
-                        <div class="section-header">
+                        <div class="section-header" style="display: flex; align-items: center; justify-content: space-between;">
                             <h3 class="combined-section-title" data-i18n="combined.summaryTitle">📋 AI 工作摘要</h3>
+                            <div style="display: flex; gap: 6px;">
+                                <button type="button" class="prompt-input-btn" id="copySummaryContent" title="複製摘要內容" style="padding: 4px 10px; font-size: 12px;">
+                                    <span>📋</span>
+                                    <span class="button-text" data-i18n="combined.copySummary">複製摘要</span>
+                                </button>
+                                <button type="button" class="prompt-input-btn" id="copyWorkspaceAll" title="一鍵複製全部工作區內容" style="padding: 4px 10px; font-size: 12px;">
+                                    <span>📑</span>
+                                    <span class="button-text" data-i18n="combined.copyAll">一鍵複製全部</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="combined-summary">
                             <div id="combinedSummaryContent" class="text-input" style="min-height: 200px; cursor: text; padding: 12px; line-height: 1.6; word-wrap: break-word; overflow-wrap: break-word;" data-dynamic-content="aiSummary">{{ summary }}</div>
@@ -1283,6 +1293,11 @@
                 // 初始化完成後，立即渲染現有的 AI 摘要內容為 Markdown
                 setTimeout(function() {
                     if (window.feedbackApp && window.feedbackApp.uiManager) {
+                        if (window.feedbackApp.uiManager.getRawSummaryMarkdown &&
+                            window.feedbackApp.uiManager.getRawSummaryMarkdown()) {
+                            console.log('🔧 Markdown 已由 API 更新，跳過 DOM 初始化');
+                            return;
+                        }
                         // 獲取當前的摘要內容
                         const summaryElement = document.querySelector('#combinedSummaryContent');
                         const summaryTabElement = document.querySelector('#summaryContent');

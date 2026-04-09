@@ -339,6 +339,24 @@
                 });
             }
 
+            // 複製摘要內容按鈕
+            const copySummaryBtn = window.MCPFeedback.Utils.safeQuerySelector('#copySummaryContent');
+            if (copySummaryBtn) {
+                copySummaryBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    self.copySummaryContent();
+                });
+            }
+
+            // 一鍵複製全部工作區內容按鈕
+            const copyAllBtn = window.MCPFeedback.Utils.safeQuerySelector('#copyWorkspaceAll');
+            if (copyAllBtn) {
+                copyAllBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    self.copyWorkspaceAll();
+                });
+            }
+
             // 快捷鍵
             document.addEventListener('keydown', function(e) {
                 // Ctrl+Enter 提交回饋
@@ -1345,6 +1363,77 @@
                 }
                 document.body.removeChild(textarea);
             });
+    };
+
+    /**
+     * 複製 AI 摘要內容
+     */
+    FeedbackApp.prototype.copySummaryContent = function() {
+        var text = '';
+        if (this.uiManager && this.uiManager.getRawSummaryMarkdown) {
+            text = this.uiManager.getRawSummaryMarkdown();
+        }
+        if (!text) {
+            var summaryEl = window.MCPFeedback.Utils.safeQuerySelector('#combinedSummaryContent');
+            if (!summaryEl) {
+                summaryEl = window.MCPFeedback.Utils.safeQuerySelector('#summaryContent');
+            }
+            text = summaryEl ? summaryEl.textContent.trim() : '';
+        }
+        if (!text) {
+            window.MCPFeedback.Utils.showMessage(
+                window.i18nManager ? window.i18nManager.t('feedback.noContent') : '沒有可複製的內容',
+                window.MCPFeedback.Utils.CONSTANTS.MESSAGE_WARNING
+            );
+            return;
+        }
+        window.MCPFeedback.Utils.copyToClipboard(
+            text,
+            window.i18nManager ? window.i18nManager.t('combined.copySummarySuccess') : '摘要已複製到剪貼板',
+            window.i18nManager ? window.i18nManager.t('feedback.copyFailed') : '複製失敗'
+        );
+    };
+
+    /**
+     * 一鍵複製全部工作區內容（AI 摘要 + 用戶回饋）
+     */
+    FeedbackApp.prototype.copyWorkspaceAll = function() {
+        var parts = [];
+
+        var summaryText = '';
+        if (this.uiManager && this.uiManager.getRawSummaryMarkdown) {
+            summaryText = this.uiManager.getRawSummaryMarkdown();
+        }
+        if (!summaryText) {
+            var summaryEl = window.MCPFeedback.Utils.safeQuerySelector('#combinedSummaryContent');
+            if (!summaryEl) {
+                summaryEl = window.MCPFeedback.Utils.safeQuerySelector('#summaryContent');
+            }
+            summaryText = summaryEl ? summaryEl.textContent.trim() : '';
+        }
+        if (summaryText) {
+            parts.push('=== AI Summary ===\n' + summaryText);
+        }
+
+        var feedbackEl = window.MCPFeedback.Utils.safeQuerySelector('#combinedFeedbackText');
+        if (feedbackEl && feedbackEl.value.trim()) {
+            parts.push('=== User Feedback ===\n' + feedbackEl.value.trim());
+        }
+
+        if (parts.length === 0) {
+            window.MCPFeedback.Utils.showMessage(
+                window.i18nManager ? window.i18nManager.t('feedback.noContent') : '沒有可複製的內容',
+                window.MCPFeedback.Utils.CONSTANTS.MESSAGE_WARNING
+            );
+            return;
+        }
+
+        var text = parts.join('\n\n');
+        window.MCPFeedback.Utils.copyToClipboard(
+            text,
+            window.i18nManager ? window.i18nManager.t('combined.copyAllSuccess') : '工作區內容已複製到剪貼板',
+            window.i18nManager ? window.i18nManager.t('feedback.copyFailed') : '複製失敗'
+        );
     };
 
     /**

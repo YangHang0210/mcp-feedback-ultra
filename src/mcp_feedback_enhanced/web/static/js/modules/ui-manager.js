@@ -459,6 +459,8 @@
         console.log('📝 marked 可用:', typeof window.marked !== 'undefined');
         console.log('📝 DOMPurify 可用:', typeof window.DOMPurify !== 'undefined');
 
+        this._rawSummaryMarkdown = summary || '';
+
         // 渲染 Markdown 內容
         const renderedContent = this.renderMarkdownSafely(summary);
         console.log('📝 渲染後內容長度:', renderedContent ? renderedContent.length : 'undefined');
@@ -478,6 +480,10 @@
         } else {
             console.warn('⚠️ 找不到 #combinedSummaryContent 元素');
         }
+    };
+
+    UIManager.prototype.getRawSummaryMarkdown = function() {
+        return this._rawSummaryMarkdown || '';
     };
 
     /**
