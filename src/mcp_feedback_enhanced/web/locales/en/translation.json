@@ -215,6 +215,7 @@
         "ok": "OK",
         "cancel": "❌ Cancel",
         "submit": "✅ Submit Feedback",
+        "newTask": "🔄 New Task",
         "processing": "Processing...",
         "submitted": "Submitted",
         "retry": "Retry",
@@ -461,6 +462,15 @@
         },
         "sizeLimitExceeded": "Image {filename} size is {size}, exceeds {limit} limit!",
         "sizeLimitExceededAdvice": "Consider compressing the image with editing software before uploading, or adjust the image size limit settings."
+    },
+    "feedbackReminder": {
+        "title": "🔔 Feedback Reminder",
+        "enable": "Enable Feedback Reminder",
+        "enableDesc": "When enabled, each feedback will include a reminder for the Agent to call this tool again",
+        "customText": "Feedback Reminder Text",
+        "customTextDesc": "Customize the reminder appended after each feedback, clear to restore default",
+        "newTaskText": "New Task System Instruction",
+        "newTaskTextDesc": "System instruction injected when clicking the \"New Task\" button, clear to restore default"
     },
     "autoSubmit": {
         "title": "⏰ Auto Timed Submit",

@@ -310,6 +310,14 @@
                 });
             });
 
+            // New Task button
+            var newTaskBtn = window.MCPFeedback.Utils.safeQuerySelector('#newTaskBtn');
+            if (newTaskBtn) {
+                newTaskBtn.addEventListener('click', function() {
+                    self.submitFeedback({ clearContext: true });
+                });
+            }
+
             // 取消按鈕事件 - 已移除取消按鈕，保留 ESC 快捷鍵功能
 
             // 命令執行事件
@@ -1107,8 +1115,9 @@
     /**
      * 提交回饋
      */
-    FeedbackApp.prototype.submitFeedback = function() {
-        console.log('📤 嘗試提交回饋...');
+    FeedbackApp.prototype.submitFeedback = function(options) {
+        options = options || {};
+        console.log('📤 嘗試提交回饋...', options.clearContext ? '(新任務模式)' : '');
 
         // 檢查是否可以提交回饋
         if (!this.canSubmitFeedback()) {
@@ -1118,7 +1127,7 @@
         }
 
         // 收集回饋數據並提交
-        const feedbackData = this.collectFeedbackData();
+        const feedbackData = this.collectFeedbackData(options);
         if (!feedbackData) {
             return;
         }
@@ -1170,15 +1179,20 @@
     /**
      * 收集回饋數據
      */
-    FeedbackApp.prototype.collectFeedbackData = function() {
+    FeedbackApp.prototype.collectFeedbackData = function(options) {
+        options = options || {};
+
         // 獲取合併模式的回饋內容
         let feedback = '';
         const combinedFeedbackInput = window.MCPFeedback.Utils.safeQuerySelector('#combinedFeedbackText');
         feedback = combinedFeedbackInput ? combinedFeedbackInput.value.trim() : '';
 
+        var clearContext = !!options.clearContext;
+
         const images = this.imageHandler ? this.imageHandler.getImages() : [];
 
-        if (!feedback && images.length === 0) {
+        // Allow empty feedback for new task mode (clearContext)
+        if (!feedback && images.length === 0 && !clearContext) {
             const message = window.i18nManager ? 
                 window.i18nManager.t('feedback.provideTextOrImage', '請提供回饋文字或上傳圖片') : 
                 '請提供回饋文字或上傳圖片';
@@ -1186,12 +1200,26 @@
             return null;
         }
 
+        // Get reminder settings from settingsManager
+        var reminderEnabled = true;
+        var reminderText = '';
+        var newTaskInstruction = '';
+        if (this.settingsManager) {
+            reminderEnabled = this.settingsManager.get('feedbackReminderEnabled', true);
+            reminderText = this.settingsManager.get('feedbackReminderText', '');
+            newTaskInstruction = this.settingsManager.get('newTaskInstructionText', '');
+        }
+
         return {
             feedback: feedback,
             images: images,
+            clear_context: clearContext,
             settings: {
                 image_size_limit: this.imageHandler ? this.imageHandler.imageSizeLimit : 0,
-                enable_base64_detail: this.imageHandler ? this.imageHandler.enableBase64Detail : false
+                enable_base64_detail: this.imageHandler ? this.imageHandler.enableBase64Detail : false,
+                feedbackReminderEnabled: reminderEnabled,
+                feedbackReminderText: reminderText,
+                newTaskInstructionText: newTaskInstruction
             }
         };
     };
@@ -1228,7 +1256,8 @@
                 type: 'submit_feedback',
                 feedback: feedbackData.feedback,
                 images: feedbackData.images,
-                settings: feedbackData.settings
+                settings: feedbackData.settings,
+                clear_context: feedbackData.clear_context || false
             });
 
             if (success) {

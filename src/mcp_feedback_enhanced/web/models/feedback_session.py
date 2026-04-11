@@ -500,6 +500,7 @@ class WebFeedbackSession:
                     "interactive_feedback": self.feedback_result or "",
                     "images": self.images,
                     "settings": self.settings,
+                    "clear_context": getattr(self, "clear_context", False),
                 }
             # 超時了，立即清理資源
             debug_log(
@@ -521,6 +522,7 @@ class WebFeedbackSession:
         feedback: str,
         images: list[dict[str, Any]],
         settings: dict[str, Any] | None = None,
+        clear_context: bool = False,
     ):
         """
         提交回饋和圖片
@@ -529,10 +531,12 @@ class WebFeedbackSession:
             feedback: 文字回饋
             images: 圖片列表
             settings: 圖片設定（可選）
+            clear_context: 是否要求 Agent 清除上下文（新任務模式）
         """
         self.feedback_result = feedback
         # 先設置設定，再處理圖片（因為處理圖片時需要用到設定）
         self.settings = settings or {}
+        self.clear_context = clear_context
         self.images = self._process_images(images)
 
         # 進入下一步：等待中 → 已提交反饋

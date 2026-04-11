@@ -518,6 +518,26 @@ async def interactive_feedback(
                 TextContent(type="text", text="用戶未提供任何回饋內容。")
             )
 
+        # Handle clear_context: prepend system instruction when user requests a new task
+        if result.get("clear_context"):
+            clear_instruction = _get_new_task_instruction(result)
+            if feedback_items and isinstance(feedback_items[0], TextContent):
+                feedback_items[0] = TextContent(
+                    type="text",
+                    text=clear_instruction + "\n\n---\n" + feedback_items[0].text,
+                )
+            else:
+                feedback_items.insert(
+                    0, TextContent(type="text", text=clear_instruction)
+                )
+            debug_log("已添加清除上下文指令（新任務模式）")
+
+        # Append built-in reminder if enabled
+        reminder_text = _get_feedback_reminder(result)
+        if reminder_text:
+            feedback_items.append(TextContent(type="text", text=reminder_text))
+            debug_log("已添加內置反饋提醒")
+
         debug_log(f"回饋收集完成，共 {len(feedback_items)} 個項目")
         return feedback_items
 
@@ -534,6 +554,56 @@ async def interactive_feedback(
         debug_log(f"回饋收集錯誤 [錯誤ID: {error_id}]: {e!s}")
 
         return [TextContent(type="text", text=user_error_msg)]
+
+
+_DEFAULT_REMINDER_TEXT = (
+    "[IMPORTANT] After completing the task based on the feedback above, "
+    "you MUST call the `mcp-feedback-pro` tool again to report your progress "
+    "and get further instructions. Do NOT end your turn without calling this tool."
+)
+
+_DEFAULT_NEW_TASK_INSTRUCTION = (
+    "[SYSTEM INSTRUCTION] The user requests you to CLEAR ALL current context, "
+    "conversation history, and TODO lists. Start fresh with the feedback below "
+    "as your NEW task. Forget all previous tasks and context."
+)
+
+
+def _get_feedback_reminder(result: dict) -> str | None:
+    """Build the feedback reminder text based on settings.
+
+    Priority: UI settings > env var MCP_REMINDER_TEXT > default.
+    Returns None if reminders are disabled.
+    """
+    settings = result.get("settings", {})
+
+    enabled = settings.get("feedbackReminderEnabled")
+    if enabled is None:
+        enabled = os.getenv("MCP_APPEND_REMINDER", "true").lower() in ("true", "1", "yes")
+    if not enabled:
+        return None
+
+    custom_text = settings.get("feedbackReminderText")
+    if custom_text and custom_text.strip():
+        return custom_text.strip()
+
+    env_text = os.getenv("MCP_REMINDER_TEXT")
+    if env_text and env_text.strip():
+        return env_text.strip()
+
+    return _DEFAULT_REMINDER_TEXT
+
+
+def _get_new_task_instruction(result: dict) -> str:
+    """Build the new task system instruction based on settings.
+
+    Priority: UI settings > default.
+    """
+    settings = result.get("settings", {})
+    custom_text = settings.get("newTaskInstructionText")
+    if custom_text and custom_text.strip():
+        return custom_text.strip()
+    return _DEFAULT_NEW_TASK_INSTRUCTION
 
 
 async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -> dict:

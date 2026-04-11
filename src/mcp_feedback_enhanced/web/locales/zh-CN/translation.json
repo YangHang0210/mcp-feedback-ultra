@@ -216,6 +216,7 @@
         "ok": "确定",
         "cancel": "❌ 取消",
         "submit": "✅ 提交反馈",
+        "newTask": "🔄 新任务",
         "processing": "处理中...",
         "submitted": "已提交",
         "retry": "重试",
@@ -458,6 +459,15 @@
         },
         "sizeLimitExceeded": "图片 {filename} 大小为 {size}，超过 {limit} 限制！",
         "sizeLimitExceededAdvice": "建议使用图片编辑软件压缩后再上传，或调整图片大小限制设置。"
+    },
+    "feedbackReminder": {
+        "title": "🔔 反馈提醒设定",
+        "enable": "启用反馈提醒",
+        "enableDesc": "启用后，每次反馈都会附带提醒 Agent 继续调用此工具",
+        "customText": "反馈提醒文字",
+        "customTextDesc": "自定义每次反馈后附带的提醒内容，清空恢复默认值",
+        "newTaskText": "新任务系统指令",
+        "newTaskTextDesc": "点击「新任务」按钮时注入的系统指令，清空恢复默认值"
     },
     "autoSubmit": {
         "title": "⏰ 自动定时提交",

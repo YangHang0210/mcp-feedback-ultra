@@ -624,7 +624,8 @@ async def handle_websocket_message(manager: "WebUIManager", session, data: dict)
         feedback = data.get("feedback", "")
         images = data.get("images", [])
         settings = data.get("settings", {})
-        await session.submit_feedback(feedback, images, settings)
+        clear_context = data.get("clear_context", False)
+        await session.submit_feedback(feedback, images, settings, clear_context=clear_context)
 
     elif message_type == "run_command":
         # 執行命令

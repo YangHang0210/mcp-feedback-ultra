@@ -221,6 +221,7 @@
         "ok": "確定",
         "cancel": "❌ 取消",
         "submit": "✅ 提交回饋",
+        "newTask": "🔄 新任務",
         "processing": "處理中...",
         "submitted": "已提交",
         "retry": "重試",
@@ -464,6 +465,15 @@
         },
         "sizeLimitExceeded": "圖片 {filename} 大小為 {size}，超過 {limit} 限制！",
         "sizeLimitExceededAdvice": "建議使用圖片編輯軟體壓縮後再上傳，或調整圖片大小限制設定。"
+    },
+    "feedbackReminder": {
+        "title": "🔔 回饋提醒設定",
+        "enable": "啟用回饋提醒",
+        "enableDesc": "啟用後，每次回饋都會附帶提醒 Agent 繼續呼叫此工具",
+        "customText": "回饋提醒文字",
+        "customTextDesc": "自訂每次回饋後附帶的提醒內容，清空恢復預設值",
+        "newTaskText": "新任務系統指令",
+        "newTaskTextDesc": "點擊「新任務」按鈕時注入的系統指令，清空恢復預設值"
     },
     "autoSubmit": {
         "title": "⏰ 自動定時提交",

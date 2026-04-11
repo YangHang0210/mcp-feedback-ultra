@@ -622,9 +622,14 @@
                     <div class="combined-section">
                         <div class="feedback-title-container">
                             <h3 class="combined-section-title" data-i18n="combined.feedbackTitle">💬 提供回饋</h3>
-                            <button id="submitBtn" class="btn btn-success combined-submit-btn" data-i18n="buttons.submit">
-                                ✅ 提交回饋
-                            </button>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button id="newTaskBtn" class="btn btn-warning combined-submit-btn" data-i18n="buttons.newTask" title="清除 Agent 上下文和 TODO，開始新任務">
+                                    🔄 新任務
+                                </button>
+                                <button id="submitBtn" class="btn btn-success combined-submit-btn" data-i18n="buttons.submit">
+                                    ✅ 提交回饋
+                                </button>
+                            </div>
                         </div>
 
                         <div class="input-group">
@@ -863,6 +868,49 @@
                                     <input type="checkbox" id="settingsEnableBase64Detail" class="toggle-input">
                                     <span class="toggle-slider"></span>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 反饋提醒設定卡片 -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3 class="settings-card-title" data-i18n="feedbackReminder.title">🔔 反饋提醒設定</h3>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label" data-i18n="feedbackReminder.enable">啟用反饋提醒</div>
+                                <div class="setting-description" data-i18n="feedbackReminder.enableDesc">
+                                    啟用後，每次反饋都會附帶提醒 Agent 繼續調用此工具
+                                </div>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="feedbackReminderToggle" class="toggle-input" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info" style="width: 100%;">
+                                <div class="setting-label" data-i18n="feedbackReminder.customText">反饋提醒文字</div>
+                                <div class="setting-description" data-i18n="feedbackReminder.customTextDesc">
+                                    自定義每次反饋後附帶的提醒內容，清空恢復預設值
+                                </div>
+                                <textarea id="feedbackReminderText" class="form-input"
+                                    style="width: 100%; min-height: 80px; resize: vertical; font-size: 12px; margin-top: 8px; font-family: monospace;"></textarea>
+                            </div>
+                        </div>
+                        <div class="setting-item" style="border-bottom: none;">
+                            <div class="setting-info" style="width: 100%;">
+                                <div class="setting-label" data-i18n="feedbackReminder.newTaskText">新任務系統指令</div>
+                                <div class="setting-description" data-i18n="feedbackReminder.newTaskTextDesc">
+                                    點擊「新任務」按鈕時注入的系統指令，清空恢復預設值
+                                </div>
+                                <textarea id="newTaskInstructionText" class="form-input"
+                                    style="width: 100%; min-height: 80px; resize: vertical; font-size: 12px; margin-top: 8px; font-family: monospace;"></textarea>
                             </div>
                         </div>
                     </div>
