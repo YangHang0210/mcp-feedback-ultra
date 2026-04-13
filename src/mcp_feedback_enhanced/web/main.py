@@ -12,9 +12,31 @@ import os
 import threading
 import time
 import uuid
+import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+
+# uvicorn uses the deprecated websockets.legacy API;
+# suppress all related DeprecationWarnings until upstream migrates.
+warnings.filterwarnings(
+    "ignore",
+    message="remove second argument of ws_handler",
+    category=DeprecationWarning,
+    module=r"websockets\.legacy\.server",
+)
+warnings.filterwarnings(
+    "ignore",
+    message=r"websockets\.legacy is deprecated",
+    category=DeprecationWarning,
+    module=r"websockets\.legacy",
+)
+warnings.filterwarnings(
+    "ignore",
+    message=r"websockets\.server\.WebSocketServerProtocol is deprecated",
+    category=DeprecationWarning,
+)
 
 import uvicorn
 from fastapi import FastAPI, Request

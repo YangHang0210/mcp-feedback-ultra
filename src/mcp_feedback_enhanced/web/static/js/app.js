@@ -38,9 +38,12 @@
         this.promptSettingsUI = null;
         this.promptInputButtons = null;
 
-        // 音效管理器
-        this.audioManager = null;
-        this.audioSettingsUI = null;
+    // 異步反饋管理器
+    this.asyncFeedbackManager = null;
+
+    // 音效管理器
+    this.audioManager = null;
+    this.audioSettingsUI = null;
 
         // 通知管理器
         this.notificationManager = null;
@@ -249,7 +252,10 @@
                         // 12. 初始化自動提交管理器
                         self.initializeAutoSubmitManager();
 
-                        // 13. 初始化 Textarea 高度管理器
+                        // 13. 初始化異步反饋管理器
+                        self.initializeAsyncFeedbackManager();
+
+                        // 14. 初始化 Textarea 高度管理器
                         self.initializeTextareaHeightManager();
 
                         // 14. 應用設定到 UI
@@ -626,6 +632,27 @@
 
         } catch (error) {
             console.error('❌ 通知管理器初始化失敗:', error);
+        }
+    };
+
+    /**
+     * 初始化異步反饋管理器
+     */
+    FeedbackApp.prototype.initializeAsyncFeedbackManager = function () {
+        console.log('📡 初始化異步反饋管理器...');
+
+        try {
+            if (!window.MCPFeedback.AsyncFeedbackManager) {
+                console.warn('⚠️ AsyncFeedbackManager 模組未載入，跳過初始化');
+                return;
+            }
+
+            this.asyncFeedbackManager = new window.MCPFeedback.AsyncFeedbackManager();
+            this.asyncFeedbackManager.initialize();
+
+            console.log('✅ 異步反饋管理器初始化完成');
+        } catch (error) {
+            console.error('❌ 異步反饋管理器初始化失敗:', error);
         }
     };
 
@@ -2314,6 +2341,10 @@
 
         if (this.imageHandler) {
             this.imageHandler.cleanup();
+        }
+
+        if (this.asyncFeedbackManager) {
+            this.asyncFeedbackManager.destroy();
         }
 
         if (this.textareaHeightManager) {

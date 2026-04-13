@@ -659,5 +659,20 @@
         "toggleAutoSubmit": "切換自動提交",
         "toggleNotification": "切換通知",
         "toggleAudioNotification": "切換音效通知"
+    },
+    "asyncFeedback": {
+        "title": "非同步回饋",
+        "placeholder": "為 Agent 補充額外資訊...",
+        "placeholderInterrupt": "告訴 Agent 停止當前方向，改變策略...",
+        "send": "傳送",
+        "modeSupplement": "💬 補充",
+        "modeInterrupt": "⚡ 打斷",
+        "statusNone": "無待處理回饋",
+        "statusPending": "回饋待處理 - 等待 Agent 讀取",
+        "statusConsumed": "回饋已被 Agent 讀取",
+        "submitSuccess": "非同步回饋已提交",
+        "submitError": "提交回饋失敗",
+        "emptyError": "請輸入回饋內容",
+        "collapseTooltip": "切換非同步回饋面板"
     }
 }

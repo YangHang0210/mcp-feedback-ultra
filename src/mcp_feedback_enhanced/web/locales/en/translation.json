@@ -654,5 +654,20 @@
         "toggleAutoSubmit": "Toggle auto submit",
         "toggleNotification": "Toggle notification",
         "toggleAudioNotification": "Toggle audio notification"
+    },
+    "asyncFeedback": {
+        "title": "Async Feedback",
+        "placeholder": "Add supplementary info for the agent...",
+        "placeholderInterrupt": "Tell the agent to STOP current approach and change direction...",
+        "send": "Send",
+        "modeSupplement": "💬 Supplement",
+        "modeInterrupt": "⚡ Interrupt",
+        "statusNone": "No pending feedback",
+        "statusPending": "Feedback pending - waiting for agent",
+        "statusConsumed": "Feedback read by agent",
+        "submitSuccess": "Async feedback submitted",
+        "submitError": "Failed to submit feedback",
+        "emptyError": "Please enter feedback content",
+        "collapseTooltip": "Toggle async feedback panel"
     }
 }
