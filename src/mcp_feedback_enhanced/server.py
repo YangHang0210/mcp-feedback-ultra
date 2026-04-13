@@ -548,6 +548,11 @@ async def interactive_feedback(
     4. Only when the user explicitly indicates "end" or "no more interaction needed" can you stop calling this tool, and the process is considered complete.
     5. You should summarize what have done, and provide project directory through args to let user know what you have done to provide feedback for next step.
 
+    IMPORTANT: The response may include a [NEW TASK] prefix. This means the user
+    explicitly wants to switch to a completely new task. When you see [NEW TASK],
+    you should: (1) deprioritize any ongoing work, (2) clear your TODO list, and
+    (3) focus entirely on the new request that follows.
+
     Args:
         project_directory: Project directory path for context
         summary: Summary of AI work completed for user review
@@ -666,13 +671,17 @@ _DEFAULT_REMINDER_TEXT = (
     "you MUST call the `interactive_feedback` tool again to report your progress "
     "and get further instructions. Do NOT end your turn without calling this tool.\n\n"
     "During long-running tasks, periodically call `check_async_feedback` "
-    "(every few major steps) to check if the user wants to redirect your approach."
+    "(every few major steps) to check if the user wants to redirect your approach.\n\n"
+    "Note: If this response begins with [NEW TASK], the user wants to switch focus "
+    "to a completely new task. Deprioritize previous work, clear your TODO list, "
+    "and address the new request as your primary objective."
 )
 
 _DEFAULT_NEW_TASK_INSTRUCTION = (
-    "[SYSTEM INSTRUCTION] The user requests you to CLEAR ALL current context, "
-    "conversation history, and TODO lists. Start fresh with the feedback below "
-    "as your NEW task. Forget all previous tasks and context."
+    "[NEW TASK] The user wants to switch to a new task. Please:\n"
+    "1. Cancel or deprioritize any ongoing work from previous tasks.\n"
+    "2. Clear your current TODO list if applicable.\n"
+    "3. Focus entirely on the user's new request below."
 )
 
 

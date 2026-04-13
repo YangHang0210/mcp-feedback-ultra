@@ -672,7 +672,7 @@
 
     SettingsManager.DEFAULT_REMINDER_TEXT = '[IMPORTANT] After completing the task based on the feedback above, you MUST call the `mcp-feedback-pro` tool again to report your progress and get further instructions. Do NOT end your turn without calling this tool.';
 
-    SettingsManager.DEFAULT_NEW_TASK_INSTRUCTION = '[SYSTEM INSTRUCTION] The user requests you to CLEAR ALL current context, conversation history, and TODO lists. Start fresh with the feedback below as your NEW task. Forget all previous tasks and context.';
+    SettingsManager.DEFAULT_NEW_TASK_INSTRUCTION = '[NEW TASK] The user wants to switch to a new task. Please:\n1. Cancel or deprioritize any ongoing work from previous tasks.\n2. Clear your current TODO list if applicable.\n3. Focus entirely on the user\'s new request below.';
 
     /**
      * 應用反饋提醒設定
