@@ -19,6 +19,19 @@ on:
         default: true
         type: boolean
 
+  workflow_call:  # 允許被其他工作流調用
+    inputs:
+      platforms:
+        description: '選擇要構建的平台'
+        required: true
+        default: 'all'
+        type: string
+      upload_artifacts:
+        description: '是否上傳構建產物'
+        required: true
+        default: true
+        type: boolean
+
   push:
     paths:
       - 'src-tauri/**'  # 桌面應用代碼變更時自動觸發
