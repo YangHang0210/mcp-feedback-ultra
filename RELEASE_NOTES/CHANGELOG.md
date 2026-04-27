@@ -1,6 +1,6 @@
 # Changelog (English)
 
-This document records all version updates for **MCP Feedback Enhanced**.
+This document records all version updates for **MCP Feedback Ultra**.
 
 ## [v2.6.0] - 2025-06-28 - Intelligent Session Management & Automation Enhancement
 

@@ -1,6 +1,6 @@
 # 桌面應用程式構建指南
 
-本文檔說明如何構建 MCP Feedback Enhanced 的桌面應用程式。
+本文檔說明如何構建 MCP Feedback Ultra 的桌面應用程式。
 
 ## 先決條件
 

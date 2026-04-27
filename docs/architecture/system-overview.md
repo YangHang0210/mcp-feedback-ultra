@@ -2,7 +2,7 @@
 
 ## 🏗️ 整體架構設計
 
-MCP Feedback Enhanced 採用**單一活躍會話 + 持久化 Web UI**的創新架構設計，實現 AI 助手與用戶之間的高效、無縫交互體驗。
+MCP Feedback Ultra 採用**單一活躍會話 + 持久化 Web UI**的創新架構設計，實現 AI 助手與用戶之間的高效、無縫交互體驗。
 
 ### 核心設計理念
 
@@ -44,7 +44,7 @@ graph TB
         AI[AI 助手<br/>Cursor/Claude/Windsurf/Augment]
     end
 
-    subgraph "MCP Feedback Enhanced - 四層架構"
+    subgraph "MCP Feedback Ultra - 四層架構"
         subgraph "第一層：MCP 服務層"
             SERVER[server.py<br/>MCP 服務器]
             TOOL[interactive_feedback<br/>核心工具]

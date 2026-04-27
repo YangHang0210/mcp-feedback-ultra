@@ -1,10 +1,10 @@
 # API 參考文檔
 
-本文檔提供 MCP Feedback Enhanced 的完整 API 參考，包括 MCP 工具、Web API、WebSocket 通信協議和內部 API 接口。
+本文檔提供 MCP Feedback Ultra 的完整 API 參考，包括 MCP 工具、Web API、WebSocket 通信協議和內部 API 接口。
 
 ## 📡 MCP 工具 API
 
-MCP Feedback Enhanced 基於 FastMCP 框架實現，提供標準的 MCP 協議支援。
+MCP Feedback Ultra 基於 FastMCP 框架實現，提供標準的 MCP 協議支援。
 
 ### interactive_feedback
 
@@ -100,17 +100,17 @@ except EnvironmentError as e:
 {
     "zh-TW": {
         "app": {
-            "title": "MCP Feedback Enhanced"
+            "title": "MCP Feedback Ultra"
         }
     },
     "en": {
         "app": {
-            "title": "MCP Feedback Enhanced"
+            "title": "MCP Feedback Ultra"
         }
     },
     "zh-CN": {
         "app": {
-            "title": "MCP Feedback Enhanced"
+            "title": "MCP Feedback Ultra"
         }
     }
 }

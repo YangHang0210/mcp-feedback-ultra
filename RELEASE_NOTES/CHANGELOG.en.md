@@ -1,6 +1,6 @@
 # Changelog (English)
 
-This document records all version updates for **MCP Feedback Enhanced**.
+This document records all version updates for **MCP Feedback Ultra**.
 
 ## [v2.5.6] - 2025-06-21 - Settings Save Mechanism Optimization & Interface Enhancement
 

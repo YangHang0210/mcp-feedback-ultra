@@ -2,7 +2,7 @@
 
 ## 🔄 AI 助手與 MCP 服務完整交互流程
 
-本文檔詳細描述 AI 助手調用 MCP Feedback Enhanced 服務的完整流程，包括首次調用、多次循環調用、錯誤處理和性能優化機制。
+本文檔詳細描述 AI 助手調用 MCP Feedback Ultra 服務的完整流程，包括首次調用、多次循環調用、錯誤處理和性能優化機制。
 
 ### 核心設計理念
 
@@ -397,7 +397,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 ### 持久化會話架構
 
-MCP Feedback Enhanced 的核心創新在於**持久化會話架構**，支援 AI 助手進行多次循環調用而無需重新建立連接。
+MCP Feedback Ultra 的核心創新在於**持久化會話架構**，支援 AI 助手進行多次循環調用而無需重新建立連接。
 
 ```mermaid
 stateDiagram-v2

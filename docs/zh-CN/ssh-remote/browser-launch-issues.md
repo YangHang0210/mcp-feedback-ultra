@@ -2,7 +2,7 @@
 
 ## 问题描述
 
-在 SSH Remote 环境（如 Cursor SSH Remote、VS Code Remote SSH 等）中使用 MCP Feedback Enhanced 时，可能会遇到以下问题：
+在 SSH Remote 环境（如 Cursor SSH Remote、VS Code Remote SSH 等）中使用 MCP Feedback Ultra 时，可能会遇到以下问题：
 
 - 🚫 浏览器无法自动启动
 - ❌ 显示「无法启动浏览器」错误
@@ -19,7 +19,7 @@ SSH Remote 环境的限制：
 
 ### 步骤一：设置端口（可选）
 
-MCP Feedback Enhanced 默认使用端口 **8765**，您也可以自定义端口：
+MCP Feedback Ultra 默认使用端口 **8765**，您也可以自定义端口：
 
 ![设置端口](../images/ssh-remote-port-setting.png)
 

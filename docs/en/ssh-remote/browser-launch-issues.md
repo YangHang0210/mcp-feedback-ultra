@@ -2,7 +2,7 @@
 
 ## Problem Description
 
-When using MCP Feedback Enhanced in SSH Remote environments (such as Cursor SSH Remote, VS Code Remote SSH, etc.), you may encounter the following issues:
+When using MCP Feedback Ultra in SSH Remote environments (such as Cursor SSH Remote, VS Code Remote SSH, etc.), you may encounter the following issues:
 
 - 🚫 Browser cannot launch automatically
 - ❌ "Unable to launch browser" error message
@@ -21,7 +21,7 @@ SSH Remote environment limitations:
 
 You have to set `MCP_WEB_HOST` environment to `0.0.0.0` to allow port forwarding.
 
-MCP Feedback Enhanced uses port **8765** by default, but you can customize the port:
+MCP Feedback Ultra uses port **8765** by default, but you can customize the port:
 
 ![Port Settings](../images/ssh-remote-port-setting.png)
 

@@ -1,8 +1,8 @@
-# MCP Feedback Enhanced 架構文檔
+# MCP Feedback Ultra 架構文檔
 
 ## 📋 文檔索引
 
-本目錄包含 MCP Feedback Enhanced 專案的完整架構文檔，提供深入的技術分析和設計說明。
+本目錄包含 MCP Feedback Ultra 專案的完整架構文檔，提供深入的技術分析和設計說明。
 
 ### 📚 文檔結構
 
@@ -16,7 +16,7 @@
 
 ### 🏗️ 架構概覽
 
-MCP Feedback Enhanced 採用**單一活躍會話 + 持久化 Web UI**的創新架構，實現了 AI 助手與用戶之間的無縫交互體驗。
+MCP Feedback Ultra 採用**單一活躍會話 + 持久化 Web UI**的創新架構，實現了 AI 助手與用戶之間的無縫交互體驗。
 
 #### 核心特性
 - **智能環境檢測**: 自動識別 Local/SSH Remote/WSL 環境
