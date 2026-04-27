@@ -37,6 +37,8 @@ jobs:
   build-desktop:
     name: Build Desktop Applications
     uses: ./.github/workflows/build-desktop.yml
+    permissions:
+      contents: write  # 允許 commit-binaries job 寫入
     with:
       platforms: ${{ github.event.inputs.platforms }}
       upload_artifacts: true
