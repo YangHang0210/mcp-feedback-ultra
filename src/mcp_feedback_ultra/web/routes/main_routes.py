@@ -90,12 +90,12 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.get("/api/translations")
     async def get_translations():
-        """獲取翻譯數據 - 從 Web 專用翻譯文件載入"""
+        """获取翻译数据 - 从 Web 专用翻译文件载入"""
         translations = {}
 
-        # 獲取 Web 翻譯文件目錄
+        # 获取 Web 翻译文件目录
         web_locales_dir = Path(__file__).parent.parent / "locales"
-        supported_languages = ["zh-TW", "zh-CN", "en"]
+        supported_languages = ["zh-CN"]
 
         for lang_code in supported_languages:
             lang_dir = web_locales_dir / lang_code
@@ -106,15 +106,15 @@ def setup_routes(manager: "WebUIManager"):
                     with open(translation_file, encoding="utf-8") as f:
                         lang_data = json.load(f)
                         translations[lang_code] = lang_data
-                        debug_log(f"成功載入 Web 翻譯: {lang_code}")
+                        debug_log(f"成功载入 Web 翻译: {lang_code}")
                 else:
-                    debug_log(f"Web 翻譯文件不存在: {translation_file}")
+                    debug_log(f"Web 翻译文件不存在: {translation_file}")
                     translations[lang_code] = {}
             except Exception as e:
-                debug_log(f"載入 Web 翻譯文件失敗 {lang_code}: {e}")
+                debug_log(f"载入 Web 翻译文件失败 {lang_code}: {e}")
                 translations[lang_code] = {}
 
-        debug_log(f"Web 翻譯 API 返回 {len(translations)} 種語言的數據")
+        debug_log(f"Web 翻译 API 返回 {len(translations)} 种语言的数据")
         return JSONResponse(content=translations)
 
     @manager.app.get("/api/session-status")

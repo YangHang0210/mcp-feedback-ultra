@@ -14,33 +14,9 @@ class I18nManager {
     }
     
     getDefaultLanguage() {
-        // 1. 先检查本地儲存的设定
-        const savedLanguage = localStorage.getItem('language');
-        if (savedLanguage && ['zh-TW', 'zh-CN', 'en'].includes(savedLanguage)) {
-            console.log('🌐 使用儲存的語言设定:', savedLanguage);
-            return savedLanguage;
-        }
-        
-        // 2. 检查浏览器語言
-        const browserLang = navigator.language || navigator.userLanguage;
-        console.log('🌐 浏览器語言:', browserLang);
-        
-        if (browserLang.startsWith('zh-TW') || browserLang.includes('Hant')) {
-            console.log('🌐 偵測到繁體中文环境');
-            return 'zh-TW';
-        }
-        if (browserLang.startsWith('zh') || browserLang.includes('Hans')) {
-            console.log('🌐 偵測到簡體中文环境');
-            return 'zh-CN';
-        }
-        if (browserLang.startsWith('en')) {
-            console.log('🌐 偵測到英文环境');
-            return 'en';
-        }
-        
-        // 3. 预设使用繁體中文
-        console.log('🌐 使用预设語言: zh-TW');
-        return 'zh-TW';
+        // 只支持简体中文
+        console.log('🌐 使用简体中文');
+        return 'zh-CN';
     }
 
     async init() {
@@ -72,10 +48,10 @@ class I18nManager {
                 this.translations = data;
                 console.log('翻譯數據载入完成:', Object.keys(this.translations));
                 
-                // 检查當前語言是否有翻譯數據
+                // 检查当前语言是否有翻译数据
                 if (!this.translations[this.currentLanguage] || Object.keys(this.translations[this.currentLanguage]).length === 0) {
-                    console.warn(`當前語言 ${this.currentLanguage} 沒有翻譯數據，回退到 zh-TW`);
-                    this.currentLanguage = 'zh-TW';
+                    console.warn(`当前语言 ${this.currentLanguage} 没有翻译数据，回退到 zh-CN`);
+                    this.currentLanguage = 'zh-CN';
                 }
             })
             .catch(error => {
@@ -88,25 +64,25 @@ class I18nManager {
     }
 
     getMinimalFallbackTranslations() {
-        // 最小的回退翻譯，只包含關鍵項目
+        // 最小的回退翻译，只包含关键项目（简体中文）
         return {
-            'zh-TW': {
+            'zh-CN': {
                 'app': {
                     'title': 'MCP Feedback Ultra',
-                    'projectDirectory': '專案目錄'
+                    'projectDirectory': '项目目录'
                 },
                 'tabs': {
-                    'feedback': '💬 回饋',
+                    'feedback': '💬 反馈',
                     'summary': '📋 AI 摘要',
                     'command': '⚡ 命令',
-                    'settings': '⚙️ 设定'
+                    'settings': '⚙️ 设置'
                 },
                 'buttons': {
                     'cancel': '❌ 取消',
-                    'submit': '✅ 提交回饋'
+                    'submit': '✅ 提交反馈'
                 },
                 'settings': {
-                    'language': '語言'
+                    'language': '语言'
                 }
             }
         };
