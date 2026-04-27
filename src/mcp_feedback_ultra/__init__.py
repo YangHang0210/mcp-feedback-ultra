@@ -15,7 +15,7 @@ MCP Feedback Ultra
 - 跨平台支持：Windows、macOS、Linux
 """
 
-__version__ = "2.7.0"
+__version__ = "2.8.0"
 __author__ = "YangHang"
 __email__ = "yanghang0210@gmail.com"
 
