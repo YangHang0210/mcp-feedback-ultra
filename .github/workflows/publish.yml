@@ -26,6 +26,30 @@ on:
         required: false
         type: string
 
+  workflow_call:  # 允許被其他工作流調用
+    inputs:
+      version_type:
+        description: 'Version bump type (ignored if custom_version is provided)'
+        required: false
+        default: 'patch'
+        type: string
+      custom_version:
+        description: 'Custom version number (e.g., 2.5.0) - overrides version_type if provided'
+        required: false
+        type: string
+      include_desktop:
+        description: '是否包含桌面應用二進制文件'
+        required: true
+        default: true
+        type: boolean
+      desktop_build_run_id:
+        description: '桌面應用構建的 Run ID（可選，留空使用最新的成功構建）'
+        required: false
+        type: string
+    secrets:
+      PYPI_API_TOKEN:
+        required: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
