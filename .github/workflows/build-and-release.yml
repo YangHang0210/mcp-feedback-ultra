@@ -97,6 +97,9 @@ jobs:
     needs: [build-desktop, check-build]
     if: ${{ needs.check-build.outputs.can_release == 'true' && github.event.inputs.skip_release != 'true' }}
     uses: ./.github/workflows/publish.yml
+    permissions:
+      contents: write  # 允許創建 release 和 tag
+      id-token: write  # 允許 PyPI 發布
     with:
       version_type: ${{ github.event.inputs.version_type }}
       custom_version: ${{ github.event.inputs.custom_version }}
