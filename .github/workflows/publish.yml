@@ -495,6 +495,9 @@ jobs:
 
     - name: Push changes and tags
       run: |
+        # 拉取最新代码并 rebase，避免冲突
+        git pull --rebase origin main || true
+        # 推送变更和标签
         git push origin main
         git push origin "v${{ steps.bump_version.outputs.new }}"
 
