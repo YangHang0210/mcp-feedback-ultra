@@ -53,7 +53,6 @@ Issues = "https://github.com/YangHang0210/mcp-feedback-ultra/issues"
 [project.scripts]
 mcp-feedback-ultra = "mcp_feedback_ultra.__main__:main"
 mcp-feedback-pro = "mcp_feedback_ultra.__main__:main"
-mcp-feedback-ultra = "mcp_feedback_ultra.__main__:main"
 interactive-feedback-mcp = "mcp_feedback_ultra.__main__:main"
 
 [build-system]
