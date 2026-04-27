@@ -76,7 +76,7 @@ class PortManager:
             debug_log(f"發現進程 {process_name} (PID: {pid}) 占用端口 {port}")
 
             # 檢查是否是自己的進程（避免誤殺）
-            if "mcp-feedback-enhanced" in process_info["cmdline"].lower():
+            if "mcp-feedback-ultra" in process_info["cmdline"].lower():
                 debug_log("檢測到 MCP Feedback Enhanced 相關進程，嘗試優雅終止")
 
             if force:
@@ -230,7 +230,7 @@ class PortManager:
         # 如果是自己的進程，允許清理
         if any(
             keyword in cmdline
-            for keyword in ["mcp-feedback-enhanced", "mcp_feedback_enhanced"]
+            for keyword in ["mcp-feedback-ultra", "mcp_feedback_ultra"]
         ):
             return True
 

@@ -125,33 +125,33 @@ class DesktopApp:
 
             # 定義平台到二進制文件的映射
             if system == "windows":
-                tauri_exe = desktop_dir / "mcp-feedback-enhanced-desktop.exe"
+                tauri_exe = desktop_dir / "mcp-feedback-ultra-desktop.exe"
             elif system == "darwin":  # macOS
                 # 檢測 Apple Silicon 或 Intel
                 if machine in ["arm64", "aarch64"]:
                     tauri_exe = (
-                        desktop_dir / "mcp-feedback-enhanced-desktop-macos-arm64"
+                        desktop_dir / "mcp-feedback-ultra-desktop-macos-arm64"
                     )
                 else:
                     tauri_exe = (
-                        desktop_dir / "mcp-feedback-enhanced-desktop-macos-intel"
+                        desktop_dir / "mcp-feedback-ultra-desktop-macos-intel"
                     )
             elif system == "linux":
-                tauri_exe = desktop_dir / "mcp-feedback-enhanced-desktop-linux"
+                tauri_exe = desktop_dir / "mcp-feedback-ultra-desktop-linux"
             else:
                 # 回退到通用名稱
-                tauri_exe = desktop_dir / "mcp-feedback-enhanced-desktop"
+                tauri_exe = desktop_dir / "mcp-feedback-ultra-desktop"
 
             if tauri_exe.exists():
                 debug_log(f"找到打包後的 Tauri 可執行檔案: {tauri_exe}")
             else:
                 # 嘗試回退選項
                 fallback_files = [
-                    desktop_dir / "mcp-feedback-enhanced-desktop.exe",
-                    desktop_dir / "mcp-feedback-enhanced-desktop-macos-intel",
-                    desktop_dir / "mcp-feedback-enhanced-desktop-macos-arm64",
-                    desktop_dir / "mcp-feedback-enhanced-desktop-linux",
-                    desktop_dir / "mcp-feedback-enhanced-desktop",
+                    desktop_dir / "mcp-feedback-ultra-desktop.exe",
+                    desktop_dir / "mcp-feedback-ultra-desktop-macos-intel",
+                    desktop_dir / "mcp-feedback-ultra-desktop-macos-arm64",
+                    desktop_dir / "mcp-feedback-ultra-desktop-linux",
+                    desktop_dir / "mcp-feedback-ultra-desktop",
                 ]
 
                 for fallback in fallback_files:
@@ -173,7 +173,7 @@ class DesktopApp:
                 / "src-tauri"
                 / "target"
                 / "debug"
-                / "mcp-feedback-enhanced-desktop.exe"
+                / "mcp-feedback-ultra-desktop.exe"
             )
 
             if not tauri_exe.exists():
@@ -183,7 +183,7 @@ class DesktopApp:
                     / "src-tauri"
                     / "target"
                     / "debug"
-                    / "mcp-feedback-enhanced-desktop"
+                    / "mcp-feedback-ultra-desktop"
                 )
 
             if not tauri_exe.exists():
@@ -193,7 +193,7 @@ class DesktopApp:
                     / "src-tauri"
                     / "target"
                     / "release"
-                    / "mcp-feedback-enhanced-desktop.exe"
+                    / "mcp-feedback-ultra-desktop.exe"
                 )
                 if not tauri_exe.exists():
                     tauri_exe = (
@@ -201,7 +201,7 @@ class DesktopApp:
                         / "src-tauri"
                         / "target"
                         / "release"
-                        / "mcp-feedback-enhanced-desktop"
+                        / "mcp-feedback-ultra-desktop"
                     )
 
             if not tauri_exe.exists():

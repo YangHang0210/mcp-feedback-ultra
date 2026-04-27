@@ -43,7 +43,7 @@ class I18nManager:
 
     def _get_config_file_path(self) -> Path:
         """獲取配置文件路徑"""
-        config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+        config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
         config_dir.mkdir(parents=True, exist_ok=True)
         return config_dir / "language.json"
 

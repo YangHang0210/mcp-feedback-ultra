@@ -156,7 +156,7 @@ class TestErrorHandler:
         assert "❌" in response["message"]  # 應該包含用戶友好的格式
 
     @patch(
-        "mcp_feedback_enhanced.utils.error_handler.ErrorHandler.get_i18n_error_message"
+        "mcp_feedback_ultra.utils.error_handler.ErrorHandler.get_i18n_error_message"
     )
     def test_language_support(self, mock_get_message):
         """測試多語言支持"""

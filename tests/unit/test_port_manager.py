@@ -193,14 +193,14 @@ class TestPortManager:
             for server in servers:
                 server.close()
 
-    @patch("mcp_feedback_enhanced.web.utils.port_manager.psutil.Process")
+    @patch("mcp_feedback_ultra.web.utils.port_manager.psutil.Process")
     def test_should_cleanup_process_mcp_process(self, mock_process):
         """測試是否應該清理 MCP 相關進程"""
         # 模擬 MCP 相關進程
         process_info = {
             "pid": 1234,
             "name": "python.exe",
-            "cmdline": "python -m mcp-feedback-enhanced test --web",
+            "cmdline": "python -m mcp-feedback-ultra test --web",
             "create_time": time.time(),
             "status": "running",
         }
@@ -208,7 +208,7 @@ class TestPortManager:
         result = PortManager._should_cleanup_process(process_info)
         assert result is True
 
-    @patch("mcp_feedback_enhanced.web.utils.port_manager.psutil.Process")
+    @patch("mcp_feedback_ultra.web.utils.port_manager.psutil.Process")
     def test_should_cleanup_process_other_process(self, mock_process):
         """測試是否應該清理其他進程"""
         # 模擬其他進程

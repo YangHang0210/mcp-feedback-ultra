@@ -1,7 +1,7 @@
 [project]
 name = "mcp-feedback-ultra"
 version = "2.6.8"
-description = "Enhanced MCP server for interactive user feedback and command execution in AI-assisted development, featuring dual interface support (Web UI and Desktop Application) with intelligent environment detection and cross-platform compatibility."
+description = "MCP Feedback Ultra - Interactive feedback server for AI-assisted development with dual interface support (Web UI and Desktop Application)"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
@@ -53,7 +53,7 @@ Issues = "https://github.com/YangHang0210/mcp-feedback-ultra/issues"
 [project.scripts]
 mcp-feedback-ultra = "mcp_feedback_ultra.__main__:main"
 mcp-feedback-pro = "mcp_feedback_ultra.__main__:main"
-mcp-feedback-enhanced = "mcp_feedback_ultra.__main__:main"
+mcp-feedback-ultra = "mcp_feedback_ultra.__main__:main"
 interactive-feedback-mcp = "mcp_feedback_ultra.__main__:main"
 
 [build-system]

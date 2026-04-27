@@ -94,14 +94,14 @@ test: ## Run tests
 	uv run pytest
 
 test-cov: ## Run tests with coverage
-	uv run pytest --cov=src/mcp_feedback_enhanced --cov-report=html --cov-report=term
+	uv run pytest --cov=src/mcp_feedback_ultra --cov-report=html --cov-report=term
 
 test-fast: ## Run tests without slow tests
 	uv run pytest -m "not slow"
 
 # 功能測試命令
 test-func: ## Run functional tests (standard)
-	uv run python -m mcp_feedback_enhanced test
+	uv run python -m mcp_feedback_ultra test
 
 test-web: ## Run Web UI tests (continuous)
 	uvx --no-cache --with-editable . mcp-feedback-ultra test --web
@@ -181,7 +181,7 @@ build-desktop-release: ## Build desktop application (release mode)
 
 test-desktop: build-desktop ## Test desktop application
 	@echo "🖥️ Testing desktop application..."
-	uv run python -m mcp_feedback_enhanced test --desktop
+	uv run python -m mcp_feedback_ultra test --desktop
 
 clean-desktop: ## Clean desktop build artifacts
 	@echo "🧹 Cleaning desktop build artifacts..."

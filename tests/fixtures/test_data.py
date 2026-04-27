@@ -158,7 +158,7 @@ class MockResponses:
                     }
                 },
                 "serverInfo": {
-                    "name": "mcp-feedback-enhanced",
+                    "name": "mcp-feedback-ultra",
                     "version": "2.3.0"
                 }
             }

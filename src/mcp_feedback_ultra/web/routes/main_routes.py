@@ -27,7 +27,7 @@ def load_user_layout_settings() -> str:
     """載入用戶的佈局模式設定"""
     try:
         # 使用統一的設定檔案路徑
-        config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+        config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
         settings_file = config_dir / "ui_settings.json"
 
         if settings_file.exists():
@@ -346,7 +346,7 @@ def setup_routes(manager: "WebUIManager"):
             data = await request.json()
 
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             config_dir.mkdir(parents=True, exist_ok=True)
             settings_file = config_dir / "ui_settings.json"
 
@@ -380,7 +380,7 @@ def setup_routes(manager: "WebUIManager"):
 
         try:
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             settings_file = config_dir / "ui_settings.json"
 
             if settings_file.exists():
@@ -409,7 +409,7 @@ def setup_routes(manager: "WebUIManager"):
 
         try:
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             settings_file = config_dir / "ui_settings.json"
 
             if settings_file.exists():
@@ -442,7 +442,7 @@ def setup_routes(manager: "WebUIManager"):
 
         try:
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             history_file = config_dir / "session_history.json"
 
             if history_file.exists():
@@ -488,7 +488,7 @@ def setup_routes(manager: "WebUIManager"):
             data = await request.json()
 
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             config_dir.mkdir(parents=True, exist_ok=True)
             history_file = config_dir / "session_history.json"
 
@@ -533,7 +533,7 @@ def setup_routes(manager: "WebUIManager"):
 
         try:
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             settings_file = config_dir / "ui_settings.json"
 
             if settings_file.exists():
@@ -576,7 +576,7 @@ def setup_routes(manager: "WebUIManager"):
                 )
 
             # 使用統一的設定檔案路徑
-            config_dir = Path.home() / ".config" / "mcp-feedback-enhanced"
+            config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             config_dir.mkdir(parents=True, exist_ok=True)
             settings_file = config_dir / "ui_settings.json"
 

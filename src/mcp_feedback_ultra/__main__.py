@@ -3,11 +3,11 @@
 MCP Interactive Feedback Enhanced - 主程式入口
 ==============================================
 
-此檔案允許套件透過 `python -m mcp_feedback_enhanced` 執行。
+此檔案允許套件透過 `python -m mcp_feedback_ultra` 執行。
 
 使用方法:
-  python -m mcp_feedback_enhanced        # 啟動 MCP 伺服器
-  python -m mcp_feedback_enhanced test   # 執行測試
+  python -m mcp_feedback_ultra        # 啟動 MCP 伺服器
+  python -m mcp_feedback_ultra test   # 執行測試
 """
 
 import argparse
@@ -183,7 +183,7 @@ def process_feedback(data):
 4. 渲染內容
 
 #### 連結和引用
-- 專案連結：[MCP Feedback Enhanced](https://github.com/example/mcp-feedback-enhanced)
+- 專案連結：[MCP Feedback Enhanced](https://github.com/example/mcp-feedback-ultra)
 - 文檔連結：[Marked.js 官方文檔](https://marked.js.org/)
 
 > **重要提示：** 所有 HTML 輸出都經過 DOMPurify 清理，確保安全性。
@@ -317,7 +317,7 @@ def test_desktop_app():
                 print("💡 可能的原因：")
                 print("   1. 此版本不包含桌面應用程式二進制檔案")
                 print("   2. 請使用包含桌面應用的版本，或使用 Web 模式")
-                print("   3. Web 模式指令：uvx mcp-feedback-enhanced test --web")
+                print("   3. Web 模式指令：uvx mcp-feedback-ultra test --web")
                 return False
 
             print("✅ 桌面應用程式模組導入成功")
@@ -412,7 +412,7 @@ def show_version():
 
     print(f"MCP Feedback Enhanced Enhanced v{__version__}")
     print(f"作者: {__author__}")
-    print("GitHub: https://github.com/Minidoracat/mcp-feedback-enhanced")
+    print("GitHub: https://github.com/Minidoracat/mcp-feedback-ultra")
 
 
 if __name__ == "__main__":
