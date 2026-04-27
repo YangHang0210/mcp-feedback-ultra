@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 通知管理模組
+ * MCP Feedback Ultra - 通知管理模組
  * ===================================
  * 
- * 處理瀏覽器通知功能，支援新會話通知和緊急狀態通知
+ * 处理浏览器通知功能，支援新會話通知和緊急狀態通知
  * 使用 Web Notification API，提供極簡的通知體驗
  */
 
@@ -19,17 +19,17 @@
     function NotificationManager(options) {
         options = options || {};
         
-        // 通知設定
+        // 通知设定
         this.enabled = false;
         this.permission = 'default';
-        this.triggerMode = 'focusLost';  // 預設為失去焦點時通知
+        this.triggerMode = 'focusLost';  // 预设為失去焦點時通知
         
         // 狀態追蹤
         this.lastSessionId = null;  // 避免重複通知同一會話
         this.isInitialized = false;
         this.hasFocus = true;  // 追蹤視窗焦點狀態
         
-        // 設定鍵名
+        // 设定鍵名
         this.STORAGE_KEY = 'notificationsEnabled';
         this.TRIGGER_MODE_KEY = 'notificationTriggerMode';
         
@@ -45,19 +45,19 @@
     NotificationManager.prototype.initialize = function() {
         if (this.isInitialized) return;
         
-        // 檢查瀏覽器支援
+        // 检查浏览器支援
         if (!this.checkBrowserSupport()) {
-            console.warn('⚠️ 瀏覽器不支援 Notification API');
+            console.warn('⚠️ 浏览器不支援 Notification API');
             return;
         }
         
-        // 載入設定
+        // 载入设定
         this.loadSettings();
         
         // 更新權限狀態
         this.updatePermissionStatus();
         
-        // 設定焦點追蹤
+        // 设定焦點追蹤
         this.setupFocusTracking();
         
         this.isInitialized = true;
@@ -69,34 +69,34 @@
     };
 
     /**
-     * 檢查瀏覽器支援
+     * 检查浏览器支援
      */
     NotificationManager.prototype.checkBrowserSupport = function() {
         return 'Notification' in window;
     };
 
     /**
-     * 載入設定
+     * 载入设定
      */
     NotificationManager.prototype.loadSettings = function() {
         try {
             this.enabled = localStorage.getItem(this.STORAGE_KEY) === 'true';
             this.triggerMode = localStorage.getItem(this.TRIGGER_MODE_KEY) || 'focusLost';
         } catch (error) {
-            console.error('❌ 載入通知設定失敗:', error);
+            console.error('❌ 载入通知设定失敗:', error);
             this.enabled = false;
             this.triggerMode = 'focusLost';
         }
     };
 
     /**
-     * 儲存設定
+     * 儲存设定
      */
     NotificationManager.prototype.saveSettings = function() {
         try {
             localStorage.setItem(this.STORAGE_KEY, this.enabled.toString());
         } catch (error) {
-            console.error('❌ 儲存通知設定失敗:', error);
+            console.error('❌ 儲存通知设定失敗:', error);
         }
     };
 
@@ -114,7 +114,7 @@
      */
     NotificationManager.prototype.requestPermission = async function() {
         if (!this.checkBrowserSupport()) {
-            throw new Error('瀏覽器不支援通知功能');
+            throw new Error('浏览器不支援通知功能');
         }
         
         try {
@@ -131,7 +131,7 @@
      * 啟用通知
      */
     NotificationManager.prototype.enable = async function() {
-        // 檢查權限
+        // 检查權限
         if (this.permission === 'default') {
             const result = await this.requestPermission();
             if (result !== 'granted') {
@@ -158,7 +158,7 @@
     };
 
     /**
-     * 設定焦點追蹤
+     * 设定焦點追蹤
      */
     NotificationManager.prototype.setupFocusTracking = function() {
         const self = this;
@@ -176,7 +176,7 @@
     };
 
     /**
-     * 檢查是否可以顯示通知
+     * 检查是否可以显示通知
      */
     NotificationManager.prototype.canNotify = function() {
         if (!this.enabled || this.permission !== 'granted') {
@@ -208,7 +208,7 @@
             return;
         }
         
-        // 檢查是否可以通知
+        // 检查是否可以通知
         if (!this.canNotify()) {
             console.log('🔇 不符合通知條件', {
                 enabled: this.enabled,
@@ -239,7 +239,7 @@
                 console.log('🖱️ 通知被點擊，視窗已聚焦');
             };
             
-            // 5秒後自動關閉
+            // 5秒後自動关闭
             setTimeout(() => notification.close(), 5000);
             
             console.log('🔔 已發送新會話通知', {
@@ -252,7 +252,7 @@
     };
 
     /**
-     * 緊急通知（連線問題等）
+     * 緊急通知（连线問題等）
      */
     NotificationManager.prototype.notifyCritical = function(type, message) {
         if (!this.canNotify()) return;
@@ -263,7 +263,7 @@
                 icon: '/static/icon-192.png',
                 badge: '/static/icon-192.png',
                 tag: 'mcp-critical',
-                requireInteraction: true,  // 需要手動關閉
+                requireInteraction: true,  // 需要手動关闭
                 timestamp: Date.now()
             });
             
@@ -283,7 +283,7 @@
     };
 
     /**
-     * 路徑截斷顯示
+     * 路徑截斷显示
      */
     NotificationManager.prototype.truncatePath = function(path, maxLength) {
         maxLength = maxLength || 50;
@@ -292,7 +292,7 @@
     };
 
     /**
-     * 設定觸發模式
+     * 设定觸發模式
      */
     NotificationManager.prototype.setTriggerMode = function(mode) {
         const validModes = ['always', 'background', 'tabSwitch', 'focusLost'];
@@ -308,7 +308,7 @@
     };
 
     /**
-     * 獲取當前設定
+     * 獲取當前设定
      */
     NotificationManager.prototype.getSettings = function() {
         return {
@@ -320,11 +320,11 @@
     };
 
     /**
-     * 測試通知
+     * 测试通知
      */
     NotificationManager.prototype.testNotification = function() {
         if (!this.checkBrowserSupport()) {
-            alert(this.t('notification.browser.notSupported', '您的瀏覽器不支援通知功能'));
+            alert(this.t('notification.browser.notSupported', '您的浏览器不支援通知功能'));
             return;
         }
         
@@ -334,8 +334,8 @@
         }
         
         try {
-            const notification = new Notification(this.t('notification.browser.testTitle', '測試通知'), {
-                body: this.t('notification.browser.testBody', '這是一個測試通知，5秒後將自動關閉'),
+            const notification = new Notification(this.t('notification.browser.testTitle', '测试通知'), {
+                body: this.t('notification.browser.testBody', '這是一個测试通知，5秒後將自動关闭'),
                 icon: '/static/icon-192.png',
                 tag: 'mcp-test',
                 timestamp: Date.now()
@@ -347,10 +347,10 @@
             
             setTimeout(() => notification.close(), 5000);
             
-            console.log('🔔 測試通知已發送');
+            console.log('🔔 测试通知已發送');
         } catch (error) {
-            console.error('❌ 測試通知失敗:', error);
-            alert('發送測試通知失敗');
+            console.error('❌ 测试通知失敗:', error);
+            alert('發送测试通知失敗');
         }
     };
 

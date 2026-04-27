@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 圖片處理模組
+ * MCP Feedback Ultra - 圖片处理模組
  * ==================================
  * 
- * 處理圖片上傳、預覽、壓縮和管理功能
+ * 处理圖片上傳、預覽、壓縮和管理功能
  */
 
 (function() {
@@ -13,7 +13,7 @@
     const Utils = window.MCPFeedback.Utils;
 
     /**
-     * 圖片處理器建構函數
+     * 圖片处理器建構函數
      */
     function ImageHandler(options) {
         options = options || {};
@@ -23,23 +23,23 @@
         this.layoutMode = options.layoutMode || 'combined-vertical';
         this.currentImagePrefix = '';
 
-        // UI 元素（保留用於設定同步）
+        // UI 元素（保留用於设定同步）
         this.imageSizeLimitSelect = null;
         this.enableBase64DetailCheckbox = null;
 
         // 回調函數
         this.onSettingsChange = options.onSettingsChange || null;
 
-        // 創建檔案上傳管理器
+        // 創建文件上傳管理器
         const self = this;
         this.fileUploadManager = new window.MCPFeedback.FileUploadManager({
             maxFileSize: this.imageSizeLimit,
             enableBase64Detail: this.enableBase64Detail,
             onFileAdd: function(fileData) {
-                console.log('📁 檔案已添加:', fileData.name);
+                console.log('📁 文件已添加:', fileData.name);
             },
             onFileRemove: function(fileData, index) {
-                console.log('🗑️ 檔案已移除:', fileData.name);
+                console.log('🗑️ 文件已移除:', fileData.name);
             },
             onSettingsChange: function() {
                 if (self.onSettingsChange) {
@@ -52,32 +52,32 @@
     }
 
     /**
-     * 初始化圖片處理器
+     * 初始化圖片处理器
      */
     ImageHandler.prototype.init = function() {
-        console.log('🖼️ 開始初始化圖片處理功能...');
+        console.log('🖼️ 開始初始化圖片处理功能...');
 
-        // 初始化設定元素
+        // 初始化设定元素
         this.initImageSettingsElements();
 
-        // 初始化檔案上傳管理器
+        // 初始化文件上傳管理器
         this.fileUploadManager.initialize();
 
-        console.log('✅ 圖片處理功能初始化完成');
+        console.log('✅ 圖片处理功能初始化完成');
     };
 
     /**
      * 動態初始化圖片相關元素
      */
     ImageHandler.prototype.initImageSettingsElements = function() {
-        // 查找設定頁籤中的圖片設定元素
+        // 查找设定頁籤中的圖片设定元素
         this.imageSizeLimitSelect = Utils.safeQuerySelector('#settingsImageSizeLimit');
         this.enableBase64DetailCheckbox = Utils.safeQuerySelector('#settingsEnableBase64Detail');
 
-        // 初始化設定事件監聽器
+        // 初始化设定事件監聽器
         this.initImageSettings();
 
-        console.log('✅ 圖片設定元素初始化完成');
+        console.log('✅ 圖片设定元素初始化完成');
     };
 
 
@@ -85,7 +85,7 @@
 
 
     /**
-     * 移除圖片設定事件監聽器
+     * 移除圖片设定事件監聽器
      */
     ImageHandler.prototype.removeImageSettingsListeners = function() {
         if (this.imageSizeLimitSelect && this.imageSizeLimitChangeHandler) {
@@ -100,12 +100,12 @@
     };
 
     /**
-     * 初始化圖片設定事件
+     * 初始化圖片设定事件
      */
     ImageHandler.prototype.initImageSettings = function() {
         const self = this;
 
-        // 移除舊的設定事件監聽器
+        // 移除舊的设定事件監聽器
         this.removeImageSettingsListeners();
 
         if (this.imageSizeLimitSelect) {
@@ -151,24 +151,24 @@
      * 重新初始化（用於佈局模式切換）
      */
     ImageHandler.prototype.reinitialize = function(layoutMode) {
-        console.log('🔄 重新初始化圖片處理功能...');
+        console.log('🔄 重新初始化圖片处理功能...');
 
         this.layoutMode = layoutMode;
 
-        // 重新初始化設定元素
+        // 重新初始化设定元素
         this.initImageSettingsElements();
 
-        console.log('✅ 圖片處理功能重新初始化完成');
+        console.log('✅ 圖片处理功能重新初始化完成');
     };
 
     /**
-     * 更新設定
+     * 更新设定
      */
     ImageHandler.prototype.updateSettings = function(settings) {
         this.imageSizeLimit = settings.imageSizeLimit || 0;
         this.enableBase64Detail = settings.enableBase64Detail || false;
 
-        // 更新檔案上傳管理器設定
+        // 更新文件上傳管理器设定
         this.fileUploadManager.updateSettings({
             imageSizeLimit: this.imageSizeLimit,
             enableBase64Detail: this.enableBase64Detail
@@ -194,6 +194,6 @@
     // 將 ImageHandler 加入命名空間
     window.MCPFeedback.ImageHandler = ImageHandler;
 
-    console.log('✅ ImageHandler 模組載入完成');
+    console.log('✅ ImageHandler 模組载入完成');
 
 })();

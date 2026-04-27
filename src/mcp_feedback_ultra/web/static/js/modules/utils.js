@@ -1,5 +1,5 @@
 /**
- * MCP Feedback Enhanced - 工具模組
+ * MCP Feedback Ultra - 工具模組
  * ================================
  * 
  * 提供共用的工具函數和常數定義
@@ -18,9 +18,9 @@
     Object.assign(window.MCPFeedback.Utils, {
         
         /**
-         * 格式化檔案大小
+         * 格式化文件大小
          * @param {number} bytes - 位元組數
-         * @returns {string} 格式化後的檔案大小
+         * @returns {string} 格式化後的文件大小
          */
         formatFileSize: function(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -100,8 +100,8 @@
         /**
          * 安全的 JSON 解析
          * @param {string} jsonString - JSON 字串
-         * @param {*} defaultValue - 預設值
-         * @returns {*} 解析結果或預設值
+         * @param {*} defaultValue - 预设值
+         * @returns {*} 解析結果或预设值
          */
         safeJsonParse: function(jsonString, defaultValue) {
             try {
@@ -113,8 +113,8 @@
         },
 
         /**
-         * 檢查元素是否存在
-         * @param {string} selector - CSS 選擇器
+         * 检查元素是否存在
+         * @param {string} selector - CSS 选择器
          * @returns {boolean} 元素是否存在
          */
         elementExists: function(selector) {
@@ -125,7 +125,7 @@
          * 從右側截斷路徑，保留最後幾個目錄層級
          * @param {string} path - 完整路徑
          * @param {number} maxLevels - 保留的最大目錄層級數（默認2）
-         * @param {number} maxLength - 最大顯示長度（默認40）
+         * @param {number} maxLength - 最大显示長度（默認40）
          * @returns {object} 包含 truncated（截斷後的路徑）和 isTruncated（是否被截斷）
          */
         truncatePathFromRight: function(path, maxLevels, maxLength) {
@@ -165,7 +165,7 @@
          * 複製文字到剪貼板（統一的複製功能）
          * @param {string} text - 要複製的文字
          * @param {string} successMessage - 成功提示訊息
-         * @param {string} errorMessage - 錯誤提示訊息
+         * @param {string} errorMessage - 错误提示訊息
          * @returns {Promise<boolean>} 複製是否成功
          */
         copyToClipboard: function(text, successMessage, errorMessage) {
@@ -246,7 +246,7 @@
 
         /**
          * 安全的元素查詢
-         * @param {string} selector - CSS 選擇器
+         * @param {string} selector - CSS 选择器
          * @param {Element} context - 查詢上下文（可選）
          * @returns {Element|null} 找到的元素或 null
          */
@@ -261,13 +261,13 @@
         },
 
         /**
-         * 顯示訊息提示
+         * 显示訊息提示
          * @param {string} message - 訊息內容
          * @param {string} type - 訊息類型 (success, error, warning, info)
-         * @param {number} duration - 顯示時間（毫秒）
+         * @param {number} duration - 显示時間（毫秒）
          */
         showMessage: function(messageOrCode, type, duration) {
-            // 處理訊息代碼物件
+            // 处理訊息代碼物件
             let actualMessage = messageOrCode;
             let actualType = type || 'info';
             
@@ -283,13 +283,13 @@
                 actualType = messageOrCode.severity || type || 'info';
             }
             
-            // 呼叫內部顯示方法
+            // 呼叫內部显示方法
             return this._displayMessage(actualMessage, actualType, duration);
         },
         
         /**
          * 獲取 fallback 訊息
-         * 當 i18n 系統尚未載入時使用
+         * 當 i18n 系統尚未载入時使用
          * @param {string} code - 訊息代碼
          * @param {Object} params - 參數
          * @returns {string} fallback 訊息
@@ -322,7 +322,7 @@
                 'session.historySaved': 'Session history saved',
                 'session.historyLoaded': 'Session history loaded',
                 
-                // 設定相關
+                // 设定相關
                 'settings.saved': 'Settings saved',
                 'settings.loaded': 'Settings loaded',
                 'settings.cleared': 'Settings cleared',
@@ -333,7 +333,7 @@
                 'settings.logLevelUpdated': 'Log level updated',
                 'settings.invalidLogLevel': 'Invalid log level',
                 
-                // 錯誤相關
+                // 错误相關
                 'error.generic': 'An error occurred',
                 'error.userMessageFailed': 'Failed to add user message',
                 'error.getSessionsFailed': 'Failed to get sessions',
@@ -345,14 +345,14 @@
                 // 通知相關
                 'notification.autoplayBlocked': 'Browser blocked autoplay, click page to enable sound',
                 
-                // 預設訊息
+                // 预设訊息
                 'default': 'System message'
             };
             
             // 嘗試獲取對應的 fallback 訊息
             let message = fallbackMessages[code] || fallbackMessages['default'];
             
-            // 處理參數替換（簡單版本）
+            // 处理參數替換（簡單版本）
             if (params && typeof params === 'object') {
                 for (const key in params) {
                     if (params.hasOwnProperty(key)) {
@@ -362,7 +362,7 @@
                 }
             }
             
-            // 在開發模式下顯示警告
+            // 在開發模式下显示警告
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 console.warn('[i18n] Fallback message used for:', code, '→', message);
             }
@@ -371,7 +371,7 @@
         },
         
         /**
-         * 內部方法：實際顯示訊息
+         * 內部方法：實際显示訊息
          * @private
          */
         _displayMessage: function(message, type, duration) {
@@ -413,7 +413,7 @@
         },
 
         /**
-         * 檢查 WebSocket 是否可用
+         * 检查 WebSocket 是否可用
          * @returns {boolean} WebSocket 是否可用
          */
         isWebSocketSupported: function() {
@@ -452,9 +452,9 @@
             FEEDBACK_SUBMITTED: 'feedback_submitted',
             FEEDBACK_PROCESSING: 'processing',
 
-            // 預設設定（優化後的值）
-            DEFAULT_HEARTBEAT_FREQUENCY: 60000,  // 從 30 秒調整為 60 秒，減少網路負載
-            DEFAULT_TAB_HEARTBEAT_FREQUENCY: 10000,  // 從 5 秒調整為 10 秒，減少標籤頁檢查頻率
+            // 预设设定（优化後的值）
+            DEFAULT_HEARTBEAT_FREQUENCY: 60000,  // 從 30 秒調整為 60 秒，減少网络負載
+            DEFAULT_TAB_HEARTBEAT_FREQUENCY: 10000,  // 從 5 秒調整為 10 秒，減少標籤頁检查頻率
             DEFAULT_RECONNECT_DELAY: 1000,
             MAX_RECONNECT_ATTEMPTS: 5,
             TAB_EXPIRED_THRESHOLD: 60000,  // 從 30 秒調整為 60 秒，與心跳頻率保持一致
@@ -467,6 +467,6 @@
         }
     });
 
-    console.log('✅ Utils 模組載入完成');
+    console.log('✅ Utils 模組载入完成');
 
 })();

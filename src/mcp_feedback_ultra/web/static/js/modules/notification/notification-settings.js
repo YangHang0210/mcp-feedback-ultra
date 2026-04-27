@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 通知設定介面模組
+ * MCP Feedback Ultra - 通知设定介面模組
  * =====================================
  * 
- * 處理瀏覽器通知的設定介面，提供簡單的開關控制
+ * 处理浏览器通知的设定介面，提供簡單的開關控制
  * 與 NotificationManager 配合使用
  */
 
@@ -14,7 +14,7 @@
     const Utils = window.MCPFeedback.Utils;
 
     /**
-     * 通知設定介面建構函數
+     * 通知设定介面建構函數
      */
     function NotificationSettings(options) {
         options = options || {};
@@ -38,16 +38,16 @@
     }
 
     /**
-     * 初始化設定介面
+     * 初始化设定介面
      */
     NotificationSettings.prototype.initialize = function() {
         if (!this.container) {
-            console.error('❌ NotificationSettings 容器未設定');
+            console.error('❌ NotificationSettings 容器未设定');
             return;
         }
 
         if (!this.notificationManager) {
-            console.error('❌ NotificationManager 未設定');
+            console.error('❌ NotificationManager 未设定');
             return;
         }
 
@@ -111,7 +111,7 @@
                 </div>
             </div>
             
-            <!-- 測試按鈕 -->
+            <!-- 测试按鈕 -->
             <div class="setting-item notification-actions" style="display: none;">
                 <div class="setting-info">
                     <div class="setting-label" data-i18n="notification.testTitle"></div>
@@ -135,7 +135,7 @@
     };
 
     /**
-     * 設置事件監聽器
+     * 设置事件監聽器
      */
     NotificationSettings.prototype.setupEventListeners = function() {
         const self = this;
@@ -150,7 +150,7 @@
             }
         });
         
-        // 測試按鈕事件
+        // 测试按鈕事件
         if (this.testButton) {
             this.testButton.addEventListener('click', function() {
                 self.notificationManager.testNotification();
@@ -183,17 +183,17 @@
     NotificationSettings.prototype.updateUI = function() {
         const settings = this.notificationManager.getSettings();
         
-        // 設定開關狀態
+        // 设定開關狀態
         if (settings.enabled) {
             this.toggle.classList.add('active');
         } else {
             this.toggle.classList.remove('active');
         }
         
-        // 更新權限狀態顯示
+        // 更新權限狀態显示
         this.updatePermissionStatus();
         
-        // 顯示/隱藏測試按鈕和觸發選項
+        // 显示/隱藏测试按鈕和觸發選項
         const actionsDiv = this.container.querySelector('.notification-actions');
         if (actionsDiv) {
             actionsDiv.style.display = (settings.enabled && settings.permission === 'granted') ? 'block' : 'none';
@@ -202,7 +202,7 @@
         if (this.triggerOptionsDiv) {
             this.triggerOptionsDiv.style.display = (settings.enabled && settings.permission === 'granted') ? 'block' : 'none';
             
-            // 設定當前選中的觸發模式
+            // 设定當前選中的觸發模式
             const currentMode = settings.triggerMode || 'focusLost';
             const radio = this.container.querySelector(`input[name="notificationTrigger"][value="${currentMode}"]`);
             if (radio) {
@@ -228,7 +228,7 @@
                 
                 if (this.notificationManager.permission === 'denied') {
                     this.showMessage(
-                        this.t('notification.permissionDenied', '瀏覽器已封鎖通知，請在瀏覽器設定中允許'),
+                        this.t('notification.permissionDenied', '浏览器已封鎖通知，請在浏览器设定中允許'),
                         'error'
                     );
                 } else {
@@ -253,12 +253,12 @@
      */
     NotificationSettings.prototype.disableNotifications = function() {
         this.notificationManager.disable();
-        this.showMessage(this.t('notification.disabled', '通知已關閉'), 'info');
+        this.showMessage(this.t('notification.disabled', '通知已关闭'), 'info');
         this.updateUI();
     };
 
     /**
-     * 更新權限狀態顯示
+     * 更新權限狀態显示
      */
     NotificationSettings.prototype.updatePermissionStatus = function() {
         const settings = this.notificationManager.getSettings();
@@ -279,13 +279,13 @@
             },
             'denied': {
                 icon: '❌',
-                text: this.t('notification.permissionDeniedStatus', '已拒絕（請在瀏覽器設定中修改）'),
+                text: this.t('notification.permissionDeniedStatus', '已拒絕（請在浏览器设定中修改）'),
                 class: 'status-denied',
                 i18nKey: 'notification.permissionDeniedStatus'
             },
             'default': {
                 icon: '⏸',
-                text: this.t('notification.permissionDefault', '尚未設定'),
+                text: this.t('notification.permissionDefault', '尚未设定'),
                 class: 'status-default',
                 i18nKey: 'notification.permissionDefault'
             }
@@ -299,10 +299,10 @@
     };
 
     /**
-     * 顯示訊息
+     * 显示訊息
      */
     NotificationSettings.prototype.showMessage = function(message, type) {
-        // 使用 Utils 的訊息顯示功能
+        // 使用 Utils 的訊息显示功能
         if (Utils && Utils.showMessage) {
             Utils.showMessage(message, type);
         } else {

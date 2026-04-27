@@ -1,5 +1,5 @@
 /**
- * MCP Feedback Enhanced - 會話管理模組（重構版）
+ * MCP Feedback Ultra - 會話管理模組（重構版）
  * =============================================
  *
  * 整合會話數據管理、UI 渲染和面板控制功能
@@ -31,7 +31,7 @@
         // UI 狀態
         this.isLoading = false;
 
-        // 設定管理器引用
+        // 设定管理器引用
         this.settingsManager = options.settingsManager || null;
 
         // 回調函數
@@ -63,7 +63,7 @@
             showFullSessionId: options.showFullSessionId || false
         });
 
-        // 初始化防抖處理器
+        // 初始化防抖处理器
         this.initDebounceHandlers();
 
         // 最後初始化數據管理器（確保 UI 組件已準備好接收回調）
@@ -85,31 +85,31 @@
     };
 
     /**
-     * 初始化防抖處理器
+     * 初始化防抖处理器
      */
     SessionManager.prototype.initDebounceHandlers = function() {
-        // 為會話變更處理添加防抖
+        // 為會話變更处理添加防抖
         this._debouncedHandleSessionChange = window.MCPFeedback.Utils.DOM.debounce(
             this._originalHandleSessionChange.bind(this),
             100,
             false
         );
 
-        // 為歷史記錄變更處理添加防抖
+        // 為歷史记录變更处理添加防抖
         this._debouncedHandleHistoryChange = window.MCPFeedback.Utils.DOM.debounce(
             this._originalHandleHistoryChange.bind(this),
             150,
             false
         );
 
-        // 為統計資訊變更處理添加防抖
+        // 為統計资讯變更处理添加防抖
         this._debouncedHandleStatsChange = window.MCPFeedback.Utils.DOM.debounce(
             this._originalHandleStatsChange.bind(this),
             100,
             false
         );
 
-        // 為資料變更處理添加防抖
+        // 為资料變更处理添加防抖
         this._debouncedHandleDataChanged = window.MCPFeedback.Utils.DOM.debounce(
             this._originalHandleDataChanged.bind(this),
             200,
@@ -118,13 +118,13 @@
     };
 
     /**
-     * 處理會話變更（原始版本，供防抖使用）
+     * 处理會話變更（原始版本，供防抖使用）
      */
     SessionManager.prototype._originalHandleSessionChange = function(sessionData) {
-        // 減少重複日誌：只在會話 ID 變化時記錄
+        // 減少重複日誌：只在會話 ID 變化時记录
         const sessionId = sessionData ? sessionData.session_id : null;
         if (!this._lastSessionId || this._lastSessionId !== sessionId) {
-            console.log('📋 處理會話變更:', sessionData);
+            console.log('📋 处理會話變更:', sessionData);
             this._lastSessionId = sessionId;
         }
 
@@ -138,7 +138,7 @@
     };
 
     /**
-     * 處理會話變更（防抖版本）
+     * 处理會話變更（防抖版本）
      */
     SessionManager.prototype.handleSessionChange = function(sessionData) {
         if (this._debouncedHandleSessionChange) {
@@ -150,12 +150,12 @@
     };
 
     /**
-     * 處理歷史記錄變更（原始版本，供防抖使用）
+     * 处理歷史记录變更（原始版本，供防抖使用）
      */
     SessionManager.prototype._originalHandleHistoryChange = function(history) {
-        // 減少重複日誌：只在歷史記錄數量變化時記錄
+        // 減少重複日誌：只在歷史记录數量變化時记录
         if (!this._lastHistoryCount || this._lastHistoryCount !== history.length) {
-            console.log('📋 處理歷史記錄變更:', history.length, '個會話');
+            console.log('📋 处理歷史记录變更:', history.length, '個會話');
             this._lastHistoryCount = history.length;
         }
 
@@ -164,7 +164,7 @@
     };
 
     /**
-     * 處理歷史記錄變更（防抖版本）
+     * 处理歷史记录變更（防抖版本）
      */
     SessionManager.prototype.handleHistoryChange = function(history) {
         if (this._debouncedHandleHistoryChange) {
@@ -176,13 +176,13 @@
     };
 
     /**
-     * 處理統計資訊變更（原始版本，供防抖使用）
+     * 处理統計资讯變更（原始版本，供防抖使用）
      */
     SessionManager.prototype._originalHandleStatsChange = function(stats) {
-        // 減少重複日誌：只在統計資訊有意義變化時記錄
+        // 減少重複日誌：只在統計资讯有意義變化時记录
         const statsKey = stats ? JSON.stringify(stats) : null;
         if (!this._lastStatsKey || this._lastStatsKey !== statsKey) {
-            console.log('📋 處理統計資訊變更:', stats);
+            console.log('📋 处理統計资讯變更:', stats);
             this._lastStatsKey = statsKey;
         }
 
@@ -191,7 +191,7 @@
     };
 
     /**
-     * 處理統計資訊變更（防抖版本）
+     * 处理統計资讯變更（防抖版本）
      */
     SessionManager.prototype.handleStatsChange = function(stats) {
         if (this._debouncedHandleStatsChange) {
@@ -203,10 +203,10 @@
     };
 
     /**
-     * 處理資料變更（原始版本，供防抖使用）
+     * 处理资料變更（原始版本，供防抖使用）
      */
     SessionManager.prototype._originalHandleDataChanged = function() {
-        console.log('📋 處理資料變更，重新渲染所有內容');
+        console.log('📋 处理资料變更，重新渲染所有內容');
 
         // 重新渲染所有內容
         const currentSession = this.dataManager.getCurrentSession();
@@ -219,7 +219,7 @@
     };
 
     /**
-     * 處理資料變更（防抖版本）
+     * 处理资料變更（防抖版本）
      */
     SessionManager.prototype.handleDataChanged = function() {
         if (this._debouncedHandleDataChanged) {
@@ -231,7 +231,7 @@
     };
 
     /**
-     * 設置事件監聽器
+     * 设置事件監聽器
      */
     SessionManager.prototype.setupEventListeners = function() {
         const self = this;
@@ -249,7 +249,7 @@
             });
         }
 
-        // 詳細資訊按鈕
+        // 詳細资讯按鈕
         const detailsButton = DOMUtils ?
             DOMUtils.safeQuerySelector('#viewSessionDetails') :
             document.querySelector('#viewSessionDetails');
@@ -296,7 +296,7 @@
             });
         }
 
-        // 清空訊息記錄按鈕
+        // 清空訊息记录按鈕
         const sessionTabClearMessagesBtn = DOMUtils ?
             DOMUtils.safeQuerySelector('#sessionTabClearMessagesBtn') :
             document.querySelector('#sessionTabClearMessagesBtn');
@@ -329,7 +329,7 @@
     };
 
     /**
-     * 更新狀態資訊（委託給數據管理器）
+     * 更新狀態资讯（委託給數據管理器）
      */
     SessionManager.prototype.updateStatusInfo = function(statusInfo) {
         return this.dataManager.updateStatusInfo(statusInfo);
@@ -364,7 +364,7 @@
     };
 
     /**
-     * 顯示當前會話詳情
+     * 显示當前會話詳情
      */
     SessionManager.prototype.showSessionDetails = function() {
         const currentSession = this.dataManager.getCurrentSession();
@@ -394,8 +394,8 @@
             this.detailsModal.showSessionDetails(sessionData);
         } else {
             const message = window.i18nManager ? 
-                window.i18nManager.t('sessionHistory.sessionNotFound', '找不到會話資料') : 
-                '找不到會話資料';
+                window.i18nManager.t('sessionHistory.sessionNotFound', '找不到會話资料') : 
+                '找不到會話资料';
             this.showMessage(message, 'error');
         }
     };
@@ -417,7 +417,7 @@
     };
 
     /**
-     * 獲取統計資訊（便利方法）
+     * 獲取統計资讯（便利方法）
      */
     SessionManager.prototype.getStats = function() {
         return this.dataManager.getStats();
@@ -471,7 +471,7 @@
      * 獲取會話建立時間
      */
     SessionManager.prototype.getSessionCreatedTime = function() {
-        // 嘗試從 WebSocketManager 的連線開始時間獲取
+        // 嘗試從 WebSocketManager 的连线開始時間獲取
         if (window.feedbackApp && window.feedbackApp.webSocketManager) {
             const wsManager = window.feedbackApp.webSocketManager;
             if (wsManager.connectionStartTime) {
@@ -511,7 +511,7 @@
             return this.dataManager.lastStatusUpdate.status;
         }
 
-        // 預設狀態
+        // 预设狀態
         return 'waiting';
     };
 
@@ -538,7 +538,7 @@
      */
     SessionManager.prototype.getAISummary = function() {
         const summaryElement = document.querySelector('.session-summary');
-        if (summaryElement && summaryElement.textContent !== 'AI 摘要: 載入中...') {
+        if (summaryElement && summaryElement.textContent !== 'AI 摘要: 载入中...') {
             return summaryElement.textContent.replace('AI 摘要: ', '');
         }
 
@@ -556,7 +556,7 @@
 
 
     /**
-     * 更新顯示
+     * 更新显示
      */
     SessionManager.prototype.updateDisplay = function() {
         const currentSession = this.dataManager.getCurrentSession();
@@ -569,7 +569,7 @@
     };
 
     /**
-     * 顯示訊息
+     * 显示訊息
      */
     SessionManager.prototype.showMessage = function(message, type) {
         if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
@@ -591,7 +591,7 @@
         try {
             const filename = this.dataManager.exportSessionHistory();
 
-            // 顯示成功訊息
+            // 显示成功訊息
             if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
                 const message = window.i18nManager ?
                     window.i18nManager.t('sessionHistory.management.exportSuccess') :
@@ -621,7 +621,7 @@
         try {
             const filename = this.dataManager.exportSingleSession(sessionId);
             if (filename) {
-                // 顯示成功訊息
+                // 显示成功訊息
                 if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
                     const message = window.i18nManager ?
                         window.i18nManager.t('sessionHistory.management.exportSuccess') :
@@ -649,7 +649,7 @@
             return;
         }
 
-        // 確認對話框
+        // 确认對話框
         const confirmMessage = window.i18nManager ?
             window.i18nManager.t('sessionHistory.management.confirmClear') :
             '確定要清空所有會話歷史嗎？';
@@ -661,7 +661,7 @@
         try {
             this.dataManager.clearHistory();
 
-            // 顯示成功訊息
+            // 显示成功訊息
             if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
                 const message = window.i18nManager ?
                     window.i18nManager.t('sessionHistory.management.clearSuccess') :
@@ -680,7 +680,7 @@
     };
 
     /**
-     * 清空用戶訊息記錄
+     * 清空用戶訊息记录
      */
     SessionManager.prototype.clearUserMessages = function() {
         if (!this.dataManager) {
@@ -691,7 +691,7 @@
         const i18n = window.i18nManager;
         const confirmMessage = i18n ?
             i18n.t('sessionHistory.userMessages.confirmClearAll') :
-            '確定要清空所有會話的用戶訊息記錄嗎？此操作無法復原。';
+            '確定要清空所有會話的用戶訊息记录嗎？此操作無法復原。';
 
         if (!confirm(confirmMessage)) {
             return;
@@ -702,7 +702,7 @@
             if (success) {
                 const successMessage = i18n ?
                     i18n.t('sessionHistory.userMessages.clearSuccess') :
-                    '用戶訊息記錄已清空';
+                    '用戶訊息记录已清空';
                 this.showMessage(successMessage, 'success');
             } else {
                 const errorMessage = window.i18nManager ?
@@ -711,7 +711,7 @@
                 this.showMessage(errorMessage, 'error');
             }
         } catch (error) {
-            console.error('📋 清空用戶訊息記錄失敗:', error);
+            console.error('📋 清空用戶訊息记录失敗:', error);
             const errorMessage = window.i18nManager ?
                 window.i18nManager.t('sessionHistory.management.clearFailed', { error: error.message }) :
                 '清空失敗: ' + error.message;
@@ -756,7 +756,7 @@
             const sessionManager = window.MCPFeedback.app.sessionManager;
             sessionManager.viewSessionDetails(sessionId);
         } else {
-            // 如果找不到實例，顯示錯誤訊息
+            // 如果找不到實例，显示错误訊息
             console.warn('找不到 SessionManager 實例');
             if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
                 window.MCPFeedback.Utils.showMessage('會話管理器未初始化', 'error');
@@ -829,8 +829,8 @@
             if (!currentSession.user_messages || currentSession.user_messages.length === 0) {
                 console.log('📝 没有用户消息记录');
                 const message = window.i18nManager ?
-                    window.i18nManager.t('sessionHistory.currentSession.noUserMessages', '當前會話沒有用戶消息記錄') :
-                    '當前會話沒有用戶消息記錄';
+                    window.i18nManager.t('sessionHistory.currentSession.noUserMessages', '當前會話沒有用戶消息记录') :
+                    '當前會話沒有用戶消息记录';
                 this.showMessage(message, 'warning');
                 return;
             }
@@ -862,7 +862,7 @@
      */
     SessionManager.prototype.formatCurrentSessionContent = function(sessionData) {
         const lines = [];
-        lines.push('# MCP Feedback Enhanced - 当前会话内容');
+        lines.push('# MCP Feedback Ultra - 当前会话内容');
         lines.push('');
         lines.push(`**会话ID**: ${sessionData.session_id || 'N/A'}`);
         lines.push(`**项目目录**: ${sessionData.project_directory || 'N/A'}`);
@@ -898,7 +898,7 @@
      */
     SessionManager.prototype.formatCurrentUserContent = function(userMessages) {
         const lines = [];
-        lines.push('# MCP Feedback Enhanced - 用户发送内容');
+        lines.push('# MCP Feedback Ultra - 用户发送内容');
         lines.push('');
 
         userMessages.forEach((msg, index) => {
@@ -1054,6 +1054,6 @@
         }
     };
 
-    console.log('✅ SessionManager (重構版) 模組載入完成');
+    console.log('✅ SessionManager (重構版) 模組载入完成');
 
 })();

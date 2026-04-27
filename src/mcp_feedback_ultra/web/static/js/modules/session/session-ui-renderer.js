@@ -1,5 +1,5 @@
 /**
- * MCP Feedback Enhanced - 會話 UI 渲染模組
+ * MCP Feedback Ultra - 會話 UI 渲染模組
  * =======================================
  * 
  * 負責會話相關的 UI 渲染和更新
@@ -21,7 +21,7 @@
         console;
     const StatusUtils = window.MCPFeedback.Utils.Status;
     
-    // 調試模式標誌 - 生產環境應設為 false
+    // 調試模式標誌 - 生產环境應設為 false
     const DEBUG_MODE = false;
 
     /**
@@ -49,7 +49,7 @@
             history: null,
             currentSession: null
         };
-        this.renderDebounceDelay = options.renderDebounceDelay || 100; // 預設 100ms 防抖延遲
+        this.renderDebounceDelay = options.renderDebounceDelay || 100; // 预设 100ms 防抖延遲
 
         // 快取上次渲染的數據，避免不必要的重渲染
         this.lastRenderedData = {
@@ -80,10 +80,10 @@
     };
 
     /**
-     * 初始化專案路徑顯示
+     * 初始化專案路徑显示
      */
     SessionUIRenderer.prototype.initializeProjectPathDisplay = function() {
-        if (DEBUG_MODE) console.log('🎨 初始化專案路徑顯示');
+        if (DEBUG_MODE) console.log('🎨 初始化專案路徑显示');
 
         const projectPathElement = document.getElementById('projectPathDisplay');
         if (DEBUG_MODE) console.log('🎨 初始化時找到專案路徑元素:', !!projectPathElement);
@@ -95,9 +95,9 @@
             if (fullPath) {
                 // 使用工具函數截斷路徑
                 const pathResult = window.MCPFeedback.Utils.truncatePathFromRight(fullPath, 2, 40);
-                if (DEBUG_MODE) console.log('🎨 初始化時路徑處理:', { fullPath, shortPath: pathResult.truncated });
+                if (DEBUG_MODE) console.log('🎨 初始化時路徑处理:', { fullPath, shortPath: pathResult.truncated });
 
-                // 更新顯示文字
+                // 更新显示文字
                 DOMUtils.safeSetTextContent(projectPathElement, pathResult.truncated);
 
                 // 添加點擊複製功能
@@ -139,11 +139,11 @@
 
         const self = this;
 
-        // 檢查是否是新會話（會話 ID 變更）
+        // 检查是否是新會話（會話 ID 變更）
         const isNewSession = !this.currentSessionData ||
                             this.currentSessionData.session_id !== sessionData.session_id;
 
-        // 檢查數據是否有變化
+        // 检查數據是否有變化
         if (!isNewSession && self.lastRenderedData.currentSessionId === sessionData.session_id &&
             self.currentSessionData &&
             self.currentSessionData.status === sessionData.status &&
@@ -168,7 +168,7 @@
     };
 
     /**
-     * 執行實際的當前會話渲染
+     * 执行實際的當前會話渲染
      */
     SessionUIRenderer.prototype._performCurrentSessionRender = function(sessionData, isNewSession) {
         if (DEBUG_MODE) console.log('🎨 渲染當前會話:', sessionData);
@@ -179,7 +179,7 @@
 
         // 如果是新會話，重置活躍時間定時器
         if (isNewSession) {
-            if (DEBUG_MODE) console.log('🎨 檢測到新會話，重置活躍時間定時器');
+            if (DEBUG_MODE) console.log('🎨 检测到新會話，重置活躍時間定時器');
             this.resetActiveTimeTimer();
         }
 
@@ -189,10 +189,10 @@
         // 更新狀態徽章
         this.updateStatusBadge(sessionData);
 
-        // 更新時間資訊
+        // 更新時間资讯
         this.updateTimeInfo(sessionData);
 
-        // 更新專案資訊
+        // 更新專案资讯
         this.updateProjectInfo(sessionData);
 
         // 更新摘要
@@ -203,7 +203,7 @@
     };
 
     /**
-     * 更新會話 ID 顯示
+     * 更新會話 ID 显示
      */
     SessionUIRenderer.prototype.updateSessionId = function(sessionData) {
         const sessionIdElement = this.currentSessionCard.querySelector('.session-id');
@@ -231,7 +231,7 @@
     };
 
     /**
-     * 更新時間資訊
+     * 更新時間资讯
      */
     SessionUIRenderer.prototype.updateTimeInfo = function(sessionData) {
         const timeElement = this.currentSessionCard.querySelector('.session-time');
@@ -243,7 +243,7 @@
     };
 
     /**
-     * 更新專案資訊
+     * 更新專案资讯
      */
     SessionUIRenderer.prototype.updateProjectInfo = function(sessionData) {
         const projectElement = this.currentSessionCard.querySelector('.session-project');
@@ -253,12 +253,12 @@
             DOMUtils.safeSetTextContent(projectElement, projectLabel + ': ' + projectDir);
         }
 
-        // 更新頂部狀態列的專案路徑顯示
+        // 更新頂部狀態列的專案路徑显示
         this.updateTopProjectPathDisplay(sessionData);
     };
 
     /**
-     * 更新頂部狀態列的專案路徑顯示
+     * 更新頂部狀態列的專案路徑显示
      */
     SessionUIRenderer.prototype.updateTopProjectPathDisplay = function(sessionData) {
         if (DEBUG_MODE) console.log('🎨 updateProjectPathDisplay 被調用:', sessionData);
@@ -271,9 +271,9 @@
 
             // 使用工具函數截斷路徑
             const pathResult = window.MCPFeedback.Utils.truncatePathFromRight(fullPath, 2, 40);
-            if (DEBUG_MODE) console.log('🎨 路徑處理:', { fullPath, shortPath: pathResult.truncated });
+            if (DEBUG_MODE) console.log('🎨 路徑处理:', { fullPath, shortPath: pathResult.truncated });
 
-            // 更新顯示文字
+            // 更新显示文字
             DOMUtils.safeSetTextContent(projectPathElement, pathResult.truncated);
 
             // 更新完整路徑屬性
@@ -323,12 +323,12 @@
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        // 檢查是否需要調整垂直位置
+        // 检查是否需要調整垂直位置
         if (rect.bottom + 100 > viewportHeight) {
             element.classList.add('tooltip-up');
         }
 
-        // 檢查是否需要調整水平位置
+        // 检查是否需要調整水平位置
         if (rect.left + 200 > viewportWidth) {
             element.classList.add('tooltip-right');
         } else if (rect.left < 200) {
@@ -357,7 +357,7 @@
 
         if (DEBUG_MODE) console.log('🎨 更新會話狀態列:', sessionData);
 
-        // 更新當前會話 ID - 顯示縮短版本，完整ID存在data-full-id中
+        // 更新當前會話 ID - 显示縮短版本，完整ID存在data-full-id中
         const currentSessionElement = document.getElementById('currentSessionId');
         if (currentSessionElement && sessionData.session_id) {
             const shortId = sessionData.session_id.substring(0, 8) + '...';
@@ -395,9 +395,9 @@
 
         const self = this;
 
-        // 檢查數據是否有變化（簡單比較長度）
+        // 检查數據是否有變化（簡單比較長度）
         if (self.lastRenderedData.historyLength === sessionHistory.length) {
-            // 長度沒有變化，跳過渲染（可以進一步優化為深度比較）
+            // 長度沒有變化，跳過渲染（可以進一步优化為深度比較）
             return;
         }
 
@@ -406,14 +406,14 @@
             clearTimeout(self.renderDebounceTimers.history);
         }
 
-        // 設置新的防抖定時器
+        // 设置新的防抖定時器
         self.renderDebounceTimers.history = setTimeout(function() {
             self._performHistoryRender(sessionHistory);
         }, self.renderDebounceDelay);
     };
 
     /**
-     * 執行實際的會話歷史渲染
+     * 执行實際的會話歷史渲染
      */
     SessionUIRenderer.prototype._performHistoryRender = function(sessionHistory) {
         if (DEBUG_MODE) console.log('🎨 渲染會話歷史:', sessionHistory.length, '個會話');
@@ -527,12 +527,12 @@
     };
 
     /**
-     * 創建會話資訊區域
+     * 創建會話资讯區域
      */
     SessionUIRenderer.prototype.createSessionInfo = function(sessionData, isHistory) {
         const info = DOMUtils.createElement('div', { className: 'session-info' });
 
-        // 時間資訊容器
+        // 時間资讯容器
         const timeContainer = DOMUtils.createElement('div', {
             className: 'session-time'
         });
@@ -558,7 +558,7 @@
         timeContainer.appendChild(timeValue);
         info.appendChild(timeContainer);
 
-        // 歷史會話顯示持續時間
+        // 歷史會話显示持續時間
         if (isHistory) {
             const duration = this.calculateDisplayDuration(sessionData);
             
@@ -589,7 +589,7 @@
     };
 
     /**
-     * 計算顯示用的持續時間
+     * 計算显示用的持續時間
      */
     SessionUIRenderer.prototype.calculateDisplayDuration = function(sessionData) {
         if (sessionData.duration && sessionData.duration > 0) {
@@ -615,7 +615,7 @@
             attributes: {
                 'data-i18n': 'sessionManagement.viewDetails'
             },
-            textContent: window.i18nManager ? window.i18nManager.t('sessionManagement.viewDetails') : '詳細資訊'
+            textContent: window.i18nManager ? window.i18nManager.t('sessionManagement.viewDetails') : '詳細资讯'
         });
 
         // 添加查看詳情點擊事件
@@ -653,14 +653,14 @@
     };
 
     /**
-     * 渲染統計資訊（帶防抖機制）
+     * 渲染統計资讯（帶防抖機制）
      */
     SessionUIRenderer.prototype.renderStats = function(stats) {
         if (!stats) return;
 
         const self = this;
 
-        // 檢查數據是否有變化
+        // 检查數據是否有變化
         if (self.lastRenderedData.stats &&
             self.lastRenderedData.stats.todayCount === stats.todayCount &&
             self.lastRenderedData.stats.averageDuration === stats.averageDuration) {
@@ -673,17 +673,17 @@
             clearTimeout(self.renderDebounceTimers.stats);
         }
 
-        // 設置新的防抖定時器
+        // 设置新的防抖定時器
         self.renderDebounceTimers.stats = setTimeout(function() {
             self._performStatsRender(stats);
         }, self.renderDebounceDelay);
     };
 
     /**
-     * 執行實際的統計資訊渲染
+     * 执行實際的統計资讯渲染
      */
     SessionUIRenderer.prototype._performStatsRender = function(stats) {
-        logger.debug('渲染統計資訊:', stats);
+        logger.debug('渲染統計资讯:', stats);
 
         // 更新快取
         this.lastRenderedData.stats = {
@@ -710,7 +710,7 @@
     };
 
     /**
-     * 添加載入動畫
+     * 添加载入動畫
      */
     SessionUIRenderer.prototype.showLoading = function(element) {
         if (element && this.enableAnimations) {
@@ -719,7 +719,7 @@
     };
 
     /**
-     * 移除載入動畫
+     * 移除载入動畫
      */
     SessionUIRenderer.prototype.hideLoading = function(element) {
         if (element && this.enableAnimations) {
@@ -766,7 +766,7 @@
     };
 
     /**
-     * 更新活躍時間顯示
+     * 更新活躍時間显示
      */
     SessionUIRenderer.prototype.updateActiveTime = function() {
         if (!this.currentSessionData || !this.currentSessionData.created_at) {
@@ -812,6 +812,6 @@
     // 將 SessionUIRenderer 加入命名空間
     window.MCPFeedback.Session.UIRenderer = SessionUIRenderer;
 
-    if (DEBUG_MODE) console.log('✅ SessionUIRenderer 模組載入完成');
+    if (DEBUG_MODE) console.log('✅ SessionUIRenderer 模組载入完成');
 
 })();

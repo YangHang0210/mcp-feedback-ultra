@@ -1,6 +1,6 @@
 /**
  * Textarea 高度管理器
- * 負責監聽 textarea 高度變化並持久化設定
+ * 負責監聽 textarea 高度變化並持久化设定
  */
 
 (function() {
@@ -16,7 +16,7 @@
     function TextareaHeightManager(options) {
         options = options || {};
         
-        // 設定管理器實例
+        // 设定管理器實例
         this.settingsManager = options.settingsManager || null;
         
         // 已註冊的 textarea 元素
@@ -40,9 +40,9 @@
     TextareaHeightManager.prototype.initialize = function() {
         console.log('📏 開始初始化 TextareaHeightManager...');
         
-        // 檢查 ResizeObserver 支援
+        // 检查 ResizeObserver 支援
         if (!window.ResizeObserver) {
-            console.warn('📏 瀏覽器不支援 ResizeObserver，將使用備用方案');
+            console.warn('📏 浏览器不支援 ResizeObserver，將使用備用方案');
             this.initializeFallback();
             return;
         }
@@ -74,7 +74,7 @@
     };
 
     /**
-     * 處理 textarea 尺寸變化
+     * 处理 textarea 尺寸變化
      */
     TextareaHeightManager.prototype.handleResize = function(element, config) {
         const self = this;
@@ -85,24 +85,24 @@
             clearTimeout(this.debounceTimers.get(settingKey));
         }
         
-        // 設定新的防抖計時器
+        // 设定新的防抖計時器
         const timer = setTimeout(function() {
             const currentHeight = element.offsetHeight;
             
-            // 檢查高度是否有變化
+            // 检查高度是否有變化
             if (currentHeight !== config.lastHeight) {
                 console.log('📏 偵測到 ' + settingKey + ' 高度變化:', config.lastHeight + 'px → ' + currentHeight + 'px');
                 
-                // 更新記錄的高度
+                // 更新记录的高度
                 config.lastHeight = currentHeight;
                 
-                // 保存到設定
+                // 保存到设定
                 if (self.settingsManager) {
                     self.settingsManager.set(settingKey, currentHeight);
                 }
             }
             
-            // 清除計時器記錄
+            // 清除計時器记录
             self.debounceTimers.delete(settingKey);
         }, this.debounceDelay);
         
@@ -125,7 +125,7 @@
             return false;
         }
         
-        // 載入並應用保存的高度
+        // 载入並應用保存的高度
         this.loadAndApplyHeight(element, settingKey);
         
         // 建立配置物件
@@ -143,16 +143,16 @@
             this.resizeObserver.observe(element);
         }
         
-        console.log('📏 已註冊 textarea:', elementId, '設定鍵:', settingKey);
+        console.log('📏 已註冊 textarea:', elementId, '设定鍵:', settingKey);
         return true;
     };
 
     /**
-     * 載入並應用保存的高度
+     * 载入並應用保存的高度
      */
     TextareaHeightManager.prototype.loadAndApplyHeight = function(element, settingKey) {
         if (!this.settingsManager) {
-            console.warn('📏 沒有設定管理器，無法載入高度設定');
+            console.warn('📏 沒有设定管理器，無法载入高度设定');
             return;
         }
         
@@ -168,7 +168,7 @@
             
             console.log('📏 已恢復 ' + settingKey + ' 高度:', finalHeight + 'px');
         } else {
-            console.log('📏 沒有找到 ' + settingKey + ' 的保存高度，使用預設值');
+            console.log('📏 沒有找到 ' + settingKey + ' 的保存高度，使用预设值');
         }
     };
 
@@ -186,7 +186,7 @@
             }
         }
         
-        // 預設最小高度
+        // 预设最小高度
         return 150;
     };
 
@@ -230,9 +230,9 @@
     TextareaHeightManager.prototype.initializeFallback = function() {
         console.log('📏 使用備用方案初始化...');
         
-        // 備用方案可以使用 MutationObserver 或定期檢查
-        // 這裡先實作基本功能，主要是載入保存的高度
-        console.log('📏 備用方案初始化完成（僅支援載入功能）');
+        // 備用方案可以使用 MutationObserver 或定期检查
+        // 這裡先實作基本功能，主要是载入保存的高度
+        console.log('📏 備用方案初始化完成（僅支援载入功能）');
     };
 
     /**
@@ -253,7 +253,7 @@
             this.resizeObserver = null;
         }
         
-        // 清除註冊記錄
+        // 清除註冊记录
         this.registeredTextareas.clear();
         
         console.log('✅ TextareaHeightManager 銷毀完成');
@@ -262,6 +262,6 @@
     // 將 TextareaHeightManager 加入命名空間
     window.MCPFeedback.TextareaHeightManager = TextareaHeightManager;
 
-    console.log('✅ TextareaHeightManager 模組載入完成');
+    console.log('✅ TextareaHeightManager 模組载入完成');
 
 })();

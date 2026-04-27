@@ -1,5 +1,5 @@
 /**
- * MCP Feedback Enhanced - 訊息代碼常量
+ * MCP Feedback Ultra - 訊息代碼常量
  * ====================================
  * 
  * 定義所有系統訊息的標準代碼，用於國際化支援
@@ -43,7 +43,7 @@
             ERROR_CLEANUP: 'session.errorCleanup'
         },
 
-        // 設定相關訊息
+        // 设定相關訊息
         SETTINGS: {
             SAVED: 'settings.saved',
             LOADED: 'settings.loaded',
@@ -66,7 +66,7 @@
             SOUND_DISABLED: 'notification.soundDisabled'
         },
 
-        // 檔案上傳訊息
+        // 文件上傳訊息
         FILE: {
             UPLOAD_SUCCESS: 'file.uploadSuccess',
             UPLOAD_FAILED: 'file.uploadFailed',
@@ -87,7 +87,7 @@
             VALIDATION_FAILED: 'prompt.validationFailed'
         },
 
-        // 錯誤訊息
+        // 错误訊息
         ERROR: {
             GENERIC: 'error.generic',
             NETWORK: 'error.network',
@@ -97,7 +97,7 @@
             OPERATION_FAILED: 'error.operationFailed'
         },
 
-        // 命令執行訊息
+        // 命令执行訊息
         COMMAND: {
             EXECUTING: 'commandStatus.executing',
             COMPLETED: 'commandStatus.completed',
@@ -143,7 +143,7 @@
     }
 
     /**
-     * 快捷方法：建立錯誤訊息
+     * 快捷方法：建立错误訊息
      */
     function createErrorMessage(code, params = {}) {
         return createMessage(code, params, MessageSeverity.ERROR);
@@ -164,5 +164,5 @@
     window.MCPFeedback.Constants.createErrorMessage = createErrorMessage;
     window.MCPFeedback.Constants.createWarningMessage = createWarningMessage;
 
-    console.log('📋 訊息代碼常量載入完成');
+    console.log('📋 訊息代碼常量载入完成');
 })();

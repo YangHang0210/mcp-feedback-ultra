@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 時間處理工具模組
+ * MCP Feedback Ultra - 時間处理工具模組
  * ========================================
  * 
- * 提供時間格式化、計算和顯示功能
+ * 提供時間格式化、計算和显示功能
  */
 
 (function() {
@@ -25,7 +25,7 @@
             if (!timestamp) return '未知';
 
             try {
-                // 處理時間戳格式（毫秒轉秒）
+                // 处理時間戳格式（毫秒轉秒）
                 let normalizedTimestamp = timestamp;
                 if (timestamp > 1e12) {
                     normalizedTimestamp = timestamp / 1000;
@@ -58,7 +58,7 @@
                 }
             } catch (error) {
                 console.warn('時間格式化失敗:', timestamp, error);
-                return '格式錯誤';
+                return '格式错误';
             }
         },
 
@@ -96,7 +96,7 @@
                 return window.i18nManager.t(`timeUnits.${unit}`, unit);
             }
 
-            // 回退到預設值（繁體中文）
+            // 回退到预设值（繁體中文）
             const fallbackUnits = {
                 'seconds': '秒',
                 'minutes': '分鐘',
@@ -145,7 +145,7 @@
                 }
             } catch (error) {
                 console.warn('相對時間計算失敗:', timestamp, error);
-                return '計算錯誤';
+                return '計算错误';
             }
         },
 
@@ -194,12 +194,12 @@
         },
 
         /**
-         * 檢查時間戳是否有效
+         * 检查時間戳是否有效
          */
         isValidTimestamp: function(timestamp) {
             if (!timestamp || typeof timestamp !== 'number') return false;
             
-            // 檢查是否在合理範圍內（1970年到2100年）
+            // 检查是否在合理範圍內（1970年到2100年）
             const minTimestamp = 0;
             const maxTimestamp = 4102444800; // 2100年1月1日
             
@@ -247,7 +247,7 @@
         },
 
         /**
-         * 格式化倒計時顯示
+         * 格式化倒計時显示
          */
         formatCountdown: function(remainingSeconds) {
             if (remainingSeconds <= 0) return '00:00';
@@ -358,7 +358,7 @@
         },
 
         /**
-         * 格式化自動提交倒計時顯示
+         * 格式化自動提交倒計時显示
          */
         formatAutoSubmitCountdown: function(remainingSeconds) {
             if (remainingSeconds <= 0) return '00:00';
@@ -375,7 +375,7 @@
         },
 
         /**
-         * 檢查時間戳是否是今天
+         * 检查時間戳是否是今天
          */
         isToday: function(timestamp) {
             if (!this.isValidTimestamp(timestamp)) return false;
@@ -435,6 +435,6 @@
     window.MCPFeedback.TimeUtils = TimeUtils;
     window.MCPFeedback.Utils.Time = TimeUtils; // 保持向後相容
 
-    console.log('✅ TimeUtils 模組載入完成');
+    console.log('✅ TimeUtils 模組载入完成');
 
 })();

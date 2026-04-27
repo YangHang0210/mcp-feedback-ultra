@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tooltip 方向測試</title>
+    <title>Tooltip 方向测试</title>
     <style>
         :root {
             --bg-primary: #1e1e1e;
@@ -46,7 +46,7 @@
             align-items: center;
         }
 
-        /* 會話ID顯示樣式 */
+        /* 會話ID显示样式 */
         .session-id-display {
             font-family: 'Consolas', 'Monaco', monospace;
             color: var(--accent-color);
@@ -71,7 +71,7 @@
             transform: scale(0.98);
         }
 
-        /* 會話ID tooltip - 向下顯示 */
+        /* 會話ID tooltip - 向下显示 */
         .session-id-display::after {
             content: attr(data-full-id);
             position: absolute;
@@ -98,7 +98,7 @@
             visibility: visible;
         }
 
-        /* 對比：向上顯示的tooltip */
+        /* 對比：向上显示的tooltip */
         .session-id-display-up {
             font-family: 'Consolas', 'Monaco', monospace;
             color: var(--accent-color);
@@ -175,9 +175,9 @@
 </head>
 <body>
     <div class="test-container">
-        <h1>Tooltip 方向測試</h1>
+        <h1>Tooltip 方向测试</h1>
 
-        <!-- 頂部測試 - 模擬實際使用場景 -->
+        <!-- 頂部测试 - 模擬實際使用場景 -->
         <div class="test-header">
             <span>📋 當前會話:
                 <span class="session-id-display"
@@ -187,37 +187,37 @@
         </div>
 
         <div class="test-section">
-            <h3>測試說明</h3>
+            <h3>测试說明</h3>
             <div class="description">
-                以下是不同位置的tooltip顯示測試。將滑鼠懸停在會話ID上查看tooltip的顯示方向。
+                以下是不同位置的tooltip显示测试。將滑鼠懸停在會話ID上查看tooltip的显示方向。
             </div>
 
             <div class="test-item">
-                <span class="test-label">✅ 新版本 - 向下顯示 (推薦)</span>
+                <span class="test-label">✅ 新版本 - 向下显示 (推薦)</span>
                 <span class="session-id-display"
                       data-full-id="6a674dda-1b98-4f86-824b-afdfd8c581f2">6a674dda...</span>
             </div>
 
             <div class="test-item">
-                <span class="test-label">❌ 舊版本 - 向上顯示 (會超出畫面)</span>
+                <span class="test-label">❌ 舊版本 - 向上显示 (會超出畫面)</span>
                 <span class="session-id-display-up"
                       data-full-id="6a674dda-1b98-4f86-824b-afdfd8c581f2">6a674dda...</span>
             </div>
 
             <div class="status-message">
-                ✅ 新版本的tooltip向下顯示，確保在頁面頂部也能完整看到完整的會話ID
+                ✅ 新版本的tooltip向下显示，確保在頁面頂部也能完整看到完整的會話ID
             </div>
         </div>
 
         <div class="test-section">
             <h3>實際應用場景</h3>
             <div class="description">
-                在實際應用中，會話ID位於頁面頂部的連線狀態欄中。向下顯示tooltip可以確保用戶始終能看到完整的會話ID，而不會被瀏覽器視窗邊界截斷。
+                在實際應用中，會話ID位於頁面頂部的连线狀態欄中。向下显示tooltip可以確保用戶始終能看到完整的會話ID，而不會被浏览器視窗邊界截斷。
             </div>
 
             <div style="text-align: center; margin-top: 20px;">
                 <span style="color: var(--text-secondary);">
-                    💡 提示：將滑鼠懸停在上方頂部區域的會話ID上測試實際效果
+                    💡 提示：將滑鼠懸停在上方頂部區域的會話ID上测试實際效果
                 </span>
             </div>
         </div>

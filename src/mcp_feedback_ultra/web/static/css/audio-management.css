@@ -1,12 +1,12 @@
 /**
- * 音效管理功能樣式
+ * 音效管理功能样式
  * =================
  * 
- * 包含音效通知設定相關的所有 UI 樣式
+ * 包含音效通知设定相關的所有 UI 样式
  * 參考 prompt-management.css 的設計風格
  */
 
-/* ===== 音效管理區塊樣式 ===== */
+/* ===== 音效管理區塊样式 ===== */
 
 /* 音效描述文字 */
 
@@ -19,7 +19,7 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-/* ===== 音效設定控制項樣式 ===== */
+/* ===== 音效设定控制項样式 ===== */
 
 .audio-settings-controls {
     display: flex;
@@ -43,7 +43,7 @@
     cursor: pointer;
 }
 
-/* ===== 開關控制項樣式 ===== */
+/* ===== 開關控制項样式 ===== */
 
 .audio-toggle {
     width: 18px;
@@ -57,7 +57,7 @@
     cursor: not-allowed;
 }
 
-/* ===== 音量控制項樣式 ===== */
+/* ===== 音量控制項样式 ===== */
 
 .audio-volume-control {
     display: flex;
@@ -120,7 +120,7 @@
     text-align: right;
 }
 
-/* ===== 音效選擇控制項樣式 ===== */
+/* ===== 音效选择控制項样式 ===== */
 
 .audio-select-control {
     display: flex;
@@ -157,7 +157,7 @@
     white-space: nowrap;
 }
 
-/* ===== 檔案上傳控制項樣式 ===== */
+/* ===== 文件上傳控制項样式 ===== */
 
 .audio-upload-control {
     display: flex;
@@ -180,7 +180,7 @@
     font-style: italic;
 }
 
-/* ===== 自訂音效列表樣式 ===== */
+/* ===== 自訂音效列表样式 ===== */
 
 .audio-custom-list {
     display: flex;
@@ -237,7 +237,7 @@
     border-radius: 4px;
 }
 
-/* 覆蓋 Bootstrap btn-danger 的預設樣式，使其符合深色主題 */
+/* 覆蓋 Bootstrap btn-danger 的预设样式，使其符合深色主題 */
 .audio-delete-btn.btn-danger {
     background: var(--bg-secondary);
     color: var(--text-primary);
@@ -257,7 +257,7 @@
     color: white;
 }
 
-/* ===== 空狀態樣式 ===== */
+/* ===== 空狀態样式 ===== */
 
 .audio-empty-state {
     text-align: center;
@@ -336,7 +336,7 @@
     outline-offset: 2px;
 }
 
-/* ===== 禁用狀態樣式 ===== */
+/* ===== 禁用狀態样式 ===== */
 
 .audio-setting-item.disabled {
     opacity: 0.6;
@@ -346,7 +346,7 @@
     color: var(--text-secondary);
 }
 
-/* ===== 載入狀態樣式 ===== */
+/* ===== 载入狀態样式 ===== */
 
 .audio-upload-btn:disabled {
     opacity: 0.7;
@@ -376,7 +376,7 @@
     100% { transform: rotate(360deg); }
 }
 
-/* ===== 成功/錯誤狀態樣式 ===== */
+/* ===== 成功/错误狀態样式 ===== */
 
 .audio-setting-item.success {
     border-left: 4px solid var(--success-color);
@@ -388,7 +388,7 @@
     background: rgba(244, 67, 54, 0.05);
 }
 
-/* ===== 音效名稱輸入模態框樣式 ===== */
+/* ===== 音效名稱輸入模態框样式 ===== */
 
 .audio-name-modal-overlay {
     position: fixed;

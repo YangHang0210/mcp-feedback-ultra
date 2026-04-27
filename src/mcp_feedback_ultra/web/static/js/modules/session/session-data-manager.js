@@ -1,5 +1,5 @@
 /**
- * MCP Feedback Enhanced - 會話數據管理模組
+ * MCP Feedback Ultra - 會話數據管理模組
  * ========================================
  * 
  * 負責會話數據的存儲、更新和狀態管理
@@ -32,7 +32,7 @@
             averageDuration: 0
         };
 
-        // 設定管理器
+        // 设定管理器
         this.settingsManager = options.settingsManager || null;
 
         // 回調函數
@@ -41,8 +41,8 @@
         this.onStatsChange = options.onStatsChange || null;
         this.onDataChanged = options.onDataChanged || null;
 
-        // 初始化：載入歷史記錄並清理過期資料
-        // 注意：loadFromServer 是異步的，會在載入完成後自動觸發更新
+        // 初始化：载入歷史记录並清理過期资料
+        // 注意：loadFromServer 是異步的，會在载入完成後自動觸發更新
         this.loadFromServer();
 
         console.log('📊 SessionDataManager 初始化完成');
@@ -55,18 +55,18 @@
         console.log('📊 更新當前會話:', sessionData);
 
         if (this.currentSession && this.currentSession.session_id === sessionData.session_id) {
-            // 合併數據，保留重要資訊
+            // 合併數據，保留重要资讯
             this.currentSession = this.mergeSessionData(this.currentSession, sessionData);
         } else {
-            // 新會話或不同會話 ID - 需要處理舊會話
+            // 新會話或不同會話 ID - 需要处理舊會話
             if (this.currentSession && this.currentSession.session_id) {
-                console.log('📊 檢測到會話 ID 變更，處理舊會話:', this.currentSession.session_id, '->', sessionData.session_id);
+                console.log('📊 检测到會話 ID 變更，处理舊會話:', this.currentSession.session_id, '->', sessionData.session_id);
 
-                // 將舊會話加入歷史記錄，保持其原有狀態
+                // 將舊會話加入歷史记录，保持其原有狀態
                 const oldSession = Object.assign({}, this.currentSession);
 
                 // 完全保持舊會話的原有狀態，不做任何修改
-                // 讓服務器端負責狀態轉換，前端只負責顯示
+                // 讓服務器端負責狀態轉換，前端只負責显示
                 console.log('📊 保持舊會話的原有狀態:', oldSession.status);
 
                 oldSession.completed_at = TimeUtils.getCurrentTimestamp();
@@ -76,11 +76,11 @@
                     oldSession.duration = oldSession.completed_at - oldSession.created_at;
                 }
 
-                console.log('📊 將舊會話加入歷史記錄:', oldSession);
+                console.log('📊 將舊會話加入歷史记录:', oldSession);
                 this.addSessionToHistory(oldSession);
             }
 
-            // 設置新會話
+            // 设置新會話
             this.currentSession = this.normalizeSessionData(sessionData);
         }
 
@@ -139,10 +139,10 @@
     };
 
     /**
-     * 更新狀態資訊
+     * 更新狀態资讯
      */
     SessionDataManager.prototype.updateStatusInfo = function(statusInfo) {
-        console.log('📊 更新狀態資訊:', statusInfo);
+        console.log('📊 更新狀態资讯:', statusInfo);
 
         this.lastStatusUpdate = statusInfo;
 
@@ -155,7 +155,7 @@
                 summary: statusInfo.summary || this.getAISummary()
             };
 
-            // 檢查會話是否完成
+            // 检查會話是否完成
             if (StatusUtils.isCompletedStatus(statusInfo.status)) {
                 this.handleSessionCompleted(sessionData);
             } else {
@@ -165,10 +165,10 @@
     };
 
     /**
-     * 處理會話完成
+     * 处理會話完成
      */
     SessionDataManager.prototype.handleSessionCompleted = function(sessionData) {
-        console.log('📊 處理會話完成:', sessionData);
+        console.log('📊 处理會話完成:', sessionData);
 
         // 優先使用用戶最後互動時間作為完成時間
         if (this.currentSession &&
@@ -194,7 +194,7 @@
             console.log('📊 會話完成時包含', sessionData.user_messages.length, '條用戶訊息');
         }
 
-        // 將完成的會話加入歷史記錄
+        // 將完成的會話加入歷史记录
         this.addSessionToHistory(sessionData);
 
         // 如果是當前會話完成，保持引用但標記為完成
@@ -207,12 +207,12 @@
     };
 
     /**
-     * 新增會話到歷史記錄
+     * 新增會話到歷史记录
      */
     SessionDataManager.prototype.addSessionToHistory = function(sessionData) {
-        console.log('📊 新增會話到歷史記錄:', sessionData);
+        console.log('📊 新增會話到歷史记录:', sessionData);
 
-        // 只有已完成的會話才加入歷史記錄
+        // 只有已完成的會話才加入歷史记录
         if (!StatusUtils.isCompletedStatus(sessionData.status)) {
             console.log('📊 跳過未完成的會話:', sessionData.session_id);
             return false;
@@ -229,7 +229,7 @@
         // 避免重複新增
         const existingIndex = this.sessionHistory.findIndex(s => s.session_id === sessionData.session_id);
         if (existingIndex !== -1) {
-            // 合併用戶訊息記錄
+            // 合併用戶訊息记录
             const existingSession = this.sessionHistory[existingIndex];
             if (existingSession.user_messages && sessionData.user_messages) {
                 sessionData.user_messages = this.mergeUserMessages(existingSession.user_messages, sessionData.user_messages);
@@ -239,7 +239,7 @@
             this.sessionHistory.unshift(sessionData);
         }
 
-        // 限制歷史記錄數量
+        // 限制歷史记录數量
         if (this.sessionHistory.length > 10) {
             this.sessionHistory = this.sessionHistory.slice(0, 10);
         }
@@ -258,7 +258,7 @@
     };
 
     /**
-     * 合併用戶訊息記錄
+     * 合併用戶訊息记录
      */
     SessionDataManager.prototype.mergeUserMessages = function(existingMessages, newMessages) {
         const merged = existingMessages.slice(); // 複製現有訊息
@@ -287,15 +287,15 @@
     SessionDataManager.prototype.addUserMessage = function(messageData) {
         console.log('📊 新增用戶訊息:', messageData);
 
-        // 檢查隱私設定
+        // 检查隱私设定
         if (!this.isUserMessageRecordingEnabled()) {
-            console.log('📊 用戶訊息記錄已停用，跳過記錄');
+            console.log('📊 用戶訊息记录已停用，跳過记录');
             return false;
         }
 
-        // 檢查是否有當前會話
+        // 检查是否有當前會話
         if (!this.currentSession || !this.currentSession.session_id) {
-            console.warn('📊 沒有當前會話，無法記錄用戶訊息');
+            console.warn('📊 沒有當前會話，無法记录用戶訊息');
             return false;
         }
 
@@ -304,13 +304,13 @@
             this.currentSession.user_messages = [];
         }
 
-        // 建立用戶訊息記錄
+        // 建立用戶訊息记录
         const userMessage = this.createUserMessageRecord(messageData);
 
         // 新增到當前會話
         this.currentSession.user_messages.push(userMessage);
 
-        // 記錄用戶最後互動時間
+        // 记录用戶最後互動時間
         this.currentSession.last_user_interaction = TimeUtils.getCurrentTimestamp();
 
         // 發送用戶消息到服務器端
@@ -319,7 +319,7 @@
         // 立即保存當前會話到伺服器
         this.saveCurrentSessionToServer();
 
-        console.log('📊 用戶訊息已記錄到當前會話:', this.currentSession.session_id);
+        console.log('📊 用戶訊息已记录到當前會話:', this.currentSession.session_id);
         return true;
     };
 
@@ -348,7 +348,7 @@
     };
 
     /**
-     * 建立用戶訊息記錄
+     * 建立用戶訊息记录
      */
     SessionDataManager.prototype.createUserMessageRecord = function(messageData) {
         const timestamp = TimeUtils.getCurrentTimestamp();
@@ -360,7 +360,7 @@
             type: 'feedback'
         };
 
-        // 根據隱私等級決定記錄內容
+        // 根據隱私等級決定记录內容
         if (privacyLevel === 'full') {
             record.content = messageData.content || '';
             record.images = this.processImageDataForRecord(messageData.images || []);
@@ -369,7 +369,7 @@
             record.image_count = (messageData.images || []).length;
             record.has_content = !!(messageData.content && messageData.content.trim());
         } else if (privacyLevel === 'disabled') {
-            // 停用記錄時，只記錄最基本的時間戳記和提交方式
+            // 停用记录時，只记录最基本的時間戳記和提交方式
             record.privacy_note = 'Content recording disabled by user privacy settings';
         }
 
@@ -377,7 +377,7 @@
     };
 
     /**
-     * 處理圖片資料用於記錄
+     * 处理圖片资料用於记录
      */
     SessionDataManager.prototype.processImageDataForRecord = function(images) {
         if (!Array.isArray(images)) {
@@ -394,20 +394,20 @@
     };
 
     /**
-     * 檢查是否啟用用戶訊息記錄
+     * 检查是否啟用用戶訊息记录
      */
     SessionDataManager.prototype.isUserMessageRecordingEnabled = function() {
         if (!this.settingsManager) {
-            return true; // 預設啟用
+            return true; // 预设啟用
         }
 
-        // 檢查總開關
+        // 检查總開關
         const recordingEnabled = this.settingsManager.get('userMessageRecordingEnabled', true);
         if (!recordingEnabled) {
             return false;
         }
 
-        // 檢查隱私等級（disabled 等級視為停用記錄）
+        // 检查隱私等級（disabled 等級視為停用记录）
         const privacyLevel = this.settingsManager.get('userMessagePrivacyLevel', 'full');
         return privacyLevel !== 'disabled';
     };
@@ -417,16 +417,16 @@
      */
     SessionDataManager.prototype.getUserMessagePrivacyLevel = function() {
         if (!this.settingsManager) {
-            return 'full'; // 預設完整記錄
+            return 'full'; // 预设完整记录
         }
         return this.settingsManager.get('userMessagePrivacyLevel', 'full');
     };
 
     /**
-     * 清空所有會話的用戶訊息記錄
+     * 清空所有會話的用戶訊息记录
      */
     SessionDataManager.prototype.clearAllUserMessages = function() {
-        console.log('📊 清空所有會話的用戶訊息記錄...');
+        console.log('📊 清空所有會話的用戶訊息记录...');
 
         // 清空當前會話的用戶訊息
         if (this.currentSession && this.currentSession.user_messages) {
@@ -443,15 +443,15 @@
         // 保存到伺服器端
         this.saveToServer();
 
-        console.log('📊 所有用戶訊息記錄已清空');
+        console.log('📊 所有用戶訊息记录已清空');
         return true;
     };
 
     /**
-     * 清空指定會話的用戶訊息記錄
+     * 清空指定會話的用戶訊息记录
      */
     SessionDataManager.prototype.clearSessionUserMessages = function(sessionId) {
-        console.log('📊 清空會話用戶訊息記錄:', sessionId);
+        console.log('📊 清空會話用戶訊息记录:', sessionId);
 
         // 查找並清空指定會話的用戶訊息
         const session = this.sessionHistory.find(function(s) {
@@ -461,11 +461,11 @@
         if (session && session.user_messages) {
             session.user_messages = [];
             this.saveToServer();
-            console.log('📊 會話用戶訊息記錄已清空:', sessionId);
+            console.log('📊 會話用戶訊息记录已清空:', sessionId);
             return true;
         }
 
-        console.warn('📊 找不到指定會話或該會話沒有用戶訊息記錄:', sessionId);
+        console.warn('📊 找不到指定會話或該會話沒有用戶訊息记录:', sessionId);
         return false;
     };
 
@@ -487,16 +487,16 @@
      * 根據 ID 查找會話（包含完整的用戶消息數據）
      */
     SessionDataManager.prototype.findSessionById = function(sessionId) {
-        // 先檢查當前會話
+        // 先检查當前會話
         if (this.currentSession && this.currentSession.session_id === sessionId) {
             console.log('📊 從當前會話獲取數據:', sessionId, '用戶消息數量:', this.currentSession.user_messages ? this.currentSession.user_messages.length : 0);
             return this.currentSession;
         }
 
-        // 再檢查歷史記錄
+        // 再检查歷史记录
         const historySession = this.sessionHistory.find(s => s.session_id === sessionId);
         if (historySession) {
-            console.log('📊 從歷史記錄獲取數據:', sessionId, '用戶消息數量:', historySession.user_messages ? historySession.user_messages.length : 0);
+            console.log('📊 從歷史记录獲取數據:', sessionId, '用戶消息數量:', historySession.user_messages ? historySession.user_messages.length : 0);
             return historySession;
         }
 
@@ -505,7 +505,7 @@
     };
 
     /**
-     * 更新統計資訊
+     * 更新統計资讯
      */
     SessionDataManager.prototype.updateStats = function() {
         // 計算今日會話數
@@ -539,7 +539,7 @@
     };
 
     /**
-     * 獲取統計資訊
+     * 獲取統計资讯
      */
     SessionDataManager.prototype.getStats = function() {
         return Object.assign({}, this.sessionStats);
@@ -556,12 +556,12 @@
     };
 
     /**
-     * 清空歷史記錄
+     * 清空歷史记录
      */
     SessionDataManager.prototype.clearHistory = function() {
         this.sessionHistory = [];
 
-        // 清空伺服器端資料
+        // 清空伺服器端资料
         this.clearServerData();
 
         this.updateStats();
@@ -588,7 +588,7 @@
                     return result;
                 }
             } catch (error) {
-                // 忽略錯誤，繼續嘗試下一個來源
+                // 忽略错误，繼續嘗試下一個來源
             }
         }
 
@@ -604,7 +604,7 @@
             () => {
                 const element = document.querySelector('.session-summary');
                 const text = element?.textContent;
-                return text && text !== 'AI 摘要: 載入中...' ? text.replace('AI 摘要: ', '') : null;
+                return text && text !== 'AI 摘要: 载入中...' ? text.replace('AI 摘要: ', '') : null;
             },
             () => {
                 const element = document.querySelector('#combinedSummaryContent');
@@ -620,7 +620,7 @@
                     return result;
                 }
             } catch (error) {
-                // 忽略錯誤，繼續嘗試下一個來源
+                // 忽略错误，繼續嘗試下一個來源
             }
         }
 
@@ -628,7 +628,7 @@
     };
 
     /**
-     * 從伺服器載入會話歷史（包含實時狀態）
+     * 從伺服器载入會話歷史（包含實時狀態）
      */
     SessionDataManager.prototype.loadFromServer = function() {
         const self = this;
@@ -647,23 +647,23 @@
                 if (data && Array.isArray(data.sessions)) {
                     // 使用實時會話狀態
                     self.sessionHistory = data.sessions;
-                    console.log('📊 從伺服器載入', self.sessionHistory.length, '個實時會話狀態');
+                    console.log('📊 從伺服器载入', self.sessionHistory.length, '個實時會話狀態');
 
-                    // 載入完成後進行清理和統計更新
+                    // 载入完成後進行清理和統計更新
                     self.cleanupExpiredSessions();
                     self.updateStats();
 
-                    // 觸發歷史記錄變更回調
+                    // 觸發歷史记录變更回調
                     if (self.onHistoryChange) {
                         self.onHistoryChange(self.sessionHistory);
                     }
 
-                    // 觸發資料變更回調
+                    // 觸發资料變更回調
                     if (self.onDataChanged) {
                         self.onDataChanged();
                     }
                 } else {
-                    console.warn('📊 實時會話狀態回應格式錯誤，回退到歷史文件');
+                    console.warn('📊 實時會話狀態回應格式错误，回退到歷史文件');
                     self.loadFromHistoryFile();
                 }
             })
@@ -674,7 +674,7 @@
     };
 
     /**
-     * 從歷史文件載入會話數據（備用方案）
+     * 從歷史文件载入會話數據（備用方案）
      */
     SessionDataManager.prototype.loadFromHistoryFile = function() {
         const self = this;
@@ -685,29 +685,29 @@
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('伺服器回應錯誤: ' + response.status);
+                    throw new Error('伺服器回應错误: ' + response.status);
                 }
             })
             .then(function(data) {
                 if (data && Array.isArray(data.sessions)) {
                     self.sessionHistory = data.sessions;
-                    console.log('📊 從歷史文件載入', self.sessionHistory.length, '個會話');
+                    console.log('📊 從歷史文件载入', self.sessionHistory.length, '個會話');
 
-                    // 載入完成後進行清理和統計更新
+                    // 载入完成後進行清理和統計更新
                     self.cleanupExpiredSessions();
                     self.updateStats();
 
-                    // 觸發歷史記錄變更回調
+                    // 觸發歷史记录變更回調
                     if (self.onHistoryChange) {
                         self.onHistoryChange(self.sessionHistory);
                     }
 
-                    // 觸發資料變更回調
+                    // 觸發资料變更回調
                     if (self.onDataChanged) {
                         self.onDataChanged();
                     }
                 } else {
-                    console.warn('📊 歷史文件回應格式錯誤:', data);
+                    console.warn('📊 歷史文件回應格式错误:', data);
                     self.sessionHistory = [];
                     self.updateStats();
 
@@ -721,7 +721,7 @@
                 }
             })
             .catch(function(error) {
-                console.warn('📊 從歷史文件載入失敗:', error);
+                console.warn('📊 從歷史文件载入失敗:', error);
                 self.sessionHistory = [];
                 self.updateStats();
 
@@ -749,7 +749,7 @@
         // 建立當前會話的快照（包含用戶訊息）
         const sessionSnapshot = Object.assign({}, this.currentSession);
 
-        // 確保快照包含在歷史記錄中（用於即時保存）
+        // 確保快照包含在歷史记录中（用於即時保存）
         const updatedHistory = this.sessionHistory.slice();
         const existingIndex = updatedHistory.findIndex(s => s.session_id === sessionSnapshot.session_id);
 
@@ -761,11 +761,11 @@
             }
             updatedHistory[existingIndex] = sessionSnapshot;
         } else {
-            // 新增會話快照到歷史記錄開頭
+            // 新增會話快照到歷史记录開頭
             updatedHistory.unshift(sessionSnapshot);
         }
 
-        // 保存包含當前會話的歷史記錄
+        // 保存包含當前會話的歷史记录
         this.saveSessionSnapshot(updatedHistory);
     };
 
@@ -791,7 +791,7 @@
                 console.log('📊 已保存會話快照到伺服器，包含', data.sessions.length, '個會話');
                 return response.json();
             } else {
-                throw new Error('伺服器回應錯誤: ' + response.status);
+                throw new Error('伺服器回應错误: ' + response.status);
             }
         })
         .then(function(result) {
@@ -829,7 +829,7 @@
                 console.log('📊 已保存', data.sessions.length, '個會話到伺服器');
                 return response.json();
             } else {
-                throw new Error('伺服器回應錯誤: ' + response.status);
+                throw new Error('伺服器回應错误: ' + response.status);
             }
         })
         .then(function(result) {
@@ -865,7 +865,7 @@
             if (response.ok) {
                 console.log('📊 已清空伺服器端的會話歷史');
             } else {
-                throw new Error('伺服器回應錯誤: ' + response.status);
+                throw new Error('伺服器回應错误: ' + response.status);
             }
         })
         .catch(function(error) {
@@ -901,7 +901,7 @@
     };
 
     /**
-     * 檢查會話是否過期
+     * 检查會話是否過期
      */
     SessionDataManager.prototype.isSessionExpired = function(session) {
         if (!this.settingsManager) {
@@ -936,7 +936,7 @@
                     saved_at: session.saved_at
                 };
 
-                // 包含用戶訊息記錄（如果存在且允許匯出）
+                // 包含用戶訊息记录（如果存在且允許匯出）
                 if (session.user_messages && self.isUserMessageRecordingEnabled()) {
                     sessionData.user_messages = session.user_messages;
                     sessionData.user_message_count = session.user_messages.length;
@@ -977,7 +977,7 @@
             saved_at: session.saved_at
         };
 
-        // 包含用戶訊息記錄（如果存在且允許匯出）
+        // 包含用戶訊息记录（如果存在且允許匯出）
         if (session.user_messages && this.isUserMessageRecordingEnabled()) {
             sessionData.user_messages = session.user_messages;
             sessionData.user_message_count = session.user_messages.length;
@@ -997,7 +997,7 @@
     };
 
     /**
-     * 下載 JSON 檔案
+     * 下載 JSON 文件
      */
     SessionDataManager.prototype.downloadJSON = function(data, filename) {
         try {
@@ -1013,7 +1013,7 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         } catch (error) {
-            console.error('📊 下載檔案失敗:', error);
+            console.error('📊 下載文件失敗:', error);
         }
     };
 
@@ -1035,6 +1035,6 @@
     // 將 SessionDataManager 加入命名空間
     window.MCPFeedback.Session.DataManager = SessionDataManager;
 
-    console.log('✅ SessionDataManager 模組載入完成');
+    console.log('✅ SessionDataManager 模組载入完成');
 
 })();

@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 音效設定 UI 模組
+ * MCP Feedback Ultra - 音效设定 UI 模組
  * ======================================
  * 
- * 處理音效通知設定的使用者介面
+ * 处理音效通知设定的使用者介面
  * 參考 prompt-settings-ui.js 的設計模式
  */
 
@@ -14,7 +14,7 @@
     const Utils = window.MCPFeedback.Utils;
 
     /**
-     * 音效設定 UI 建構函數
+     * 音效设定 UI 建構函數
      */
     function AudioSettingsUI(options) {
         options = options || {};
@@ -46,12 +46,12 @@
      */
     AudioSettingsUI.prototype.initialize = function() {
         if (!this.container) {
-            console.error('❌ AudioSettingsUI 容器未設定');
+            console.error('❌ AudioSettingsUI 容器未设定');
             return;
         }
 
         if (!this.audioManager) {
-            console.error('❌ AudioManager 未設定');
+            console.error('❌ AudioManager 未设定');
             return;
         }
 
@@ -73,12 +73,12 @@
             <div class="settings-card">
                 <div class="settings-card-header">
                     <h3 class="settings-card-title" data-i18n="audio.notification.title">
-                        🔊 音效通知設定
+                        🔊 音效通知设定
                     </h3>
                 </div>
                 <div class="settings-card-body">
                     <div class="audio-management-description" data-i18n="audio.notification.description">
-                        設定會話更新時的音效通知
+                        设定會話更新時的音效通知
                     </div>
                     
                     <div class="audio-settings-controls">
@@ -105,15 +105,15 @@
                         </div>
                     </div>
                     
-                    <!-- 音效選擇 -->
+                    <!-- 音效选择 -->
                     <div class="audio-setting-item">
-                        <label class="audio-setting-label" data-i18n="audio.notification.selectAudio">選擇音效</label>
+                        <label class="audio-setting-label" data-i18n="audio.notification.selectAudio">选择音效</label>
                         <div class="audio-select-control">
                             <select id="audioSelect" class="audio-select">
                                 <!-- 選項將動態生成 -->
                             </select>
                             <button type="button" id="audioTestButton" class="btn btn-secondary audio-test-btn">
-                                <span data-i18n="audio.notification.testPlay">測試播放</span>
+                                <span data-i18n="audio.notification.testPlay">测试播放</span>
                             </button>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                             <input type="file" id="audioUploadInput" class="audio-upload-input" 
                                    accept="audio/mp3,audio/wav,audio/ogg" style="display: none;">
                             <button type="button" id="audioUploadButton" class="btn btn-primary audio-upload-btn">
-                                📁 <span data-i18n="audio.notification.chooseFile">選擇檔案</span>
+                                📁 <span data-i18n="audio.notification.chooseFile">选择文件</span>
                             </button>
                             <span class="audio-upload-hint" data-i18n="audio.notification.supportedFormats">
                                 支援 MP3、WAV、OGG 格式
@@ -159,7 +159,7 @@
     };
 
     /**
-     * 設置事件監聽器
+     * 设置事件監聽器
      */
     AudioSettingsUI.prototype.setupEventListeners = function() {
         const self = this;
@@ -179,14 +179,14 @@
             });
         }
 
-        // 音效選擇事件
+        // 音效选择事件
         if (this.audioSelect) {
             this.audioSelect.addEventListener('change', function(e) {
                 self.handleAudioSelect(e.target.value);
             });
         }
 
-        // 測試播放事件
+        // 测试播放事件
         if (this.testButton) {
             this.testButton.addEventListener('click', function() {
                 self.handleTestPlay();
@@ -200,17 +200,17 @@
             });
         }
 
-        // 檔案上傳事件
+        // 文件上傳事件
         if (this.uploadInput) {
             this.uploadInput.addEventListener('change', function(e) {
                 self.handleFileUpload(e.target.files[0]);
             });
         }
 
-        // 設置音效管理器回調
+        // 设置音效管理器回調
         if (this.audioManager) {
             this.audioManager.onSettingsChange = function(settings) {
-                console.log('🎨 音效設定變更，重新渲染 UI');
+                console.log('🎨 音效设定變更，重新渲染 UI');
                 self.refreshUI();
             };
         }
@@ -219,15 +219,15 @@
     };
 
     /**
-     * 處理啟用狀態變更
+     * 处理啟用狀態變更
      */
     AudioSettingsUI.prototype.handleEnabledChange = function(enabled) {
         try {
             this.audioManager.setEnabled(enabled);
             this.updateControlsState();
-            this.showSuccess(this.t('audio.notification.enabledChanged', '音效通知設定已更新'));
+            this.showSuccess(this.t('audio.notification.enabledChanged', '音效通知设定已更新'));
         } catch (error) {
-            console.error('❌ 設定啟用狀態失敗:', error);
+            console.error('❌ 设定啟用狀態失敗:', error);
             this.showError(error.message);
             // 恢復原狀態
             this.enabledToggle.classList.toggle('active', this.audioManager.getSettings().enabled);
@@ -235,35 +235,35 @@
     };
 
     /**
-     * 處理音量變更
+     * 处理音量變更
      */
     AudioSettingsUI.prototype.handleVolumeChange = function(volume) {
         try {
             this.audioManager.setVolume(volume);
             this.volumeValue.textContent = volume + '%';
         } catch (error) {
-            console.error('❌ 設定音量失敗:', error);
+            console.error('❌ 设定音量失敗:', error);
             this.showError(error.message);
         }
     };
 
     /**
-     * 處理音效選擇
+     * 处理音效选择
      */
     AudioSettingsUI.prototype.handleAudioSelect = function(audioId) {
         try {
             this.audioManager.setSelectedAudio(audioId);
-            this.showSuccess(this.t('audio.notification.audioSelected', '音效已選擇'));
+            this.showSuccess(this.t('audio.notification.audioSelected', '音效已选择'));
         } catch (error) {
-            console.error('❌ 選擇音效失敗:', error);
+            console.error('❌ 选择音效失敗:', error);
             this.showError(error.message);
-            // 恢復原選擇
+            // 恢復原选择
             this.audioSelect.value = this.audioManager.getSettings().selectedAudioId;
         }
     };
 
     /**
-     * 處理測試播放
+     * 处理测试播放
      */
     AudioSettingsUI.prototype.handleTestPlay = function() {
         try {
@@ -272,33 +272,33 @@
             
             if (audioData) {
                 this.audioManager.playAudio(audioData);
-                this.showSuccess(this.t('audio.notification.testPlaying', '正在播放測試音效'));
+                this.showSuccess(this.t('audio.notification.testPlaying', '正在播放测试音效'));
             } else {
-                this.showError(this.t('audio.notification.audioNotFound', '找不到選擇的音效'));
+                this.showError(this.t('audio.notification.audioNotFound', '找不到选择的音效'));
             }
         } catch (error) {
-            console.error('❌ 測試播放失敗:', error);
+            console.error('❌ 测试播放失敗:', error);
             this.showError(error.message);
         }
     };
 
     /**
-     * 處理檔案上傳
+     * 处理文件上傳
      */
     AudioSettingsUI.prototype.handleFileUpload = function(file) {
         if (!file) return;
 
-        // 生成預設檔案名稱（去除副檔名）
+        // 生成预设文件名稱（去除副檔名）
         const defaultName = file.name.replace(/\.[^/.]+$/, '');
 
-        // 顯示美觀的名稱輸入模態框
+        // 显示美觀的名稱輸入模態框
         this.showAudioNameModal(defaultName, (audioName) => {
             if (!audioName || !audioName.trim()) {
                 this.showError(this.t('audio.notification.nameRequired', '音效名稱不能為空'));
                 return;
             }
 
-            // 顯示上傳中狀態
+            // 显示上傳中狀態
             this.uploadButton.disabled = true;
             this.uploadButton.innerHTML = '⏳ <span data-i18n="audio.notification.uploading">上傳中...</span>';
 
@@ -307,7 +307,7 @@
                     this.showSuccess(this.t('audio.notification.uploadSuccess', '音效上傳成功: ') + audioData.name);
                     this.refreshAudioSelect();
                     this.refreshCustomAudioList();
-                    // 清空檔案輸入
+                    // 清空文件輸入
                     this.uploadInput.value = '';
                 })
                 .catch(error => {
@@ -317,13 +317,13 @@
                 .finally(() => {
                     // 恢復按鈕狀態
                     this.uploadButton.disabled = false;
-                    this.uploadButton.innerHTML = '📁 <span data-i18n="audio.notification.chooseFile">選擇檔案</span>';
+                    this.uploadButton.innerHTML = '📁 <span data-i18n="audio.notification.chooseFile">选择文件</span>';
                 });
         });
     };
 
     /**
-     * 處理刪除自訂音效
+     * 处理刪除自訂音效
      */
     AudioSettingsUI.prototype.handleDeleteCustomAudio = function(audioId) {
         const audioData = this.audioManager.getAudioById(audioId);
@@ -362,7 +362,7 @@
             this.volumeValue.textContent = settings.volume + '%';
         }
         
-        // 更新音效選擇
+        // 更新音效选择
         this.refreshAudioSelect();
         
         // 更新自訂音效列表
@@ -373,7 +373,7 @@
     };
 
     /**
-     * 刷新音效選擇下拉選單
+     * 刷新音效选择下拉選單
      */
     AudioSettingsUI.prototype.refreshAudioSelect = function() {
         if (!this.audioSelect) return;
@@ -392,17 +392,17 @@
             // 使用翻譯後的名稱
             let displayName = audio.name;
             if (audio.isDefault) {
-                // 為預設音效提供翻譯
+                // 為预设音效提供翻譯
                 const translationKey = this.getDefaultAudioTranslationKey(audio.id);
                 if (translationKey) {
                     displayName = this.t(translationKey, audio.name);
                 }
-                displayName += ' (' + this.t('audio.notification.default', '預設') + ')';
+                displayName += ' (' + this.t('audio.notification.default', '预设') + ')';
             }
 
             option.textContent = displayName;
 
-            // 為預設音效選項新增 data-i18n 屬性，以便語言切換時自動更新
+            // 為预设音效選項新增 data-i18n 屬性，以便語言切換時自動更新
             if (audio.isDefault) {
                 const translationKey = this.getDefaultAudioTranslationKey(audio.id);
                 if (translationKey) {
@@ -476,7 +476,7 @@
     };
 
     /**
-     * 設置自訂音效項目事件
+     * 设置自訂音效項目事件
      */
     AudioSettingsUI.prototype.setupCustomAudioEvents = function() {
         const self = this;
@@ -525,7 +525,7 @@
     };
 
     /**
-     * 顯示成功訊息
+     * 显示成功訊息
      */
     AudioSettingsUI.prototype.showSuccess = function(message) {
         if (Utils && Utils.showMessage) {
@@ -536,7 +536,7 @@
     };
 
     /**
-     * 顯示錯誤訊息
+     * 显示错误訊息
      */
     AudioSettingsUI.prototype.showError = function(message) {
         if (Utils && Utils.showMessage) {
@@ -547,7 +547,7 @@
     };
 
     /**
-     * 顯示音效名稱輸入模態框
+     * 显示音效名稱輸入模態框
      */
     AudioSettingsUI.prototype.showAudioNameModal = function(defaultName, onConfirm) {
         const self = this;
@@ -567,7 +567,7 @@
                                placeholder="${this.t('audio.notification.audioNamePlaceholder', '請輸入音效名稱...')}"
                                maxlength="50">
                         <div class="audio-name-hint" data-i18n="audio.notification.audioNameHint">
-                            留空將使用預設檔案名稱
+                            留空將使用预设文件名稱
                         </div>
                     </div>
                     <div class="audio-name-modal-footer">
@@ -598,14 +598,14 @@
             input.select();
         }, 100);
 
-        // 關閉模態框函數
+        // 关闭模態框函數
         const closeModal = () => {
             if (overlay && overlay.parentNode) {
                 overlay.parentNode.removeChild(overlay);
             }
         };
 
-        // 確認函數
+        // 确认函數
         const confirm = () => {
             const audioName = input.value.trim() || defaultName;
             closeModal();
@@ -619,14 +619,14 @@
         cancelBtn.addEventListener('click', closeModal);
         confirmBtn.addEventListener('click', confirm);
 
-        // 點擊遮罩關閉
+        // 點擊遮罩关闭
         overlay.addEventListener('click', function(e) {
             if (e.target === overlay) {
                 closeModal();
             }
         });
 
-        // Enter 鍵確認，Escape 鍵取消
+        // Enter 鍵确认，Escape 鍵取消
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -686,14 +686,14 @@
         // 更新所有靜態文字元素
         this.applyInitialTranslations();
 
-        // 更新音效選擇器的翻譯
+        // 更新音效选择器的翻譯
         this.updateAudioSelectTranslations();
 
         console.log('🌐 AudioSettingsUI 翻譯已更新');
     };
 
     /**
-     * 更新音效選擇器的翻譯
+     * 更新音效选择器的翻譯
      */
     AudioSettingsUI.prototype.updateAudioSelectTranslations = function() {
         if (!this.audioSelect) return;
@@ -707,7 +707,7 @@
                 const audioData = this.audioManager.getAudioById(audioId);
                 if (audioData) {
                     const translatedName = this.t(translationKey, audioData.name);
-                    const defaultText = this.t('audio.notification.default', '預設');
+                    const defaultText = this.t('audio.notification.default', '预设');
                     option.textContent = translatedName + ' (' + defaultText + ')';
                 }
             }
@@ -715,7 +715,7 @@
     };
 
     /**
-     * 獲取預設音效的翻譯鍵值
+     * 獲取预设音效的翻譯鍵值
      */
     AudioSettingsUI.prototype.getDefaultAudioTranslationKey = function(audioId) {
         const translationMap = {

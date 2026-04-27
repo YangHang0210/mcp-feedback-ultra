@@ -4,9 +4,9 @@
 
 參數:
 - id_prefix: ID 前綴，用於區分不同實例 (例如: "feedback", "combined")
-- label_text: 標籤文字 (預設: "圖片附件（可選）")
+- label_text: 標籤文字 (预设: "圖片附件（可選）")
 - upload_text: 上傳提示文字
-- min_height: 最小高度 (預設: "120px")
+- min_height: 最小高度 (预设: "120px")
 
 使用方式:
 {% include 'components/image-upload.html' with context %}
@@ -17,7 +17,7 @@
 {% set id_prefix = id_prefix or "default" %}
 {% set label_text = label_text or "圖片附件（可選）" %}
 {% set min_height = min_height or "120px" %}
-{% set upload_text = upload_text or "📎 點擊選擇圖片或拖放圖片到此處<br><small>支援 PNG、JPG、JPEG、GIF、BMP、WebP 等格式</small>" %}
+{% set upload_text = upload_text or "📎 點擊选择圖片或拖放圖片到此處<br><small>支援 PNG、JPG、JPEG、GIF、BMP、WebP 等格式</small>" %}
 
 
 

@@ -1,11 +1,11 @@
 /**
- * 提示詞管理功能樣式
+ * 提示詞管理功能样式
  * ===================
  * 
- * 包含提示詞管理相關的所有 UI 樣式
+ * 包含提示詞管理相關的所有 UI 样式
  */
 
-/* ===== 提示詞彈窗樣式 ===== */
+/* ===== 提示詞彈窗样式 ===== */
 
 .modal-overlay {
     position: fixed;
@@ -106,7 +106,7 @@
     gap: 12px;
 }
 
-/* ===== 提示詞表單樣式 ===== */
+/* ===== 提示詞表單样式 ===== */
 
 .prompt-form .input-group {
     margin-bottom: 20px;
@@ -139,7 +139,7 @@
     resize: vertical;
 }
 
-/* ===== 提示詞列表樣式 ===== */
+/* ===== 提示詞列表样式 ===== */
 
 .prompt-list {
     display: flex;
@@ -204,7 +204,7 @@
     padding: 40px 20px;
 }
 
-/* ===== 設定頁籤中的提示詞管理樣式 ===== */
+/* ===== 设定頁籤中的提示詞管理样式 ===== */
 
 .prompt-management-section {
     margin-top: 20px;
@@ -312,7 +312,7 @@
     background: rgba(220, 53, 69, 0.1);
 }
 
-/* ===== input-group 按鈕樣式 ===== */
+/* ===== input-group 按鈕样式 ===== */
 
 .prompt-input-buttons {
     display: flex;
@@ -435,9 +435,9 @@
     outline-offset: 2px;
 }
 
-/* ===== 自動提交提示詞樣式 ===== */
+/* ===== 自動提交提示詞样式 ===== */
 
-/* 自動提交提示詞項目特殊樣式 */
+/* 自動提交提示詞項目特殊样式 */
 .prompt-settings-item.auto-submit-prompt {
     border-left: 4px solid var(--accent-color);
     background: rgba(0, 122, 204, 0.05);
@@ -454,7 +454,7 @@
     background: linear-gradient(90deg, var(--accent-color), transparent);
 }
 
-/* 自動提交徽章樣式 */
+/* 自動提交徽章样式 */
 .auto-submit-badge {
     display: inline-flex;
     align-items: center;
@@ -481,7 +481,7 @@
     margin-left: 8px;
 }
 
-/* 自動提交按鈕樣式 */
+/* 自動提交按鈕样式 */
 .prompt-action-btn.auto-submit-btn {
     font-size: 14px;
     padding: 4px 8px;

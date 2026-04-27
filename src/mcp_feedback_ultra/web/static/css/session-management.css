@@ -1,13 +1,13 @@
 /**
- * 會話管理和連線監控專用樣式
+ * 會話管理和连线监控專用样式
  * =============================
  * 
- * 為 WebSocket 連線狀態顯示器和會話管理功能提供樣式支援
+ * 為 WebSocket 连线狀態显示器和會話管理功能提供样式支援
  */
 
-/* ===== CSS 變數擴展 ===== */
+/* ===== CSS 变量擴展 ===== */
 :root {
-  /* 連線狀態色彩 */
+  /* 连线狀態色彩 */
   --status-connected: #4caf50;
   --status-connecting: #ff9800;
   --status-disconnected: #f44336;
@@ -35,7 +35,7 @@
   --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* ===== 頂部連線監控狀態列 ===== */
+/* ===== 頂部连线监控狀態列 ===== */
 .connection-monitor-bar {
   display: flex;
   justify-content: space-between;
@@ -61,7 +61,7 @@
   justify-content: flex-start;
 }
 
-/* 緊湊版元素樣式 */
+/* 緊湊版元素样式 */
 .app-title-compact {
   font-weight: 600;
   color: var(--text-primary);
@@ -134,7 +134,7 @@
   transform: scale(0.95);
 }
 
-/* 暫停狀態的計時器樣式 */
+/* 暫停狀態的計時器样式 */
 .countdown-display-compact.paused .countdown-timer {
   opacity: 0.6;
   animation: pause-blink 1.5s ease-in-out infinite;
@@ -168,7 +168,7 @@
   color: var(--status-connecting);
 }
 
-/* 應用資訊區域 */
+/* 應用资讯區域 */
 .app-info-section {
   display: flex;
   flex-direction: column;
@@ -227,7 +227,7 @@
   justify-content: space-between;
 }
 
-/* 會話狀態資訊區域 */
+/* 會話狀態资讯區域 */
 .session-status-info {
   display: flex;
   flex-direction: column;
@@ -257,7 +257,7 @@
   margin-left: 20px;
 }
 
-/* 會話ID顯示樣式 */
+/* 會話ID显示样式 */
 .session-id-display {
   font-family: 'Consolas', 'Monaco', monospace;
   color: var(--accent-color);
@@ -308,7 +308,7 @@
   visibility: visible;
 }
 
-/* 專案路徑顯示樣式 - 模仿會話ID顯示 */
+/* 專案路徑显示样式 - 模仿會話ID显示 */
 .project-path-display {
   font-family: 'Consolas', 'Monaco', monospace;
   color: var(--accent-color);
@@ -381,7 +381,7 @@
   transform: translateX(0);
 }
 
-/* 連線和狀態資訊組合容器 */
+/* 连线和狀態资讯組合容器 */
 .connection-status-combined {
   display: flex;
   flex-direction: column;
@@ -391,7 +391,7 @@
   justify-content: center;
 }
 
-/* 詳細狀態資訊 */
+/* 詳細狀態资讯 */
 .detailed-status-info {
   display: flex;
   gap: 16px;
@@ -547,7 +547,7 @@
   border-color: var(--accent-color);
 }
 
-/* ===== 會話管理頁籤樣式 ===== */
+/* ===== 會話管理頁籤样式 ===== */
 .session-panel-header {
   display: flex;
   justify-content: space-between;
@@ -692,7 +692,7 @@
   border-color: var(--accent-color);
 }
 
-/* 匯出按鈕樣式 */
+/* 匯出按鈕样式 */
 .btn-export {
   background: var(--bg-primary) !important;
   border-color: var(--success-color) !important;
@@ -705,7 +705,7 @@
   border-color: var(--success-color) !important;
 }
 
-/* 會話歷史管理按鈕樣式 */
+/* 會話歷史管理按鈕样式 */
 #exportSessionHistoryBtn {
   background: var(--success-color);
   border-color: var(--success-color);
@@ -821,7 +821,7 @@
     display: none;
   }
   
-  /* 保留核心資訊：標題、倒數計時器、連線狀態 */
+  /* 保留核心资讯：標題、倒數計時器、连线狀態 */
   .connection-monitor-bar.compact {
     justify-content: space-between;
   }
@@ -831,7 +831,7 @@
   }
 }
 
-/* ===== 載入狀態 ===== */
+/* ===== 载入狀態 ===== */
 .loading-skeleton {
   background: linear-gradient(90deg, 
     var(--bg-tertiary) 25%, 
@@ -858,7 +858,7 @@
   outline-offset: 2px;
 }
 
-/* ===== 會話歷史區塊標題樣式 ===== */
+/* ===== 會話歷史區塊標題样式 ===== */
 .session-history-header {
   display: flex;
   justify-content: space-between;
@@ -1217,7 +1217,7 @@
   border-color: var(--accent-color);
 }
 
-/* ===== 用戶訊息記錄樣式 ===== */
+/* ===== 用戶訊息记录样式 ===== */
 .user-messages-section {
   margin-top: 16px;
   border-top: 1px solid var(--border-color);
@@ -1351,7 +1351,7 @@
   color: var(--text-secondary);
 }
 
-/* 隱私等級選擇器樣式增強 */
+/* 隱私等級选择器样式增強 */
 #userMessagePrivacyLevel {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -1373,9 +1373,9 @@
   color: var(--text-primary);
 }
 
-/* 用戶訊息記錄開關樣式已整合到標準切換開關樣式中 */
+/* 用戶訊息记录開關样式已整合到標準切換開關样式中 */
 
-/* 切換開關容器樣式 */
+/* 切換開關容器样式 */
 .toggle-container {
   display: flex;
   align-items: center;
@@ -1412,7 +1412,7 @@
 }
 
 @media (max-width: 480px) {
-  /* 極小螢幕只顯示最關鍵資訊 */
+  /* 極小螢幕只显示最關鍵资讯 */
   .connection-monitor-bar.compact .session-info-compact {
     display: none;
   }

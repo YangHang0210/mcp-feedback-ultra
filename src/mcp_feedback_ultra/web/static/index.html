@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Feedback Enhanced - 桌面版</title>
+    <title>MCP Feedback Ultra - 桌面版</title>
     <style>
         body {
             margin: 0;
@@ -76,15 +76,15 @@
 </head>
 <body>
     <div class="loading-container">
-        <div class="logo">🖥️ MCP Feedback Enhanced</div>
+        <div class="logo">🖥️ MCP Feedback Ultra</div>
         <div class="subtitle">桌面版正在啟動...</div>
         <div class="spinner"></div>
-        <div class="status" id="status">正在連接到後端服務...</div>
+        <div class="status" id="status">正在连接到後端服務...</div>
         <div class="error" id="error"></div>
     </div>
 
     <script>
-        // 檢測是否在 Tauri 環境中
+        // 检测是否在 Tauri 环境中
         const isTauri = window.__TAURI__ !== undefined;
         
         // 後端服務 URL
@@ -95,54 +95,54 @@
             document.getElementById('status').textContent = message;
         }
         
-        // 錯誤顯示函數
+        // 错误显示函數
         function showError(message) {
             const errorDiv = document.getElementById('error');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
         }
         
-        // 檢查後端服務是否可用
+        // 检查後端服務是否可用
         async function checkBackendService() {
             try {
-                updateStatus('正在檢查後端服務...');
+                updateStatus('正在检查後端服務...');
                 const response = await fetch(backendUrl + '/health', {
                     method: 'GET',
                     timeout: 5000
                 });
                 
                 if (response.ok) {
-                    updateStatus('後端服務已就緒，正在載入界面...');
+                    updateStatus('後端服務已就緒，正在载入界面...');
                     // 延遲一下再重定向，讓用戶看到狀態
                     setTimeout(() => {
                         window.location.href = backendUrl;
                     }, 1000);
                 } else {
-                    throw new Error(`後端服務回應錯誤: ${response.status}`);
+                    throw new Error(`後端服務回應错误: ${response.status}`);
                 }
             } catch (error) {
-                console.error('檢查後端服務失敗:', error);
-                updateStatus('正在重試連接...');
+                console.error('检查後端服務失敗:', error);
+                updateStatus('正在重試连接...');
                 
-                // 如果是網路錯誤，直接嘗試重定向
+                // 如果是网络错误，直接嘗試重定向
                 if (error.name === 'TypeError' || error.message.includes('fetch')) {
                     setTimeout(() => {
                         window.location.href = backendUrl;
                     }, 2000);
                 } else {
-                    showError('無法連接到後端服務，請確保服務正在運行');
+                    showError('無法连接到後端服務，請確保服務正在運行');
                 }
             }
         }
         
-        // 如果不是 Tauri 環境，直接重定向
+        // 如果不是 Tauri 环境，直接重定向
         if (!isTauri) {
             updateStatus('正在重定向到 Web 界面...');
             setTimeout(() => {
                 window.location.href = backendUrl;
             }, 1000);
         } else {
-            // Tauri 環境中，檢查後端服務
+            // Tauri 环境中，检查後端服務
             setTimeout(checkBackendService, 1000);
         }
         

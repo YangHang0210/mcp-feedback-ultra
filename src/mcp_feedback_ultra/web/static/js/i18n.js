@@ -2,8 +2,8 @@
  * 國際化（i18n）模組
  * =================
  * 
- * 處理多語言支援和界面文字翻譯
- * 從後端 /api/translations 載入翻譯數據
+ * 处理多語言支援和界面文字翻譯
+ * 從後端 /api/translations 载入翻譯數據
  */
 
 class I18nManager {
@@ -14,48 +14,48 @@ class I18nManager {
     }
     
     getDefaultLanguage() {
-        // 1. 先檢查本地儲存的設定
+        // 1. 先检查本地儲存的设定
         const savedLanguage = localStorage.getItem('language');
         if (savedLanguage && ['zh-TW', 'zh-CN', 'en'].includes(savedLanguage)) {
-            console.log('🌐 使用儲存的語言設定:', savedLanguage);
+            console.log('🌐 使用儲存的語言设定:', savedLanguage);
             return savedLanguage;
         }
         
-        // 2. 檢查瀏覽器語言
+        // 2. 检查浏览器語言
         const browserLang = navigator.language || navigator.userLanguage;
-        console.log('🌐 瀏覽器語言:', browserLang);
+        console.log('🌐 浏览器語言:', browserLang);
         
         if (browserLang.startsWith('zh-TW') || browserLang.includes('Hant')) {
-            console.log('🌐 偵測到繁體中文環境');
+            console.log('🌐 偵測到繁體中文环境');
             return 'zh-TW';
         }
         if (browserLang.startsWith('zh') || browserLang.includes('Hans')) {
-            console.log('🌐 偵測到簡體中文環境');
+            console.log('🌐 偵測到簡體中文环境');
             return 'zh-CN';
         }
         if (browserLang.startsWith('en')) {
-            console.log('🌐 偵測到英文環境');
+            console.log('🌐 偵測到英文环境');
             return 'en';
         }
         
-        // 3. 預設使用繁體中文
-        console.log('🌐 使用預設語言: zh-TW');
+        // 3. 预设使用繁體中文
+        console.log('🌐 使用预设語言: zh-TW');
         return 'zh-TW';
     }
 
     async init() {
-        console.log(`i18nManager 使用預設語言: ${this.currentLanguage}`);
+        console.log(`i18nManager 使用预设語言: ${this.currentLanguage}`);
 
-        // 載入翻譯數據
+        // 载入翻譯數據
         await this.loadTranslations();
 
         // 應用翻譯
         this.applyTranslations();
 
-        // 設置語言選擇器
+        // 设置語言选择器
         this.setupLanguageSelectors();
 
-        // 延遲一點再更新動態內容，確保應用程式已初始化
+        // 延遲一點再更新動態內容，確保应用程序已初始化
         setTimeout(() => {
             this.updateDynamicContent();
         }, 100);
@@ -70,16 +70,16 @@ class I18nManager {
             .then(response => response.json())
             .then(data => {
                 this.translations = data;
-                console.log('翻譯數據載入完成:', Object.keys(this.translations));
+                console.log('翻譯數據载入完成:', Object.keys(this.translations));
                 
-                // 檢查當前語言是否有翻譯數據
+                // 检查當前語言是否有翻譯數據
                 if (!this.translations[this.currentLanguage] || Object.keys(this.translations[this.currentLanguage]).length === 0) {
                     console.warn(`當前語言 ${this.currentLanguage} 沒有翻譯數據，回退到 zh-TW`);
                     this.currentLanguage = 'zh-TW';
                 }
             })
             .catch(error => {
-                console.error('載入翻譯數據失敗:', error);
+                console.error('载入翻譯數據失敗:', error);
                 // 使用最小的回退翻譯
                 this.translations = this.getMinimalFallbackTranslations();
             });
@@ -92,14 +92,14 @@ class I18nManager {
         return {
             'zh-TW': {
                 'app': {
-                    'title': 'MCP Feedback Enhanced',
+                    'title': 'MCP Feedback Ultra',
                     'projectDirectory': '專案目錄'
                 },
                 'tabs': {
                     'feedback': '💬 回饋',
                     'summary': '📋 AI 摘要',
                     'command': '⚡ 命令',
-                    'settings': '⚙️ 設定'
+                    'settings': '⚙️ 设定'
                 },
                 'buttons': {
                     'cancel': '❌ 取消',
@@ -117,12 +117,12 @@ class I18nManager {
         const langData = this.translations[this.currentLanguage] || {};
         let translation = this.getNestedValue(langData, key);
 
-        // 如果沒有找到翻譯，返回預設值或鍵名
+        // 如果沒有找到翻譯，返回预设值或鍵名
         if (!translation) {
             return typeof params === 'string' ? params : key;
         }
 
-        // 如果 params 是字串，當作預設值處理（向後相容）
+        // 如果 params 是字串，當作预设值处理（向後相容）
         if (typeof params === 'string') {
             return translation;
         }
@@ -150,7 +150,7 @@ class I18nManager {
             this.currentLanguage = language;
             this.applyTranslations();
 
-            // 更新所有語言選擇器（包括現代化版本）
+            // 更新所有語言选择器（包括現代化版本）
             this.setupLanguageSelectors();
 
             // 更新 HTML lang 屬性
@@ -206,7 +206,7 @@ class I18nManager {
         // 更新動態內容
         this.updateDynamicContent();
 
-        // 更新音效選擇器翻譯
+        // 更新音效选择器翻譯
         this.updateAudioSelectTranslations();
 
         console.log('翻譯已應用:', this.currentLanguage);
@@ -219,13 +219,13 @@ class I18nManager {
         // 更新會話管理相關的動態內容
         this.updateSessionManagementContent();
 
-        // 更新連線監控相關的動態內容
+        // 更新连线监控相關的動態內容
         this.updateConnectionMonitorContent();
 
         // 更新提示詞按鈕文字
         this.updatePromptInputButtons();
 
-        // 更新應用程式中的動態狀態文字（使用新的模組化架構）
+        // 更新应用程序中的動態狀態文字（使用新的模組化架構）
         if (window.feedbackApp && window.feedbackApp.isInitialized) {
             // 更新 UI 狀態
             if (window.feedbackApp.uiManager && typeof window.feedbackApp.uiManager.updateUIState === 'function') {
@@ -261,17 +261,17 @@ class I18nManager {
                 window.feedbackApp.sessionManager.updateDisplay();
             }
 
-            // 重新渲染統計資訊以更新時間單位
+            // 重新渲染統計资讯以更新時間單位
             if (window.feedbackApp.sessionManager.dataManager &&
                 window.feedbackApp.sessionManager.uiRenderer) {
                 const stats = window.feedbackApp.sessionManager.dataManager.getStats();
                 window.feedbackApp.sessionManager.uiRenderer.renderStats(stats);
-                console.log('🌐 已更新統計資訊的語言顯示');
+                console.log('🌐 已更新統計资讯的語言显示');
                 
                 // 重新渲染會話歷史以更新所有動態創建的元素
                 const sessionHistory = window.feedbackApp.sessionManager.dataManager.getSessionHistory();
                 window.feedbackApp.sessionManager.uiRenderer.renderSessionHistory(sessionHistory);
-                console.log('🌐 已更新會話歷史的語言顯示');
+                console.log('🌐 已更新會話歷史的語言显示');
             }
         }
 
@@ -288,15 +288,15 @@ class I18nManager {
     }
 
     updateConnectionMonitorContent() {
-        // 更新連線監控器中的動態文字
+        // 更新连线监控器中的動態文字
         if (window.feedbackApp && window.feedbackApp.connectionMonitor) {
-            // 觸發連線監控器重新更新顯示
+            // 觸發连线监控器重新更新显示
             if (typeof window.feedbackApp.connectionMonitor.updateDisplay === 'function') {
                 window.feedbackApp.connectionMonitor.updateDisplay();
             }
         }
 
-        // 更新連線狀態文字
+        // 更新连线狀態文字
         const statusText = document.querySelector('.status-text');
         if (statusText && window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.Status) {
             // 從元素的類名或數據屬性中獲取狀態
@@ -327,21 +327,21 @@ class I18nManager {
     }
 
     setupLanguageSelectors() {
-        // 設定頁籤的下拉選擇器
+        // 设定頁籤的下拉选择器
         const selector = document.getElementById('settingsLanguageSelect');
         if (selector) {
-            // 只設置當前值，不綁定事件（讓 SettingsManager 統一處理）
+            // 只设置當前值，不綁定事件（讓 SettingsManager 統一处理）
             selector.value = this.currentLanguage;
-            console.log(`🔧 setupLanguageSelectors: 設置 select.value = ${this.currentLanguage}`);
+            console.log(`🔧 setupLanguageSelectors: 设置 select.value = ${this.currentLanguage}`);
             
             // 不再綁定事件監聽器，避免與 SettingsManager 衝突
-            // 事件處理完全交由 SettingsManager 負責
+            // 事件处理完全交由 SettingsManager 負責
         }
 
-        // 新版現代化語言選擇器
+        // 新版現代化語言选择器
         const languageOptions = document.querySelectorAll('.language-option');
         if (languageOptions.length > 0) {
-            // 只設置當前語言的活躍狀態，不綁定事件
+            // 只设置當前語言的活躍狀態，不綁定事件
             languageOptions.forEach(option => {
                 const lang = option.getAttribute('data-lang');
                 if (lang === this.currentLanguage) {
@@ -350,12 +350,12 @@ class I18nManager {
                     option.classList.remove('active');
                 }
             });
-            // 事件監聽器由 SettingsManager 統一處理，避免重複綁定
+            // 事件監聽器由 SettingsManager 統一处理，避免重複綁定
         }
     }
 
     updateAudioSelectTranslations() {
-        // 更新音效設定區域的所有翻譯
+        // 更新音效设定區域的所有翻譯
         if (window.feedbackApp && window.feedbackApp.audioSettingsUI) {
             if (typeof window.feedbackApp.audioSettingsUI.updateTranslations === 'function') {
                 window.feedbackApp.audioSettingsUI.updateTranslations();

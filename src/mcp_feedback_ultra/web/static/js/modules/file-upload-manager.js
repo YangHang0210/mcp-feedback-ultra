@@ -1,5 +1,5 @@
 /**
- * 現代化檔案上傳管理器
+ * 現代化文件上傳管理器
  * 使用事件委託模式，避免重複事件監聽器問題
  */
 
@@ -12,7 +12,7 @@
     }
 
     /**
-     * 檔案上傳管理器建構函數
+     * 文件上傳管理器建構函數
      */
     function FileUploadManager(options) {
         options = options || {};
@@ -44,7 +44,7 @@
     }
 
     /**
-     * 初始化檔案上傳管理器
+     * 初始化文件上傳管理器
      */
     FileUploadManager.prototype.initialize = function() {
         if (this.isInitialized) {
@@ -56,12 +56,12 @@
         this.setupGlobalPasteHandler();
         this.isInitialized = true;
         
-        console.log('✅ FileUploadManager 事件委託設置完成');
+        console.log('✅ FileUploadManager 事件委託设置完成');
     };
 
     /**
-     * 設置事件委託
-     * 使用單一事件監聽器處理所有檔案上傳相關事件
+     * 设置事件委託
+     * 使用單一事件監聽器处理所有文件上傳相關事件
      */
     FileUploadManager.prototype.setupEventDelegation = function() {
         // 移除舊的事件監聽器
@@ -71,7 +71,7 @@
         document.removeEventListener('drop', this.handleDelegatedEvent);
         document.removeEventListener('change', this.handleDelegatedEvent);
 
-        // 設置新的事件委託
+        // 设置新的事件委託
         document.addEventListener('click', this.handleDelegatedEvent);
         document.addEventListener('dragover', this.handleDelegatedEvent);
         document.addEventListener('dragleave', this.handleDelegatedEvent);
@@ -80,12 +80,12 @@
     };
 
     /**
-     * 處理委託事件
+     * 处理委託事件
      */
     FileUploadManager.prototype.handleDelegatedEvent = function(event) {
         const target = event.target;
 
-        // 處理檔案移除按鈕點擊
+        // 处理文件移除按鈕點擊
         const removeBtn = target.closest('.image-remove-btn');
         if (removeBtn) {
             event.preventDefault();
@@ -94,13 +94,13 @@
             return;
         }
 
-        // 處理檔案輸入變更
+        // 处理文件輸入變更
         if (target.type === 'file' && event.type === 'change') {
             this.handleFileInputChange(target, event);
             return;
         }
 
-        // 處理上傳區域事件 - 只處理直接點擊上傳區域的情況
+        // 处理上傳區域事件 - 只处理直接點擊上傳區域的情況
         const uploadArea = target.closest('.image-upload-area');
         if (uploadArea && event.type === 'click') {
             // 確保不是點擊 input 元素本身
@@ -117,7 +117,7 @@
             return;
         }
 
-        // 處理拖放事件
+        // 处理拖放事件
         if (uploadArea && (event.type === 'dragover' || event.type === 'dragleave' || event.type === 'drop')) {
             switch (event.type) {
                 case 'dragover':
@@ -134,7 +134,7 @@
     };
 
     /**
-     * 處理上傳區域點擊（使用防抖機制）
+     * 处理上傳區域點擊（使用防抖機制）
      */
     FileUploadManager.prototype.handleUploadAreaClick = function(uploadArea, event) {
         event.preventDefault();
@@ -148,9 +148,9 @@
         }
         this.lastClickTime = now;
 
-        // 如果已經有待處理的點擊，忽略新的點擊
+        // 如果已經有待处理的點擊，忽略新的點擊
         if (this.isProcessingClick) {
-            console.log('🚫 正在處理點擊，忽略新的點擊');
+            console.log('🚫 正在处理點擊，忽略新的點擊');
             return;
         }
 
@@ -158,21 +158,21 @@
 
         const fileInput = uploadArea.querySelector('input[type="file"]');
         if (fileInput) {
-            console.log('🖱️ 觸發檔案選擇:', fileInput.id);
+            console.log('🖱️ 觸發文件选择:', fileInput.id);
 
-            // 重置 input 值以確保可以重複選擇同一檔案
+            // 重置 input 值以確保可以重複选择同一文件
             fileInput.value = '';
 
-            // 使用 setTimeout 確保在下一個事件循環中執行，避免事件冒泡問題
+            // 使用 setTimeout 確保在下一個事件循環中执行，避免事件冒泡問題
             const self = this;
             setTimeout(function() {
                 try {
                     fileInput.click();
-                    console.log('✅ 檔案選擇對話框已觸發');
+                    console.log('✅ 文件选择對話框已觸發');
                 } catch (error) {
-                    console.error('❌ 檔案選擇對話框觸發失敗:', error);
+                    console.error('❌ 文件选择對話框觸發失敗:', error);
                 } finally {
-                    // 重置處理狀態
+                    // 重置处理狀態
                     setTimeout(function() {
                         self.isProcessingClick = false;
                     }, 100);
@@ -184,18 +184,18 @@
     };
 
     /**
-     * 處理檔案輸入變更
+     * 处理文件輸入變更
      */
     FileUploadManager.prototype.handleFileInputChange = function(fileInput, event) {
         const files = event.target.files;
         if (files && files.length > 0) {
-            console.log('📁 檔案選擇變更:', files.length, '個檔案');
+            console.log('📁 文件选择變更:', files.length, '個文件');
             this.processFiles(Array.from(files), fileInput);
         }
     };
 
     /**
-     * 處理拖放事件
+     * 处理拖放事件
      */
     FileUploadManager.prototype.handleDragOver = function(uploadArea, event) {
         event.preventDefault();
@@ -204,7 +204,7 @@
 
     FileUploadManager.prototype.handleDragLeave = function(uploadArea, event) {
         event.preventDefault();
-        // 只有當滑鼠真正離開上傳區域時才移除樣式
+        // 只有當滑鼠真正離開上傳區域時才移除样式
         if (!uploadArea.contains(event.relatedTarget)) {
             uploadArea.classList.remove('dragover');
         }
@@ -216,19 +216,19 @@
         
         const files = event.dataTransfer.files;
         if (files && files.length > 0) {
-            console.log('📁 拖放檔案:', files.length, '個檔案');
+            console.log('📁 拖放文件:', files.length, '個文件');
             this.processFiles(Array.from(files), uploadArea.querySelector('input[type="file"]'));
         }
     };
 
     /**
-     * 處理檔案移除
+     * 处理文件移除
      */
     FileUploadManager.prototype.handleRemoveFile = function(removeBtn) {
         const index = parseInt(removeBtn.dataset.index);
         if (!isNaN(index) && index >= 0 && index < this.files.length) {
             const removedFile = this.files.splice(index, 1)[0];
-            console.log('🗑️ 移除檔案:', removedFile.name);
+            console.log('🗑️ 移除文件:', removedFile.name);
             
             this.updateAllPreviews();
             
@@ -239,7 +239,7 @@
     };
 
     /**
-     * 設置全域剪貼板貼上處理
+     * 设置全域剪貼板貼上处理
      */
     FileUploadManager.prototype.setupGlobalPasteHandler = function() {
         document.removeEventListener('paste', this.handleGlobalPaste);
@@ -247,7 +247,7 @@
     };
 
     /**
-     * 處理全域剪貼板貼上
+     * 处理全域剪貼板貼上
      */
     FileUploadManager.prototype.handleGlobalPaste = function(event) {
         const items = event.clipboardData.items;
@@ -265,13 +265,13 @@
 
         if (imageFiles.length > 0) {
             event.preventDefault();
-            console.log('📋 剪貼板貼上圖片:', imageFiles.length, '個檔案');
+            console.log('📋 剪貼板貼上圖片:', imageFiles.length, '個文件');
             this.processFiles(imageFiles);
         }
     };
 
     /**
-     * 處理檔案
+     * 处理文件
      */
     FileUploadManager.prototype.processFiles = function(files, sourceInput) {
         const validFiles = [];
@@ -279,16 +279,16 @@
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             
-            // 檢查檔案類型
+            // 检查文件類型
             if (!file.type.startsWith('image/')) {
-                console.warn('⚠️ 跳過非圖片檔案:', file.name);
+                console.warn('⚠️ 跳過非圖片文件:', file.name);
                 continue;
             }
 
-            // 檢查檔案大小
+            // 检查文件大小
             if (this.maxFileSize > 0 && file.size > this.maxFileSize) {
                 const sizeLimit = this.formatFileSize(this.maxFileSize);
-                console.warn('⚠️ 檔案過大:', file.name, '超過限制', sizeLimit);
+                console.warn('⚠️ 文件過大:', file.name, '超過限制', sizeLimit);
                 const message = window.i18nManager ?
                     window.i18nManager.t('fileUpload.fileSizeExceeded', {
                         limit: sizeLimit,
@@ -299,12 +299,12 @@
                 continue;
             }
 
-            // 檢查檔案數量限制
+            // 检查文件數量限制
             if (this.files.length + validFiles.length >= this.maxFiles) {
-                console.warn('⚠️ 檔案數量超過限制:', this.maxFiles);
+                console.warn('⚠️ 文件數量超過限制:', this.maxFiles);
                 const message = window.i18nManager ?
                     window.i18nManager.t('fileUpload.maxFilesExceeded', { maxFiles: this.maxFiles }) :
-                    '最多只能上傳 ' + this.maxFiles + ' 個檔案';
+                    '最多只能上傳 ' + this.maxFiles + ' 個文件';
                 this.showMessage(message, 'warning');
                 break;
             }
@@ -312,14 +312,14 @@
             validFiles.push(file);
         }
 
-        // 處理有效檔案
+        // 处理有效文件
         if (validFiles.length > 0) {
             this.addFiles(validFiles);
         }
     };
 
     /**
-     * 添加檔案到列表
+     * 添加文件到列表
      */
     FileUploadManager.prototype.addFiles = function(files) {
         const promises = files.map(file => this.fileToBase64(file));
@@ -338,7 +338,7 @@
                     };
                     
                     self.files.push(fileData);
-                    console.log('✅ 檔案已添加:', file.name);
+                    console.log('✅ 文件已添加:', file.name);
                     
                     if (self.onFileAdd) {
                         self.onFileAdd(fileData);
@@ -348,16 +348,16 @@
                 self.updateAllPreviews();
             })
             .catch(function(error) {
-                console.error('❌ 檔案處理失敗:', error);
+                console.error('❌ 文件处理失敗:', error);
                 const message = window.i18nManager ?
-                    window.i18nManager.t('fileUpload.processingFailed', '檔案處理失敗，請重試') :
-                    '檔案處理失敗，請重試';
+                    window.i18nManager.t('fileUpload.processingFailed', '文件处理失敗，請重試') :
+                    '文件处理失敗，請重試';
                 self.showMessage(message, 'error');
             });
     };
 
     /**
-     * 將檔案轉換為 Base64
+     * 將文件轉換為 Base64
      */
     FileUploadManager.prototype.fileToBase64 = function(file) {
         return new Promise(function(resolve, reject) {
@@ -411,7 +411,7 @@
         img.alt = file.name;
         img.title = file.name + ' (' + this.formatFileSize(file.size) + ')';
 
-        // 檔案資訊
+        // 文件资讯
         const info = document.createElement('div');
         info.className = 'image-info';
 
@@ -442,7 +442,7 @@
     };
 
     /**
-     * 更新檔案計數顯示
+     * 更新文件計數显示
      */
     FileUploadManager.prototype.updateFileCount = function() {
         const count = this.files.length;
@@ -464,7 +464,7 @@
     };
 
     /**
-     * 格式化檔案大小
+     * 格式化文件大小
      */
     FileUploadManager.prototype.formatFileSize = function(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -477,7 +477,7 @@
     };
 
     /**
-     * 顯示訊息
+     * 显示訊息
      */
     FileUploadManager.prototype.showMessage = function(message, type) {
         // 使用現有的 Utils.showMessage 如果可用
@@ -494,32 +494,32 @@
     };
 
     /**
-     * 更新設定
+     * 更新设定
      */
     FileUploadManager.prototype.updateSettings = function(settings) {
         this.maxFileSize = settings.imageSizeLimit || 0;
         this.enableBase64Detail = settings.enableBase64Detail || false;
 
-        console.log('⚙️ FileUploadManager 設定已更新:', {
+        console.log('⚙️ FileUploadManager 设定已更新:', {
             maxFileSize: this.maxFileSize,
             enableBase64Detail: this.enableBase64Detail
         });
     };
 
     /**
-     * 獲取檔案列表
+     * 獲取文件列表
      */
     FileUploadManager.prototype.getFiles = function() {
         return this.files.slice(); // 返回副本
     };
 
     /**
-     * 清空所有檔案
+     * 清空所有文件
      */
     FileUploadManager.prototype.clearFiles = function() {
         this.files = [];
         this.updateAllPreviews();
-        console.log('🗑️ 已清空所有檔案');
+        console.log('🗑️ 已清空所有文件');
     };
 
     /**
@@ -540,7 +540,7 @@
             this.debounceTimeout = null;
         }
 
-        // 清空檔案
+        // 清空文件
         this.clearFiles();
 
         this.isInitialized = false;
@@ -550,6 +550,6 @@
     // 將 FileUploadManager 加入命名空間
     window.MCPFeedback.FileUploadManager = FileUploadManager;
 
-    console.log('✅ FileUploadManager 模組載入完成');
+    console.log('✅ FileUploadManager 模組载入完成');
 
 })();

@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 提示詞彈窗管理模組
+ * MCP Feedback Ultra - 提示詞彈窗管理模組
  * ==========================================
  * 
- * 處理提示詞新增、編輯、選擇的彈窗介面
+ * 处理提示詞新增、編輯、选择的彈窗介面
  */
 
 (function() {
@@ -37,7 +37,7 @@
     }
 
     /**
-     * 顯示新增提示詞彈窗
+     * 显示新增提示詞彈窗
      */
     PromptModal.prototype.showAddModal = function() {
         const modalData = {
@@ -53,11 +53,11 @@
     };
 
     /**
-     * 顯示編輯提示詞彈窗
+     * 显示編輯提示詞彈窗
      */
     PromptModal.prototype.showEditModal = function(prompt) {
         if (!prompt) {
-            console.error('❌ 編輯提示詞時缺少提示詞資料');
+            console.error('❌ 編輯提示詞時缺少提示詞资料');
             return;
         }
 
@@ -75,17 +75,17 @@
     };
 
     /**
-     * 顯示選擇提示詞彈窗
+     * 显示选择提示詞彈窗
      */
     PromptModal.prototype.showSelectModal = function(prompts) {
         if (!prompts || !Array.isArray(prompts)) {
-            console.error('❌ 選擇提示詞時缺少提示詞列表');
+            console.error('❌ 选择提示詞時缺少提示詞列表');
             return;
         }
 
         const modalData = {
             type: 'select',
-            title: this.t('prompts.select.title', '選擇常用提示詞'),
+            title: this.t('prompts.select.title', '选择常用提示詞'),
             prompts: prompts
         };
 
@@ -93,10 +93,10 @@
     };
 
     /**
-     * 創建並顯示彈窗
+     * 創建並显示彈窗
      */
     PromptModal.prototype.createAndShowModal = function(modalData) {
-        // 如果已有彈窗，先關閉
+        // 如果已有彈窗，先关闭
         if (this.currentModal) {
             this.closeModal();
         }
@@ -110,10 +110,10 @@
         // 獲取彈窗元素
         this.currentModal = document.getElementById('promptModal');
 
-        // 設置事件監聽器
+        // 设置事件監聽器
         this.setupEventListeners(modalData);
 
-        // 添加顯示動畫
+        // 添加显示動畫
         this.showModal();
 
         // 聚焦到第一個輸入框
@@ -142,7 +142,7 @@
                 <div class="modal-container">
                     <div class="modal-header">
                         <h3 class="modal-title">${Utils.escapeHtml(modalData.title)}</h3>
-                        <button type="button" class="modal-close-btn" aria-label="關閉">×</button>
+                        <button type="button" class="modal-close-btn" aria-label="关闭">×</button>
                     </div>
                     <div class="modal-body">
                         <form id="promptForm" class="prompt-form">
@@ -185,7 +185,7 @@
     };
 
     /**
-     * 創建選擇彈窗 HTML
+     * 創建选择彈窗 HTML
      */
     PromptModal.prototype.createSelectModalHTML = function(modalId, modalData) {
         const promptsHtml = modalData.prompts.map(prompt => `
@@ -204,7 +204,7 @@
                 <div class="modal-container modal-large">
                     <div class="modal-header">
                         <h3 class="modal-title">${Utils.escapeHtml(modalData.title)}</h3>
-                        <button type="button" class="modal-close-btn" aria-label="關閉">×</button>
+                        <button type="button" class="modal-close-btn" aria-label="关闭">×</button>
                     </div>
                     <div class="modal-body">
                         <div class="prompt-list">
@@ -222,12 +222,12 @@
     };
 
     /**
-     * 設置事件監聽器
+     * 设置事件監聽器
      */
     PromptModal.prototype.setupEventListeners = function(modalData) {
         const self = this;
 
-        // 關閉按鈕
+        // 关闭按鈕
         const closeBtn = this.currentModal.querySelector('.modal-close-btn');
         if (closeBtn) {
             closeBtn.addEventListener('click', function() {
@@ -243,7 +243,7 @@
             });
         }
 
-        // 背景點擊關閉
+        // 背景點擊关闭
         if (this.enableBackdropClose) {
             this.currentModal.addEventListener('click', function(e) {
                 if (e.target === self.currentModal) {
@@ -252,7 +252,7 @@
             });
         }
 
-        // ESC 鍵關閉
+        // ESC 鍵关闭
         if (this.enableEscapeClose) {
             this.keydownHandler = function(e) {
                 if (e.key === 'Escape') {
@@ -262,7 +262,7 @@
             document.addEventListener('keydown', this.keydownHandler);
         }
 
-        // 根據彈窗類型設置特定事件
+        // 根據彈窗類型设置特定事件
         if (modalData.type === 'select') {
             this.setupSelectModalEvents();
         } else {
@@ -271,7 +271,7 @@
     };
 
     /**
-     * 設置編輯彈窗事件
+     * 设置編輯彈窗事件
      */
     PromptModal.prototype.setupEditModalEvents = function(modalData) {
         const self = this;
@@ -286,7 +286,7 @@
     };
 
     /**
-     * 設置選擇彈窗事件
+     * 设置选择彈窗事件
      */
     PromptModal.prototype.setupSelectModalEvents = function() {
         const self = this;
@@ -301,7 +301,7 @@
     };
 
     /**
-     * 處理表單提交
+     * 处理表單提交
      */
     PromptModal.prototype.handleFormSubmit = function(modalData) {
         const nameInput = this.currentModal.querySelector('#promptName');
@@ -341,7 +341,7 @@
     };
 
     /**
-     * 處理提示詞選擇
+     * 处理提示詞选择
      */
     PromptModal.prototype.handlePromptSelect = function(promptId) {
         if (this.onSelect) {
@@ -351,19 +351,19 @@
     };
 
     /**
-     * 顯示彈窗動畫
+     * 显示彈窗動畫
      */
     PromptModal.prototype.showModal = function() {
         if (!this.currentModal) return;
 
-        // 添加顯示類觸發動畫
+        // 添加显示類觸發動畫
         requestAnimationFrame(() => {
             this.currentModal.classList.add('show');
         });
     };
 
     /**
-     * 關閉彈窗
+     * 关闭彈窗
      */
     PromptModal.prototype.closeModal = function() {
         if (!this.currentModal) return;
@@ -374,7 +374,7 @@
             this.keydownHandler = null;
         }
 
-        // 添加關閉動畫
+        // 添加关闭動畫
         this.currentModal.classList.add('hide');
 
         // 延遲移除元素
@@ -406,7 +406,7 @@
     };
 
     /**
-     * 顯示錯誤訊息
+     * 显示错误訊息
      */
     PromptModal.prototype.showError = function(message) {
         if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
@@ -453,6 +453,6 @@
     // 將 PromptModal 加入命名空間
     window.MCPFeedback.Prompt.PromptModal = PromptModal;
 
-    console.log('✅ PromptModal 模組載入完成');
+    console.log('✅ PromptModal 模組载入完成');
 
 })();

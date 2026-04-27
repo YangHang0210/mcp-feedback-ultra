@@ -1,9 +1,9 @@
 /**
- * MCP Feedback Enhanced - 瀏覽器通知設定樣式
+ * MCP Feedback Ultra - 浏览器通知设定样式
  * ========================================
  */
 
-/* 權限狀態顯示 */
+/* 權限狀態显示 */
 .permission-status {
     font-size: 12px;
     margin-top: 8px;
@@ -16,7 +16,7 @@
     line-height: 1.2;  /* 適當的行高 */
 }
 
-/* 權限狀態樣式 */
+/* 權限狀態样式 */
 .status-granted {
     color: #059669;
 }
@@ -72,7 +72,7 @@
     line-height: 1.4;
 }
 
-/* 測試按鈕區塊 */
+/* 测试按鈕區塊 */
 .notification-actions {
     margin-top: 16px;
 }
@@ -92,7 +92,7 @@
     background-color: var(--primary-hover, #0066b3);
 }
 
-/* 通知設定專用的 setting-info 調整 */
+/* 通知设定專用的 setting-info 調整 */
 #notificationSettings .setting-info {
     max-width: calc(100% - 100px);  /* 為開關預留空間 */
 }

@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 音效管理模組
+ * MCP Feedback Ultra - 音效管理模組
  * ===================================
  * 
- * 處理音效通知的播放、管理和設定功能
+ * 处理音效通知的播放、管理和设定功能
  * 使用 HTML5 Audio API 進行音效播放
  * 支援自訂音效上傳和 base64 儲存
  */
@@ -20,10 +20,10 @@
     function AudioManager(options) {
         options = options || {};
         
-        // 設定管理器引用
+        // 设定管理器引用
         this.settingsManager = options.settingsManager || null;
         
-        // 當前音效設定
+        // 當前音效设定
         this.currentAudioSettings = {
             enabled: false,
             volume: 50,
@@ -31,7 +31,7 @@
             customAudios: []
         };
         
-        // 預設音效（base64 編碼的簡單提示音）
+        // 预设音效（base64 編碼的簡單提示音）
         this.defaultAudios = {
             'default-beep': {
                 id: 'default-beep',
@@ -59,7 +59,7 @@
         // 當前播放的 Audio 物件
         this.currentAudio = null;
 
-        // 用戶互動檢測
+        // 用戶互動检测
         this.userHasInteracted = false;
         this.pendingNotifications = [];
         this.autoplayBlocked = false;
@@ -84,33 +84,33 @@
     };
 
     /**
-     * 載入音效設定
+     * 载入音效设定
      */
     AudioManager.prototype.loadAudioSettings = function() {
         if (!this.settingsManager) {
-            console.warn('⚠️ SettingsManager 未設定，使用預設音效設定');
+            console.warn('⚠️ SettingsManager 未设定，使用预设音效设定');
             return;
         }
 
         try {
-            // 從設定管理器載入音效相關設定
+            // 從设定管理器载入音效相關设定
             this.currentAudioSettings.enabled = this.settingsManager.get('audioNotificationEnabled', false);
             this.currentAudioSettings.volume = this.settingsManager.get('audioNotificationVolume', 50);
             this.currentAudioSettings.selectedAudioId = this.settingsManager.get('selectedAudioId', 'default-beep');
             this.currentAudioSettings.customAudios = this.settingsManager.get('customAudios', []);
             
-            console.log('📥 音效設定已載入:', this.currentAudioSettings);
+            console.log('📥 音效设定已载入:', this.currentAudioSettings);
         } catch (error) {
-            console.error('❌ 載入音效設定失敗:', error);
+            console.error('❌ 载入音效设定失敗:', error);
         }
     };
 
     /**
-     * 儲存音效設定
+     * 儲存音效设定
      */
     AudioManager.prototype.saveAudioSettings = function() {
         if (!this.settingsManager) {
-            console.warn('⚠️ SettingsManager 未設定，無法儲存音效設定');
+            console.warn('⚠️ SettingsManager 未设定，無法儲存音效设定');
             return;
         }
 
@@ -120,14 +120,14 @@
             this.settingsManager.set('selectedAudioId', this.currentAudioSettings.selectedAudioId);
             this.settingsManager.set('customAudios', this.currentAudioSettings.customAudios);
             
-            console.log('💾 音效設定已儲存');
+            console.log('💾 音效设定已儲存');
             
             // 觸發回調
             if (this.onSettingsChange) {
                 this.onSettingsChange(this.currentAudioSettings);
             }
         } catch (error) {
-            console.error('❌ 儲存音效設定失敗:', error);
+            console.error('❌ 儲存音效设定失敗:', error);
         }
     };
 
@@ -143,7 +143,7 @@
         try {
             const audioData = this.getAudioById(this.currentAudioSettings.selectedAudioId);
             if (!audioData) {
-                console.warn('⚠️ 找不到指定的音效，使用預設音效');
+                console.warn('⚠️ 找不到指定的音效，使用预设音效');
                 this.playAudioSmart(this.defaultAudios['default-beep']);
                 return;
             }
@@ -155,7 +155,7 @@
     };
 
     /**
-     * 播放啟動音效通知（應用程式就緒時播放）
+     * 播放啟動音效通知（应用程序就緒時播放）
      */
     AudioManager.prototype.playStartupNotification = function() {
         if (!this.currentAudioSettings.enabled) {
@@ -170,12 +170,12 @@
         }
 
         this.startupNotificationPlayed = true;
-        console.log('🎵 播放應用程式啟動音效');
+        console.log('🎵 播放应用程序啟動音效');
 
         try {
             const audioData = this.getAudioById(this.currentAudioSettings.selectedAudioId);
             if (!audioData) {
-                console.warn('⚠️ 找不到指定的音效，使用預設啟動音效');
+                console.warn('⚠️ 找不到指定的音效，使用预设啟動音效');
                 this.playAudioSmart(this.defaultAudios['default-beep']);
                 return;
             }
@@ -187,7 +187,7 @@
     };
 
     /**
-     * 智能音效播放（處理自動播放限制）
+     * 智能音效播放（处理自動播放限制）
      */
     AudioManager.prototype.playAudioSmart = function(audioData) {
         // 如果已知自動播放被阻止，直接加入待播放隊列
@@ -243,27 +243,27 @@
                             reject(error);
                         });
                 } else {
-                    // 舊版瀏覽器，假設播放成功
-                    console.log('🔊 音效播放（舊版瀏覽器）:', audioData.name);
+                    // 舊版浏览器，假設播放成功
+                    console.log('🔊 音效播放（舊版浏览器）:', audioData.name);
                     resolve();
                 }
             } catch (error) {
-                console.error('❌ 播放音效時發生錯誤:', error);
+                console.error('❌ 播放音效時發生错误:', error);
                 reject(error);
             }
         });
     };
 
     /**
-     * 根據 ID 獲取音效資料
+     * 根據 ID 獲取音效资料
      */
     AudioManager.prototype.getAudioById = function(audioId) {
-        // 先檢查預設音效
+        // 先检查预设音效
         if (this.defaultAudios[audioId]) {
             return this.defaultAudios[audioId];
         }
 
-        // 再檢查自訂音效
+        // 再检查自訂音效
         return this.currentAudioSettings.customAudios.find(audio => audio.id === audioId) || null;
     };
 
@@ -273,7 +273,7 @@
     AudioManager.prototype.getAllAudios = function() {
         const allAudios = [];
         
-        // 新增預設音效
+        // 新增预设音效
         Object.values(this.defaultAudios).forEach(audio => {
             allAudios.push(audio);
         });
@@ -292,17 +292,17 @@
     AudioManager.prototype.addCustomAudio = function(name, file) {
         return new Promise((resolve, reject) => {
             if (!name || !file) {
-                reject(new Error('音效名稱和檔案不能為空'));
+                reject(new Error('音效名稱和文件不能為空'));
                 return;
             }
 
-            // 檢查檔案類型
+            // 检查文件類型
             if (!this.isValidAudioFile(file)) {
-                reject(new Error('不支援的音效檔案格式'));
+                reject(new Error('不支援的音效文件格式'));
                 return;
             }
 
-            // 檢查名稱是否重複
+            // 检查名稱是否重複
             if (this.isAudioNameExists(name)) {
                 reject(new Error('音效名稱已存在'));
                 return;
@@ -343,7 +343,7 @@
 
         const removedAudio = this.currentAudioSettings.customAudios.splice(index, 1)[0];
         
-        // 如果刪除的是當前選中的音效，切換到預設音效
+        // 如果刪除的是當前選中的音效，切換到预设音效
         if (this.currentAudioSettings.selectedAudioId === audioId) {
             this.currentAudioSettings.selectedAudioId = 'default-beep';
         }
@@ -355,7 +355,7 @@
     };
 
     /**
-     * 設定音量
+     * 设定音量
      */
     AudioManager.prototype.setVolume = function(volume) {
         if (volume < 0 || volume > 100) {
@@ -364,11 +364,11 @@
 
         this.currentAudioSettings.volume = volume;
         this.saveAudioSettings();
-        console.log('🔊 音量已設定為:', volume);
+        console.log('🔊 音量已设定為:', volume);
     };
 
     /**
-     * 設定是否啟用音效通知
+     * 设定是否啟用音效通知
      */
     AudioManager.prototype.setEnabled = function(enabled) {
         this.currentAudioSettings.enabled = !!enabled;
@@ -377,7 +377,7 @@
     };
 
     /**
-     * 設定選中的音效
+     * 设定選中的音效
      */
     AudioManager.prototype.setSelectedAudio = function(audioId) {
         if (!this.getAudioById(audioId)) {
@@ -386,11 +386,11 @@
 
         this.currentAudioSettings.selectedAudioId = audioId;
         this.saveAudioSettings();
-        console.log('🎵 已選擇音效:', audioId);
+        console.log('🎵 已选择音效:', audioId);
     };
 
     /**
-     * 檢查是否為有效的音效檔案
+     * 检查是否為有效的音效文件
      */
     AudioManager.prototype.isValidAudioFile = function(file) {
         const validTypes = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg'];
@@ -398,30 +398,30 @@
     };
 
     /**
-     * 檢查音效名稱是否已存在
+     * 检查音效名稱是否已存在
      */
     AudioManager.prototype.isAudioNameExists = function(name) {
-        // 檢查預設音效
+        // 检查预设音效
         const defaultExists = Object.values(this.defaultAudios).some(audio => audio.name === name);
         if (defaultExists) return true;
 
-        // 檢查自訂音效
+        // 检查自訂音效
         return this.currentAudioSettings.customAudios.some(audio => audio.name === name);
     };
 
     /**
-     * 檔案轉 base64
+     * 文件轉 base64
      */
     AudioManager.prototype.fileToBase64 = function(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = function() {
-                // 移除 data URL 前綴，只保留 base64 資料
+                // 移除 data URL 前綴，只保留 base64 资料
                 const base64 = reader.result.split(',')[1];
                 resolve(base64);
             };
             reader.onerror = function() {
-                reject(new Error('檔案讀取失敗'));
+                reject(new Error('文件讀取失敗'));
             };
             reader.readAsDataURL(file);
         });
@@ -467,7 +467,7 @@
         const buffer = new ArrayBuffer(44 + numSamples * 2);
         const view = new DataView(buffer);
 
-        // WAV 檔案標頭
+        // WAV 文件標頭
         const writeString = (offset, string) => {
             for (let i = 0; i < string.length; i++) {
                 view.setUint8(offset + i, string.charCodeAt(i));
@@ -488,7 +488,7 @@
         writeString(36, 'data');
         view.setUint32(40, numSamples * 2, true);
 
-        // 生成音效資料
+        // 生成音效资料
         for (let i = 0; i < numSamples; i++) {
             const t = i / sampleRate;
             const fadeOut = Math.max(0, 1 - (t / duration) * 0.5); // 漸弱效果
@@ -507,7 +507,7 @@
     };
 
     /**
-     * 設置用戶互動檢測
+     * 设置用戶互動检测
      */
     AudioManager.prototype.setupUserInteractionDetection = function() {
         if (this.interactionListenersAdded) return;
@@ -518,7 +518,7 @@
         const handleUserInteraction = function() {
             if (!self.userHasInteracted) {
                 self.userHasInteracted = true;
-                console.log('🎯 檢測到用戶互動，音效播放已解鎖');
+                console.log('🎯 检测到用戶互動，音效播放已解鎖');
 
                 // 播放待播放的通知
                 self.processPendingNotifications();
@@ -537,7 +537,7 @@
         });
 
         this.interactionListenersAdded = true;
-        console.log('🎯 用戶互動檢測已設置');
+        console.log('🎯 用戶互動检测已设置');
     };
 
     /**
@@ -558,12 +558,12 @@
     };
 
     /**
-     * 處理待播放的通知
+     * 处理待播放的通知
      */
     AudioManager.prototype.processPendingNotifications = function() {
         if (this.pendingNotifications.length === 0) return;
 
-        console.log('🔊 處理待播放通知，數量:', this.pendingNotifications.length);
+        console.log('🔊 处理待播放通知，數量:', this.pendingNotifications.length);
 
         // 只播放最新的通知，避免音效重疊
         const latestNotification = this.pendingNotifications[this.pendingNotifications.length - 1];
@@ -579,26 +579,26 @@
     };
 
     /**
-     * 顯示自動播放被阻止的通知
+     * 显示自動播放被阻止的通知
      */
     AudioManager.prototype.showAutoplayBlockedNotification = function() {
-        // 只顯示一次通知
+        // 只显示一次通知
         if (this.autoplayNotificationShown) return;
         this.autoplayNotificationShown = true;
 
-        console.log('🔇 瀏覽器阻止音效自動播放，請點擊頁面任意位置以啟用音效通知');
+        console.log('🔇 浏览器阻止音效自動播放，請點擊頁面任意位置以啟用音效通知');
 
         // 可以在這裡添加 UI 通知邏輯
         if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
             const message = window.i18nManager ?
-                window.i18nManager.t('notification.autoplayBlocked', '瀏覽器阻止音效自動播放，請點擊頁面以啟用音效通知') :
-                '瀏覽器阻止音效自動播放，請點擊頁面以啟用音效通知';
+                window.i18nManager.t('notification.autoplayBlocked', '浏览器阻止音效自動播放，請點擊頁面以啟用音效通知') :
+                '浏览器阻止音效自動播放，請點擊頁面以啟用音效通知';
             window.MCPFeedback.Utils.showMessage(message, 'info');
         }
     };
 
     /**
-     * 獲取當前設定
+     * 獲取當前设定
      */
     AudioManager.prototype.getSettings = function() {
         return Utils.deepClone(this.currentAudioSettings);

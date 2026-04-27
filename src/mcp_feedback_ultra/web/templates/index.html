@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
         :root {
-            /* 深色主題顏色變數 */
+            /* 深色主題顏色变量 */
             --bg-primary: #1e1e1e;
             --bg-secondary: #2d2d30;
             --bg-tertiary: #252526;
@@ -39,7 +39,7 @@
             flex-direction: column;
         }
 
-        /* 等待會話時的樣式 */
+        /* 等待會話時的样式 */
         .waiting-container {
             display: flex;
             align-items: center;
@@ -77,7 +77,7 @@
             color: var(--accent-color);
         }
 
-        /* 連接狀態指示器 */
+        /* 连接狀態指示器 */
         .connection-status {
             position: fixed;
             top: 20px;
@@ -126,7 +126,7 @@
             50% { opacity: 0.5; }
         }
 
-        /* 主容器 - 有會話時顯示 */
+        /* 主容器 - 有會話時显示 */
         .main-container {
             display: none;
             width: 100%;
@@ -142,7 +142,7 @@
             display: flex;
         }
 
-        /* 回饋界面樣式 */
+        /* 回饋界面样式 */
         .feedback-container {
             width: 100%;
             max-width: 1000px;
@@ -290,16 +290,16 @@
     </style>
 </head>
 <body>
-    <!-- 連接狀態指示器 -->
+    <!-- 连接狀態指示器 -->
     <div class="connection-status">
         <div class="connection-indicator" id="connectionIndicator"></div>
-        <span id="connectionText">連接中...</span>
+        <span id="connectionText">连接中...</span>
     </div>
 
     <!-- 等待會話的頁面 -->
     <div class="waiting-container" id="waitingContainer">
         <div class="waiting-content">
-            <h1 class="waiting-title">MCP Feedback Enhanced</h1>
+            <h1 class="waiting-title">MCP Feedback Ultra</h1>
             <p class="waiting-description">
                 Web UI 互動式回饋收集工具
             </p>
@@ -311,12 +311,12 @@
 
     <!-- 主要回饋界面 -->
     <div class="main-container" id="mainContainer">
-        <!-- 這裡將動態載入回饋界面內容 -->
+        <!-- 這裡將動態载入回饋界面內容 -->
     </div>
 
     <!-- JavaScript -->
     <script src="/static/js/i18n.js?v=2025010505"></script>
-    <!-- 載入所有模組 -->
+    <!-- 载入所有模組 -->
     <script src="/static/js/modules/utils.js?v=2025010505"></script>
 
     <script src="/static/js/modules/websocket-manager.js?v=2025010505"></script>
@@ -324,7 +324,7 @@
     <script src="/static/js/modules/settings-manager.js?v=2025010505"></script>
     <script src="/static/js/modules/ui-manager.js?v=2025010505"></script>
     <script src="/static/js/modules/auto-refresh-manager.js?v=2025010505"></script>
-    <!-- 主應用程式 -->
+    <!-- 主应用程序 -->
     <script src="/static/js/app.js?v=2025010505"></script>
 </body>
 </html>

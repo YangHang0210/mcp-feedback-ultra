@@ -1,5 +1,5 @@
 /**
- * MCP Feedback Enhanced - DOM 操作工具模組
+ * MCP Feedback Ultra - DOM 操作工具模組
  * ==========================================
  * 
  * 提供通用的 DOM 操作和元素管理功能
@@ -17,31 +17,31 @@
      */
     const DOMUtils = {
         /**
-         * 安全查詢選擇器
+         * 安全查詢选择器
          */
         safeQuerySelector: function(selector) {
             try {
                 return document.querySelector(selector);
             } catch (error) {
-                console.warn('查詢選擇器失敗:', selector, error);
+                console.warn('查詢选择器失敗:', selector, error);
                 return null;
             }
         },
 
         /**
-         * 安全查詢所有選擇器
+         * 安全查詢所有选择器
          */
         safeQuerySelectorAll: function(selector) {
             try {
                 return document.querySelectorAll(selector);
             } catch (error) {
-                console.warn('查詢所有選擇器失敗:', selector, error);
+                console.warn('查詢所有选择器失敗:', selector, error);
                 return [];
             }
         },
 
         /**
-         * 安全設置文本內容
+         * 安全设置文本內容
          */
         safeSetTextContent: function(element, text) {
             if (element && typeof element.textContent !== 'undefined') {
@@ -52,7 +52,7 @@
         },
 
         /**
-         * 安全設置 HTML 內容
+         * 安全设置 HTML 內容
          */
         safeSetInnerHTML: function(element, html) {
             if (element && typeof element.innerHTML !== 'undefined') {
@@ -96,7 +96,7 @@
         },
 
         /**
-         * 檢查元素是否包含指定類
+         * 检查元素是否包含指定類
          */
         hasClass: function(element, className) {
             return element && element.classList && element.classList.contains(className);
@@ -165,7 +165,7 @@
         },
 
         /**
-         * 顯示元素
+         * 显示元素
          */
         showElement: function(element) {
             if (element) {
@@ -187,7 +187,7 @@
         },
 
         /**
-         * 切換元素顯示狀態
+         * 切換元素显示狀態
          */
         toggleElement: function(element) {
             if (element) {
@@ -204,7 +204,7 @@
         },
 
         /**
-         * 設置元素屬性
+         * 设置元素屬性
          */
         setAttribute: function(element, name, value) {
             if (element && name) {
@@ -268,7 +268,7 @@
         },
 
         /**
-         * 檢查元素是否在視窗內
+         * 检查元素是否在視窗內
          */
         isElementInViewport: function(element) {
             const rect = this.getBoundingRect(element);
@@ -294,10 +294,10 @@
         },
 
         /**
-         * 防抖函數 - 延遲執行，在指定時間內重複調用會重置計時器
+         * 防抖函數 - 延遲执行，在指定時間內重複調用會重置計時器
          * @param {Function} func - 要防抖的函數
          * @param {number} delay - 延遲時間（毫秒）
-         * @param {boolean} immediate - 是否立即執行第一次調用
+         * @param {boolean} immediate - 是否立即执行第一次調用
          * @returns {Function} 防抖後的函數
          */
         debounce: function(func, delay, immediate) {
@@ -324,7 +324,7 @@
         },
 
         /**
-         * 節流函數 - 限制函數執行頻率，在指定時間內最多執行一次
+         * 節流函數 - 限制函數执行頻率，在指定時間內最多执行一次
          * @param {Function} func - 要節流的函數
          * @param {number} limit - 時間間隔（毫秒）
          * @returns {Function} 節流後的函數
@@ -350,7 +350,7 @@
          * @param {Object} target - 目標對象
          * @param {string} methodName - 方法名稱
          * @param {number} delay - 防抖延遲時間
-         * @param {boolean} immediate - 是否立即執行
+         * @param {boolean} immediate - 是否立即执行
          * @returns {Function} 原始函數的引用
          */
         wrapWithDebounce: function(target, methodName, delay, immediate) {
@@ -387,6 +387,6 @@
     window.MCPFeedback.DOMUtils = DOMUtils;
     window.MCPFeedback.Utils.DOM = DOMUtils; // 保持向後相容
 
-    console.log('✅ DOMUtils 模組載入完成');
+    console.log('✅ DOMUtils 模組载入完成');
 
 })();

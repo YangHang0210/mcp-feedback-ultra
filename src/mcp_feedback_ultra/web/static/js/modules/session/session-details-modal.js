@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 會話詳情彈窗模組
+ * MCP Feedback Ultra - 會話詳情彈窗模組
  * =======================================
  * 
- * 負責會話詳情彈窗的創建、顯示和管理
+ * 負責會話詳情彈窗的創建、显示和管理
  */
 
 (function() {
@@ -35,26 +35,26 @@
     }
 
     /**
-     * 顯示會話詳情
+     * 显示會話詳情
      */
     SessionDetailsModal.prototype.showSessionDetails = function(sessionData) {
         if (!sessionData) {
-            this.showError('沒有可顯示的會話數據');
+            this.showError('沒有可显示的會話數據');
             return;
         }
 
-        // console.log('🔍 顯示會話詳情:', sessionData.session_id);
+        // console.log('🔍 显示會話詳情:', sessionData.session_id);
 
         // 存储当前会话数据，供复制功能使用
         this.currentSessionData = sessionData;
 
-        // 關閉現有彈窗
+        // 关闭現有彈窗
         this.closeModal();
 
         // 格式化會話詳情
         const details = this.formatSessionDetails(sessionData);
 
-        // 創建並顯示彈窗
+        // 創建並显示彈窗
         this.createAndShowModal(details);
     };
 
@@ -64,15 +64,15 @@
     SessionDetailsModal.prototype.formatSessionDetails = function(sessionData) {
         // console.log('🔍 格式化會話詳情:', sessionData);
 
-        // 處理會話 ID - 顯示完整 session ID
+        // 处理會話 ID - 显示完整 session ID
         const sessionId = sessionData.session_id || '未知';
 
-        // 處理建立時間
+        // 处理建立時間
         const createdTime = sessionData.created_at ?
             TimeUtils.formatTimestamp(sessionData.created_at) :
             '未知';
 
-        // 處理持續時間
+        // 处理持續時間
         let duration = '進行中';
         if (sessionData.duration && sessionData.duration > 0) {
             duration = TimeUtils.formatDuration(sessionData.duration);
@@ -86,12 +86,12 @@
             }
         }
 
-        // 處理狀態
+        // 处理狀態
         const status = sessionData.status || 'waiting';
         const statusText = StatusUtils.getStatusText(status);
         const statusColor = StatusUtils.getStatusColor(status);
 
-        // 處理用戶訊息記錄
+        // 处理用戶訊息记录
         const userMessages = sessionData.user_messages || [];
         const userMessageCount = userMessages.length;
 
@@ -109,7 +109,7 @@
     };
 
     /**
-     * 創建並顯示彈窗
+     * 創建並显示彈窗
      */
     SessionDetailsModal.prototype.createAndShowModal = function(details) {
         // 創建彈窗 HTML
@@ -121,10 +121,10 @@
         // 獲取彈窗元素
         this.currentModal = document.getElementById('sessionDetailsModal');
 
-        // 設置事件監聽器
+        // 设置事件監聽器
         this.setupEventListeners();
 
-        // 添加顯示動畫
+        // 添加显示動畫
         this.showModal();
     };
 
@@ -133,8 +133,8 @@
      */
     SessionDetailsModal.prototype.createModalHTML = function(details) {
         const i18n = window.i18nManager;
-        const title = i18n ? i18n.t('sessionManagement.sessionDetails.title') : '會話詳細資訊';
-        const closeLabel = i18n ? i18n.t('sessionManagement.sessionDetails.close') : '關閉';
+        const title = i18n ? i18n.t('sessionManagement.sessionDetails.title') : '會話詳細资讯';
+        const closeLabel = i18n ? i18n.t('sessionManagement.sessionDetails.close') : '关闭';
         const sessionIdLabel = i18n ? i18n.t('sessionManagement.sessionId') : '會話 ID';
         const statusLabel = i18n ? i18n.t('sessionManagement.status') : '狀態';
 
@@ -187,7 +187,7 @@
     };
 
     /**
-     * 創建用戶訊息記錄區段
+     * 創建用戶訊息记录區段
      */
     SessionDetailsModal.prototype.createUserMessagesSection = function(details) {
         const i18n = window.i18nManager;
@@ -197,7 +197,7 @@
             return '';
         }
 
-        const sectionTitle = i18n ? i18n.t('sessionHistory.userMessages.title') : '用戶訊息記錄';
+        const sectionTitle = i18n ? i18n.t('sessionHistory.userMessages.title') : '用戶訊息记录';
         const messageCountLabel = i18n ? i18n.t('sessionHistory.userMessages.messageCount') : '訊息數量';
 
         let messagesHtml = '';
@@ -211,7 +211,7 @@
             let contentHtml = '';
 
             if (message.content !== undefined) {
-                // 完整記錄模式
+                // 完整记录模式
                 const contentPreview = message.content.length > 100 ?
                     message.content.substring(0, 100) + '...' :
                     message.content;
@@ -243,7 +243,7 @@
                 // 隱私保護模式
                 contentHtml = `
                     <div class="message-privacy">
-                        <em style="color: var(--text-secondary);">內容記錄已停用（隱私設定）</em>
+                        <em style="color: var(--text-secondary);">內容记录已停用（隱私设定）</em>
                     </div>
                 `;
             }
@@ -277,14 +277,14 @@
     };
 
     /**
-     * 設置事件監聽器
+     * 设置事件監聽器
      */
     SessionDetailsModal.prototype.setupEventListeners = function() {
         if (!this.currentModal) return;
 
         const self = this;
 
-        // 關閉按鈕
+        // 关闭按鈕
         const closeBtn = this.currentModal.querySelector('#closeSessionDetails');
         const closeFooterBtn = this.currentModal.querySelector('#closeSessionDetailsBtn');
 
@@ -300,7 +300,7 @@
             });
         }
 
-        // 背景點擊關閉
+        // 背景點擊关闭
         if (this.enableBackdropClose) {
             const backdrop = this.currentModal.querySelector('.modal-backdrop');
             if (backdrop) {
@@ -310,7 +310,7 @@
             }
         }
 
-        // ESC 鍵關閉
+        // ESC 鍵关闭
         if (this.enableEscapeClose) {
             this.keydownHandler = function(e) {
                 if (e.key === 'Escape') {
@@ -340,17 +340,17 @@
     };
 
     /**
-     * 顯示彈窗動畫
+     * 显示彈窗動畫
      */
     SessionDetailsModal.prototype.showModal = function() {
         if (!this.currentModal) return;
 
-        // 彈窗已經通過 CSS 動畫自動顯示，無需額外處理
-        // console.log('🔍 會話詳情彈窗已顯示');
+        // 彈窗已經通過 CSS 動畫自動显示，無需額外处理
+        // console.log('🔍 會話詳情彈窗已显示');
     };
 
     /**
-     * 關閉彈窗
+     * 关闭彈窗
      */
     SessionDetailsModal.prototype.closeModal = function() {
         if (!this.currentModal) return;
@@ -367,7 +367,7 @@
     };
 
     /**
-     * 顯示錯誤訊息
+     * 显示错误訊息
      */
     SessionDetailsModal.prototype.showError = function(message) {
         if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
@@ -395,9 +395,9 @@
         if (!content) return '';
 
         try {
-            // 檢查 marked 和 DOMPurify 是否可用
+            // 检查 marked 和 DOMPurify 是否可用
             if (typeof window.marked === 'undefined' || typeof window.DOMPurify === 'undefined') {
-                console.warn('⚠️ Markdown 庫未載入，使用純文字顯示');
+                console.warn('⚠️ Markdown 庫未载入，使用純文字显示');
                 return this.escapeHtml(content);
             }
 
@@ -480,7 +480,7 @@
                 this.fallbackCopyTextToClipboard(summaryContent, '✅ 摘要已複製到剪貼板');
             }
         } catch (error) {
-            console.error('❌ 複製摘要時發生錯誤:', error);
+            console.error('❌ 複製摘要時發生错误:', error);
             this.showToast('❌ 複製失敗，請手動複製', 'error');
         }
     };
@@ -512,7 +512,7 @@
                 this.fallbackCopyTextToClipboard(messageContent, '✅ 消息已複製到剪貼板');
             }
         } catch (error) {
-            console.error('❌ 複製用戶消息時發生錯誤:', error);
+            console.error('❌ 複製用戶消息時發生错误:', error);
             this.showToast('❌ 複製失敗，請手動複製', 'error');
         }
     };
@@ -520,7 +520,7 @@
 
 
     /**
-     * 顯示提示消息
+     * 显示提示消息
      */
     SessionDetailsModal.prototype.showToast = function(message, type) {
         // 創建提示元素
@@ -532,7 +532,7 @@
         if (this.currentModal) {
             this.currentModal.appendChild(toast);
 
-            // 顯示動畫
+            // 显示動畫
             setTimeout(function() {
                 toast.classList.add('show');
             }, 10);
@@ -550,17 +550,17 @@
     };
 
     /**
-     * 檢查是否有彈窗開啟
+     * 检查是否有彈窗开启
      */
     SessionDetailsModal.prototype.isModalOpen = function() {
         return this.currentModal !== null;
     };
 
     /**
-     * 強制關閉所有彈窗
+     * 強制关闭所有彈窗
      */
     SessionDetailsModal.prototype.forceCloseAll = function() {
-        // 關閉當前彈窗
+        // 关闭當前彈窗
         this.closeModal();
 
         // 清理可能遺留的彈窗元素
@@ -589,6 +589,6 @@
     // 將 SessionDetailsModal 加入命名空間
     window.MCPFeedback.Session.DetailsModal = SessionDetailsModal;
 
-    // console.log('✅ SessionDetailsModal 模組載入完成');
+    // console.log('✅ SessionDetailsModal 模組载入完成');
 
 })();

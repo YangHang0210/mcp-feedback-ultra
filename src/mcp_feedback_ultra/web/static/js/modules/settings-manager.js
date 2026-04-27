@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 設定管理模組
+ * MCP Feedback Ultra - 设定管理模組
  * ==================================
  * 
- * 處理應用程式設定的載入、保存和同步
+ * 处理应用程序设定的载入、保存和同步
  */
 
 (function() {
@@ -18,15 +18,15 @@
         console;
 
     /**
-     * 設定管理器建構函數
+     * 设定管理器建構函數
      */
     function SettingsManager(options) {
         options = options || {};
         
-        // 從 i18nManager 獲取當前語言作為預設值
+        // 從 i18nManager 獲取當前語言作為预设值
         const defaultLanguage = window.i18nManager ? window.i18nManager.getCurrentLanguage() : 'zh-TW';
         
-        // 預設設定
+        // 预设设定
         this.defaultSettings = {
             layoutMode: 'combined-vertical',
             autoClose: false,
@@ -35,36 +35,36 @@
             enableBase64Detail: false,
             // 移除 activeTab - 頁籤切換無需持久化
             sessionPanelCollapsed: false,
-            // 自動定時提交設定
+            // 自動定時提交设定
             autoSubmitEnabled: false,
             autoSubmitTimeout: 30,
             autoSubmitPromptId: null,
-            // 音效通知設定
+            // 音效通知设定
             audioNotificationEnabled: false,
             audioNotificationVolume: 50,
             selectedAudioId: 'default-beep',
             customAudios: [],
-            // 會話歷史設定
+            // 會話歷史设定
             sessionHistoryRetentionHours: 72,
-            // 用戶訊息記錄設定
+            // 用戶訊息记录设定
             userMessageRecordingEnabled: true,
             userMessagePrivacyLevel: 'full', // 'full', 'basic', 'disabled'
-            // UI 元素尺寸設定
+            // UI 元素尺寸设定
             combinedFeedbackTextHeight: 150, // combinedFeedbackText textarea 的高度（px）
-            // 會話超時設定
-            sessionTimeoutEnabled: false,  // 預設關閉
-            sessionTimeoutSeconds: 3600,   // 預設 1 小時（秒）
-            // 自動執行命令設定
-            autoCommandEnabled: true,      // 是否啟用自動執行命令
-            commandOnNewSession: '',       // 新會話建立時執行的命令
-            commandOnFeedbackSubmit: '',   // 提交回饋後執行的命令
-            // 內置反饋提醒設定
+            // 會話超時设定
+            sessionTimeoutEnabled: false,  // 预设关闭
+            sessionTimeoutSeconds: 3600,   // 预设 1 小時（秒）
+            // 自動执行命令设定
+            autoCommandEnabled: true,      // 是否啟用自動执行命令
+            commandOnNewSession: '',       // 新會話建立時执行的命令
+            commandOnFeedbackSubmit: '',   // 提交回饋後执行的命令
+            // 內置反饋提醒设定
             feedbackReminderEnabled: true,  // 是否啟用內置反饋提醒
-            feedbackReminderText: '',       // 自定義提醒文字（空字串使用預設值）
-            newTaskInstructionText: ''      // 自定義新任務系統指令（空字串使用預設值）
+            feedbackReminderText: '',       // 自定義提醒文字（空字串使用预设值）
+            newTaskInstructionText: ''      // 自定義新任務系統指令（空字串使用预设值）
         };
         
-        // 當前設定
+        // 當前设定
         this.currentSettings = Utils.deepClone(this.defaultSettings);
         
         // 回調函數
@@ -76,30 +76,30 @@
     }
 
     /**
-     * 載入設定
+     * 载入设定
      */
     SettingsManager.prototype.loadSettings = function() {
         const self = this;
         
         return new Promise(function(resolve, reject) {
-            logger.info('開始載入設定...');
+            logger.info('開始载入设定...');
 
-            // 只從伺服器端載入設定
+            // 只從伺服器端载入设定
             self.loadFromServer()
                 .then(function(serverSettings) {
                     if (serverSettings && Object.keys(serverSettings).length > 0) {
                         self.currentSettings = self.mergeSettings(self.defaultSettings, serverSettings);
-                        logger.info('從伺服器端載入設定成功:', self.currentSettings);
+                        logger.info('從伺服器端载入设定成功:', self.currentSettings);
                     } else {
-                        console.log('沒有找到設定，使用預設值');
+                        console.log('沒有找到设定，使用预设值');
                         self.currentSettings = Utils.deepClone(self.defaultSettings);
                     }
                     
-                    // 同步語言設定到 i18nManager
+                    // 同步語言设定到 i18nManager
                     if (self.currentSettings.language && window.i18nManager) {
                         const currentI18nLanguage = window.i18nManager.getCurrentLanguage();
                         if (self.currentSettings.language !== currentI18nLanguage) {
-                            console.log('🔧 SettingsManager.loadSettings: 同步語言設定到 i18nManager');
+                            console.log('🔧 SettingsManager.loadSettings: 同步語言设定到 i18nManager');
                             console.log('  從:', currentI18nLanguage, '到:', self.currentSettings.language);
                             window.i18nManager.setLanguage(self.currentSettings.language);
                         }
@@ -108,7 +108,7 @@
                     resolve(self.currentSettings);
                 })
                 .catch(function(error) {
-                    console.error('載入設定失敗:', error);
+                    console.error('载入设定失敗:', error);
                     self.currentSettings = Utils.deepClone(self.defaultSettings);
                     resolve(self.currentSettings);
                 });
@@ -116,7 +116,7 @@
     };
 
     /**
-     * 從伺服器載入設定
+     * 從伺服器载入设定
      */
     SettingsManager.prototype.loadFromServer = function() {
         const lang = window.i18nManager ? window.i18nManager.getCurrentLanguage() : 'zh-TW';
@@ -125,11 +125,11 @@
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('伺服器回應錯誤: ' + response.status);
+                    throw new Error('伺服器回應错误: ' + response.status);
                 }
             })
             .catch(function(error) {
-                console.warn('從伺服器端載入設定失敗:', error);
+                console.warn('從伺服器端载入设定失敗:', error);
                 return null;
             });
     };
@@ -137,14 +137,14 @@
 
 
     /**
-     * 保存設定
+     * 保存设定
      */
     SettingsManager.prototype.saveSettings = function(newSettings) {
         if (newSettings) {
             this.currentSettings = this.mergeSettings(this.currentSettings, newSettings);
         }
 
-        logger.debug('保存設定:', this.currentSettings);
+        logger.debug('保存设定:', this.currentSettings);
 
         // 只保存到伺服器端
         this.saveToServer();
@@ -167,7 +167,7 @@
     };
 
     /**
-     * 執行實際的伺服器保存操作
+     * 执行實際的伺服器保存操作
      */
     SettingsManager.prototype._performServerSave = function() {
         const self = this;
@@ -185,25 +185,25 @@
         })
         .then(function(data) {
             if (data.status === 'success') {
-                console.log('設定已即時同步到伺服器端');
-                // 處理訊息代碼
+                console.log('设定已即時同步到伺服器端');
+                // 处理訊息代碼
                 if (data.messageCode && window.i18nManager) {
                     const message = window.i18nManager.t(data.messageCode, data.params);
                     console.log('伺服器回應:', message);
                 }
             } else {
-                console.warn('同步設定到伺服器端失敗:', data);
+                console.warn('同步设定到伺服器端失敗:', data);
             }
         })
         .catch(function(error) {
-            console.warn('同步設定到伺服器端時發生錯誤:', error);
+            console.warn('同步设定到伺服器端時發生错误:', error);
         });
     };
 
 
 
     /**
-     * 合併設定
+     * 合併设定
      */
     SettingsManager.prototype.mergeSettings = function(defaultSettings, newSettings) {
         const merged = Utils.deepClone(defaultSettings);
@@ -218,7 +218,7 @@
     };
 
     /**
-     * 獲取設定值
+     * 獲取设定值
      */
     SettingsManager.prototype.get = function(key, defaultValue) {
         if (key in this.currentSettings) {
@@ -228,25 +228,25 @@
     };
 
     /**
-     * 設置設定值
+     * 设置设定值
      */
     SettingsManager.prototype.set = function(key, value) {
         const oldValue = this.currentSettings[key];
         this.currentSettings[key] = value;
 
-        // 特殊處理語言變更
+        // 特殊处理語言變更
         if (key === 'language' && oldValue !== value) {
             this.handleLanguageChange(value);
         }
 
-        // 所有設定變更都即時保存
+        // 所有设定變更都即時保存
         this.saveSettings();
 
         return this;
     };
 
     /**
-     * 批量設置設定
+     * 批量设置设定
      */
     SettingsManager.prototype.setMultiple = function(settings) {
         let languageChanged = false;
@@ -271,7 +271,7 @@
     };
 
     /**
-     * 處理語言變更
+     * 处理語言變更
      */
     SettingsManager.prototype.handleLanguageChange = function(newLanguage) {
         console.log('🔄 SettingsManager.handleLanguageChange: ' + newLanguage);
@@ -282,7 +282,7 @@
             window.i18nManager.setLanguage(newLanguage);
         }
 
-        // 延遲更新動態文字，確保 i18n 已經載入新語言
+        // 延遲更新動態文字，確保 i18n 已經载入新語言
         setTimeout(() => {
             this.updatePrivacyLevelDescription(this.currentSettings.userMessagePrivacyLevel);
         }, 100);
@@ -294,15 +294,15 @@
     };
 
     /**
-     * 重置設定
+     * 重置设定
      */
     SettingsManager.prototype.resetSettings = function() {
-        console.log('重置所有設定');
+        console.log('重置所有设定');
 
-        // 重置為預設值
+        // 重置為预设值
         this.currentSettings = Utils.deepClone(this.defaultSettings);
 
-        // 立即保存重置後的設定到伺服器
+        // 立即保存重置後的设定到伺服器
         this.saveToServer();
 
         // 觸發回調
@@ -314,12 +314,12 @@
     };
 
     /**
-     * 驗證自動提交設定
+     * 验证自動提交设定
      */
     SettingsManager.prototype.validateAutoSubmitSettings = function(settings) {
         const errors = [];
 
-        // 驗證超時時間
+        // 验证超時時間
         if (settings.autoSubmitTimeout !== undefined) {
             const timeout = parseInt(settings.autoSubmitTimeout);
             if (isNaN(timeout) || timeout < 1) {
@@ -329,16 +329,16 @@
             }
         }
 
-        // 驗證提示詞 ID
+        // 验证提示詞 ID
         if (settings.autoSubmitEnabled && !settings.autoSubmitPromptId) {
-            errors.push('啟用自動提交時必須選擇一個提示詞');
+            errors.push('啟用自動提交時必須选择一個提示詞');
         }
 
         return errors;
     };
 
     /**
-     * 設定自動提交功能
+     * 设定自動提交功能
      */
     SettingsManager.prototype.setAutoSubmitSettings = function(enabled, timeout, promptId) {
         const newSettings = {
@@ -347,7 +347,7 @@
             autoSubmitPromptId: promptId || null
         };
 
-        // 驗證設定
+        // 验证设定
         const errors = this.validateAutoSubmitSettings(newSettings);
         if (errors.length > 0) {
             throw new Error(errors.join('; '));
@@ -358,17 +358,17 @@
             newSettings.autoSubmitPromptId = null;
         }
 
-        // 更新設定
+        // 更新设定
         this.set('autoSubmitEnabled', newSettings.autoSubmitEnabled);
         this.set('autoSubmitTimeout', newSettings.autoSubmitTimeout);
         this.set('autoSubmitPromptId', newSettings.autoSubmitPromptId);
 
-        console.log('自動提交設定已更新:', newSettings);
+        console.log('自動提交设定已更新:', newSettings);
         return newSettings;
     };
 
     /**
-     * 獲取自動提交設定
+     * 獲取自動提交设定
      */
     SettingsManager.prototype.getAutoSubmitSettings = function() {
         return {
@@ -396,43 +396,43 @@
     };
 
     /**
-     * 獲取所有設定
+     * 獲取所有设定
      */
     SettingsManager.prototype.getAllSettings = function() {
         return Utils.deepClone(this.currentSettings);
     };
 
     /**
-     * 應用設定到 UI
+     * 應用设定到 UI
      */
     SettingsManager.prototype.applyToUI = function() {
-        console.log('應用設定到 UI');
+        console.log('應用设定到 UI');
         
         // 應用佈局模式
         this.applyLayoutMode();
         
-        // 應用自動關閉設定
+        // 應用自動关闭设定
         this.applyAutoCloseToggle();
         
-        // 應用語言設定
+        // 應用語言设定
         this.applyLanguageSettings();
         
-        // 應用圖片設定
+        // 應用圖片设定
         this.applyImageSettings();
 
-        // 應用自動提交設定
+        // 應用自動提交设定
         this.applyAutoSubmitSettingsToUI();
 
-        // 應用會話歷史設定
+        // 應用會話歷史设定
         this.applySessionHistorySettings();
 
-        // 應用用戶訊息記錄設定
+        // 應用用戶訊息记录设定
         this.applyUserMessageSettings();
         
-        // 應用會話超時設定
+        // 應用會話超時设定
         this.applySessionTimeoutSettings();
 
-        // 應用反饋提醒設定
+        // 應用反饋提醒设定
         this.applyFeedbackReminderSettings();
     };
 
@@ -453,7 +453,7 @@
     };
 
     /**
-     * 應用自動關閉設定
+     * 應用自動关闭设定
      */
     SettingsManager.prototype.applyAutoCloseToggle = function() {
         const autoCloseToggle = Utils.safeQuerySelector('#autoCloseToggle');
@@ -463,13 +463,13 @@
     };
 
     /**
-     * 應用語言設定
+     * 應用語言设定
      */
     SettingsManager.prototype.applyLanguageSettings = function() {
         if (this.currentSettings.language && window.i18nManager) {
             const currentI18nLanguage = window.i18nManager.getCurrentLanguage();
             if (this.currentSettings.language !== currentI18nLanguage) {
-                console.log('應用語言設定: ' + currentI18nLanguage + ' -> ' + this.currentSettings.language);
+                console.log('應用語言设定: ' + currentI18nLanguage + ' -> ' + this.currentSettings.language);
                 window.i18nManager.setLanguage(this.currentSettings.language);
             }
         }
@@ -477,12 +477,12 @@
         // 更新下拉選單選項
         const languageSelect = Utils.safeQuerySelector('#settingsLanguageSelect');
         if (languageSelect) {
-            console.log(`🔧 SettingsManager.applyLanguageSettings: 設置 select.value = ${this.currentSettings.language}`);
+            console.log(`🔧 SettingsManager.applyLanguageSettings: 设置 select.value = ${this.currentSettings.language}`);
             languageSelect.value = this.currentSettings.language;
             console.log(`🔧 SettingsManager.applyLanguageSettings: 實際 select.value = ${languageSelect.value}`);
         }
 
-        // 更新語言選項顯示（兼容舊版卡片式選擇器）
+        // 更新語言選項显示（兼容舊版卡片式选择器）
         const languageOptions = document.querySelectorAll('.language-option');
         languageOptions.forEach(function(option) {
             option.classList.toggle('active', option.getAttribute('data-lang') === this.currentSettings.language);
@@ -490,29 +490,29 @@
     };
 
     /**
-     * 應用圖片設定
+     * 應用圖片设定
      */
     SettingsManager.prototype.applyImageSettings = function() {
-        // 更新所有圖片大小限制選擇器（包括設定頁籤中的）
+        // 更新所有圖片大小限制选择器（包括设定頁籤中的）
         const imageSizeLimitSelects = document.querySelectorAll('[id$="ImageSizeLimit"]');
         imageSizeLimitSelects.forEach(function(select) {
             select.value = this.currentSettings.imageSizeLimit.toString();
         }.bind(this));
 
-        // 更新所有 Base64 相容模式複選框（包括設定頁籤中的）
+        // 更新所有 Base64 相容模式複選框（包括设定頁籤中的）
         const enableBase64DetailCheckboxes = document.querySelectorAll('[id$="EnableBase64Detail"]');
         enableBase64DetailCheckboxes.forEach(function(checkbox) {
             checkbox.checked = this.currentSettings.enableBase64Detail;
         }.bind(this));
 
-        console.log('圖片設定已應用到 UI:', {
+        console.log('圖片设定已應用到 UI:', {
             imageSizeLimit: this.currentSettings.imageSizeLimit,
             enableBase64Detail: this.currentSettings.enableBase64Detail
         });
     };
 
     /**
-     * 應用自動提交設定到 UI
+     * 應用自動提交设定到 UI
      */
     SettingsManager.prototype.applyAutoSubmitSettingsToUI = function() {
         // 更新自動提交啟用開關
@@ -527,16 +527,16 @@
             autoSubmitTimeoutInput.value = this.currentSettings.autoSubmitTimeout;
         }
 
-        // 更新自動提交提示詞選擇下拉選單
+        // 更新自動提交提示詞选择下拉選單
         const autoSubmitPromptSelect = Utils.safeQuerySelector('#autoSubmitPromptSelect');
         if (autoSubmitPromptSelect) {
             autoSubmitPromptSelect.value = this.currentSettings.autoSubmitPromptId || '';
         }
 
-        // 更新自動提交狀態顯示
+        // 更新自動提交狀態显示
         this.updateAutoSubmitStatusDisplay();
 
-        console.log('自動提交設定已應用到 UI:', {
+        console.log('自動提交设定已應用到 UI:', {
             enabled: this.currentSettings.autoSubmitEnabled,
             timeout: this.currentSettings.autoSubmitTimeout,
             promptId: this.currentSettings.autoSubmitPromptId
@@ -544,7 +544,7 @@
     };
 
     /**
-     * 更新自動提交狀態顯示
+     * 更新自動提交狀態显示
      */
     SettingsManager.prototype.updateAutoSubmitStatusDisplay = function() {
         const statusElement = Utils.safeQuerySelector('#autoSubmitStatus');
@@ -554,7 +554,7 @@
         const statusText = statusElement.querySelector('.button-text');
 
         if (this.currentSettings.autoSubmitEnabled && this.currentSettings.autoSubmitPromptId) {
-            // 直接設定 HTML 內容，就像提示詞按鈕一樣
+            // 直接设定 HTML 內容，就像提示詞按鈕一樣
             if (statusIcon) statusIcon.innerHTML = '⏰';
             if (statusText) {
                 const enabledText = window.i18nManager ?
@@ -564,7 +564,7 @@
             }
             statusElement.className = 'auto-submit-status-btn enabled';
         } else {
-            // 直接設定 HTML 內容，就像提示詞按鈕一樣
+            // 直接设定 HTML 內容，就像提示詞按鈕一樣
             if (statusIcon) statusIcon.innerHTML = '⏸️';
             if (statusText) {
                 const disabledText = window.i18nManager ?
@@ -577,37 +577,37 @@
     };
 
     /**
-     * 應用會話歷史設定
+     * 應用會話歷史设定
      */
     SettingsManager.prototype.applySessionHistorySettings = function() {
-        // 更新會話歷史保存期限選擇器
+        // 更新會話歷史保存期限选择器
         const sessionHistoryRetentionSelect = Utils.safeQuerySelector('#sessionHistoryRetentionHours');
         if (sessionHistoryRetentionSelect) {
             sessionHistoryRetentionSelect.value = this.currentSettings.sessionHistoryRetentionHours.toString();
         }
 
-        console.log('會話歷史設定已應用到 UI:', {
+        console.log('會話歷史设定已應用到 UI:', {
             retentionHours: this.currentSettings.sessionHistoryRetentionHours
         });
     };
 
     /**
-     * 應用用戶訊息記錄設定
+     * 應用用戶訊息记录设定
      */
     SettingsManager.prototype.applyUserMessageSettings = function() {
-        // 更新用戶訊息記錄啟用開關
+        // 更新用戶訊息记录啟用開關
         const userMessageRecordingToggle = Utils.safeQuerySelector('#userMessageRecordingToggle');
         if (userMessageRecordingToggle) {
             userMessageRecordingToggle.checked = this.currentSettings.userMessageRecordingEnabled;
         }
 
-        // 更新隱私等級選擇器
+        // 更新隱私等級选择器
         const userMessagePrivacySelect = Utils.safeQuerySelector('#userMessagePrivacyLevel');
         if (userMessagePrivacySelect) {
             userMessagePrivacySelect.value = this.currentSettings.userMessagePrivacyLevel;
         }
 
-        console.log('用戶訊息記錄設定已應用到 UI:', {
+        console.log('用戶訊息记录设定已應用到 UI:', {
             recordingEnabled: this.currentSettings.userMessageRecordingEnabled,
             privacyLevel: this.currentSettings.userMessagePrivacyLevel
         });
@@ -617,7 +617,7 @@
     };
 
     /**
-     * 應用會話超時設定
+     * 應用會話超時设定
      */
     SettingsManager.prototype.applySessionTimeoutSettings = function() {
         // 更新會話超時啟用開關
@@ -632,7 +632,7 @@
             sessionTimeoutSeconds.value = this.currentSettings.sessionTimeoutSeconds;
         }
 
-        console.log('會話超時設定已應用到 UI:', {
+        console.log('會話超時设定已應用到 UI:', {
             enabled: this.currentSettings.sessionTimeoutEnabled,
             seconds: this.currentSettings.sessionTimeoutSeconds
         });
@@ -675,7 +675,7 @@
     SettingsManager.DEFAULT_NEW_TASK_INSTRUCTION = '[NEW TASK] The user wants to switch to a new task. Please:\n1. Cancel or deprioritize any ongoing work from previous tasks.\n2. Clear your current TODO list if applicable.\n3. Focus entirely on the user\'s new request below.';
 
     /**
-     * 應用反饋提醒設定
+     * 應用反饋提醒设定
      */
     SettingsManager.prototype.applyFeedbackReminderSettings = function() {
         var toggle = Utils.safeQuerySelector('#feedbackReminderToggle');
@@ -693,7 +693,7 @@
             newTaskInput.value = this.currentSettings.newTaskInstructionText || SettingsManager.DEFAULT_NEW_TASK_INSTRUCTION;
         }
 
-        console.log('反饋提醒設定已應用到 UI:', {
+        console.log('反饋提醒设定已應用到 UI:', {
             enabled: this.currentSettings.feedbackReminderEnabled,
             customText: !!this.currentSettings.feedbackReminderText,
             customNewTask: !!this.currentSettings.newTaskInstructionText
@@ -701,7 +701,7 @@
     };
 
     /**
-     * 設置事件監聯器
+     * 设置事件監聯器
      */
     SettingsManager.prototype.setupEventListeners = function() {
         const self = this;
@@ -714,7 +714,7 @@
             });
         });
 
-        // 自動關閉切換
+        // 自動关闭切換
         const autoCloseToggle = Utils.safeQuerySelector('#autoCloseToggle');
         if (autoCloseToggle) {
             autoCloseToggle.addEventListener('click', function() {
@@ -734,7 +734,7 @@
             });
         }
 
-        // 語言切換 - 兼容舊版卡片式選擇器
+        // 語言切換 - 兼容舊版卡片式选择器
         const languageOptions = document.querySelectorAll('.language-option');
         languageOptions.forEach(function(option) {
             option.addEventListener('click', function() {
@@ -743,7 +743,7 @@
             });
         });
 
-        // 圖片設定 - 大小限制選擇器
+        // 圖片设定 - 大小限制选择器
         const settingsImageSizeLimit = Utils.safeQuerySelector('#settingsImageSizeLimit');
         if (settingsImageSizeLimit) {
             settingsImageSizeLimit.addEventListener('change', function(e) {
@@ -753,7 +753,7 @@
             });
         }
 
-        // 圖片設定 - Base64 相容模式切換器
+        // 圖片设定 - Base64 相容模式切換器
         const settingsEnableBase64Detail = Utils.safeQuerySelector('#settingsEnableBase64Detail');
         if (settingsEnableBase64Detail) {
             settingsEnableBase64Detail.addEventListener('change', function(e) {
@@ -776,11 +776,11 @@
                 });
 
                 try {
-                    // 如果要啟用自動提交，檢查是否已選擇提示詞
+                    // 如果要啟用自動提交，检查是否已选择提示詞
                     if (newValue && (!currentPromptId || currentPromptId === '')) {
                         const message = window.i18nManager ? 
-                            window.i18nManager.t('settingsUI.autoCommitNoPrompt', '請先選擇一個提示詞作為自動提交內容') : 
-                            '請先選擇一個提示詞作為自動提交內容';
+                            window.i18nManager.t('settingsUI.autoCommitNoPrompt', '請先选择一個提示詞作為自動提交內容') : 
+                            '請先选择一個提示詞作為自動提交內容';
                         Utils.showMessage(message, Utils.CONSTANTS.MESSAGE_WARNING);
                         return;
                     }
@@ -798,7 +798,7 @@
             });
         }
 
-        // 自動提交超時時間設定
+        // 自動提交超時時間设定
         const autoSubmitTimeoutInput = Utils.safeQuerySelector('#autoSubmitTimeout');
         if (autoSubmitTimeoutInput) {
             autoSubmitTimeoutInput.addEventListener('change', function(e) {
@@ -817,15 +817,15 @@
             });
         }
 
-        // 自動提交提示詞選擇
+        // 自動提交提示詞选择
         const autoSubmitPromptSelect = Utils.safeQuerySelector('#autoSubmitPromptSelect');
         if (autoSubmitPromptSelect) {
             autoSubmitPromptSelect.addEventListener('change', function(e) {
                 const promptId = e.target.value || null;
-                console.log('自動提交提示詞選擇變更:', promptId);
+                console.log('自動提交提示詞选择變更:', promptId);
 
                 try {
-                    // 如果選擇了空值，清除自動提交設定
+                    // 如果选择了空值，清除自動提交设定
                     if (!promptId || promptId === '') {
                         self.set('autoSubmitPromptId', null);
                         self.set('autoSubmitEnabled', false);
@@ -844,17 +844,17 @@
                         // 更新 UI 元素（按鈕狀態、倒數計時器等）
                         self.applyAutoSubmitSettingsToUI();
 
-                        console.log('清除自動提交設定並更新 UI');
+                        console.log('清除自動提交设定並更新 UI');
                     } else {
-                        // 設定新的自動提交提示詞
+                        // 设定新的自動提交提示詞
                         self.set('autoSubmitPromptId', promptId);
-                        console.log('設定自動提交提示詞 ID:', promptId);
+                        console.log('设定自動提交提示詞 ID:', promptId);
 
                         // 同時更新對應提示詞的 isAutoSubmit 標記
                         if (window.feedbackApp && window.feedbackApp.promptManager) {
                             try {
                                 window.feedbackApp.promptManager.setAutoSubmitPrompt(promptId);
-                                console.log('🔄 已設定提示詞的自動提交標記:', promptId);
+                                console.log('🔄 已设定提示詞的自動提交標記:', promptId);
 
                                 // 觸發狀態變更事件，更新相關 UI 組件
                                 const currentEnabled = self.get('autoSubmitEnabled');
@@ -865,14 +865,14 @@
 
                                 console.log('🔄 已更新自動提交 UI 狀態');
                             } catch (promptError) {
-                                console.error('❌ 設定提示詞自動提交標記失敗:', promptError);
-                                // 如果設定提示詞失敗，回滾設定
+                                console.error('❌ 设定提示詞自動提交標記失敗:', promptError);
+                                // 如果设定提示詞失敗，回滾设定
                                 self.set('autoSubmitPromptId', null);
                                 e.target.value = '';
                                 throw promptError;
                             }
                         } else {
-                            console.warn('⚠️ promptManager 未找到，無法設定提示詞標記');
+                            console.warn('⚠️ promptManager 未找到，無法设定提示詞標記');
                         }
                     }
                 } catch (error) {
@@ -883,7 +883,7 @@
             });
         }
 
-        // 會話歷史保存期限設定
+        // 會話歷史保存期限设定
         const sessionHistoryRetentionSelect = Utils.safeQuerySelector('#sessionHistoryRetentionHours');
         if (sessionHistoryRetentionSelect) {
             sessionHistoryRetentionSelect.addEventListener('change', function(e) {
@@ -921,14 +921,14 @@
             });
         }
 
-        // 清空用戶訊息記錄按鈕
+        // 清空用戶訊息记录按鈕
         const clearUserMessagesBtn = Utils.safeQuerySelector('#clearUserMessagesBtn');
         if (clearUserMessagesBtn) {
             clearUserMessagesBtn.addEventListener('click', function() {
                 const i18n = window.i18nManager;
                 const confirmMessage = i18n ?
                     i18n.t('sessionHistory.userMessages.confirmClearAll') :
-                    '確定要清空所有會話的用戶訊息記錄嗎？此操作無法復原。';
+                    '確定要清空所有會話的用戶訊息记录嗎？此操作無法復原。';
 
                 if (confirm(confirmMessage)) {
                     if (window.MCPFeedback && window.MCPFeedback.app && window.MCPFeedback.app.sessionManager) {
@@ -936,7 +936,7 @@
                         if (success) {
                             const successMessage = i18n ?
                                 i18n.t('sessionHistory.userMessages.clearSuccess') :
-                                '用戶訊息記錄已清空';
+                                '用戶訊息记录已清空';
                             alert(successMessage);
                         }
                     }
@@ -944,17 +944,17 @@
             });
         }
 
-        // 用戶訊息記錄啟用開關
+        // 用戶訊息记录啟用開關
         const userMessageRecordingToggle = Utils.safeQuerySelector('#userMessageRecordingToggle');
         if (userMessageRecordingToggle) {
             userMessageRecordingToggle.addEventListener('change', function() {
                 const newValue = userMessageRecordingToggle.checked;
                 self.set('userMessageRecordingEnabled', newValue);
-                console.log('用戶訊息記錄狀態已更新:', newValue);
+                console.log('用戶訊息记录狀態已更新:', newValue);
             });
         }
 
-        // 用戶訊息隱私等級選擇
+        // 用戶訊息隱私等級选择
         const userMessagePrivacySelect = Utils.safeQuerySelector('#userMessagePrivacyLevel');
         if (userMessagePrivacySelect) {
             userMessagePrivacySelect.addEventListener('change', function(e) {
@@ -973,7 +973,7 @@
                 self.set('sessionTimeoutEnabled', newValue);
                 console.log('會話超時狀態已更新:', newValue);
                 
-                // 觸發 WebSocket 通知後端更新超時設定
+                // 觸發 WebSocket 通知後端更新超時设定
                 if (window.MCPFeedback && window.MCPFeedback.app && window.MCPFeedback.app.webSocketManager) {
                     window.MCPFeedback.app.webSocketManager.send({
                         type: 'update_timeout_settings',
@@ -986,13 +986,13 @@
             });
         }
 
-        // 會話超時時間設定
+        // 會話超時時間设定
         const sessionTimeoutSeconds = Utils.safeQuerySelector('#sessionTimeoutSeconds');
         if (sessionTimeoutSeconds) {
             sessionTimeoutSeconds.addEventListener('change', function(e) {
                 const seconds = parseInt(e.target.value);
                 
-                // 驗證輸入值範圍
+                // 验证輸入值範圍
                 if (isNaN(seconds) || seconds < 300) {
                     e.target.value = 300;
                     self.set('sessionTimeoutSeconds', 300);
@@ -1005,7 +1005,7 @@
                 
                 console.log('會話超時時間已更新:', self.get('sessionTimeoutSeconds'), '秒');
                 
-                // 觸發 WebSocket 通知後端更新超時設定
+                // 觸發 WebSocket 通知後端更新超時设定
                 if (window.MCPFeedback && window.MCPFeedback.app && window.MCPFeedback.app.webSocketManager) {
                     window.MCPFeedback.app.webSocketManager.send({
                         type: 'update_timeout_settings',
@@ -1054,11 +1054,11 @@
             });
         }
 
-        // 重置設定
+        // 重置设定
         const resetBtn = Utils.safeQuerySelector('#resetSettingsBtn');
         if (resetBtn) {
             resetBtn.addEventListener('click', function() {
-                if (confirm('確定要重置所有設定嗎？')) {
+                if (confirm('確定要重置所有设定嗎？')) {
                     self.resetSettings();
                     self.applyToUI();
                 }
@@ -1070,6 +1070,6 @@
     // 將 SettingsManager 加入命名空間
     window.MCPFeedback.SettingsManager = SettingsManager;
 
-    console.log('✅ SettingsManager 模組載入完成');
+    console.log('✅ SettingsManager 模組载入完成');
 
 })();

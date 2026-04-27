@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 標籤頁管理模組
+ * MCP Feedback Ultra - 標籤頁管理模組
  * ====================================
  * 
- * 處理多標籤頁狀態同步和智能瀏覽器管理
+ * 处理多標籤頁狀態同步和智能浏览器管理
  */
 
 (function() {
@@ -38,7 +38,7 @@
         // 開始心跳
         this.startHeartbeat();
 
-        // 監聽頁面關閉事件
+        // 監聽頁面关闭事件
         const self = this;
         window.addEventListener('beforeunload', function() {
             self.unregisterTab();
@@ -154,7 +154,7 @@
     };
 
     /**
-     * 檢查是否有活躍標籤頁
+     * 检查是否有活躍標籤頁
      */
     TabManager.prototype.hasActiveTabs = function() {
         const tabs = this.getActiveTabs();
@@ -162,7 +162,7 @@
     };
 
     /**
-     * 檢查是否為唯一活躍標籤頁
+     * 检查是否為唯一活躍標籤頁
      */
     TabManager.prototype.isOnlyActiveTab = function() {
         const tabs = this.getActiveTabs();
@@ -170,10 +170,10 @@
     };
 
     /**
-     * 處理其他標籤頁狀態變化
+     * 处理其他標籤頁狀態變化
      */
     TabManager.prototype.handleTabsChange = function() {
-        console.log('🔄 檢測到其他標籤頁狀態變化');
+        console.log('🔄 检测到其他標籤頁狀態變化');
         // 可以在這裡添加更多邏輯
     };
 
@@ -205,7 +205,7 @@
             }
         })
         .catch(function(error) {
-            console.warn('⚠️ 標籤頁服務器註冊錯誤: ' + error);
+            console.warn('⚠️ 標籤頁服務器註冊错误: ' + error);
         });
     };
 
@@ -230,6 +230,6 @@
     // 將 TabManager 加入命名空間
     window.MCPFeedback.TabManager = TabManager;
 
-    console.log('✅ TabManager 模組載入完成');
+    console.log('✅ TabManager 模組载入完成');
 
 })();

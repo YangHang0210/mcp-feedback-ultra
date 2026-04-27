@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - UI 管理模組
+ * MCP Feedback Ultra - UI 管理模組
  * =================================
  * 
- * 處理 UI 狀態更新、指示器管理和頁籤切換
+ * 处理 UI 狀態更新、指示器管理和頁籤切換
  */
 
 (function() {
@@ -43,7 +43,7 @@
     }
 
     /**
-     * 初始化防抖處理器
+     * 初始化防抖处理器
      */
     UIManager.prototype.initDebounceHandlers = function() {
         // 為狀態指示器更新添加防抖
@@ -85,7 +85,7 @@
     UIManager.prototype.initTabs = function() {
         const self = this;
         
-        // 設置頁籤點擊事件
+        // 设置頁籤點擊事件
         this.tabButtons.forEach(function(button) {
             button.addEventListener('click', function() {
                 const tabName = button.getAttribute('data-tab');
@@ -101,12 +101,12 @@
             initialTab = 'feedback';
         }
 
-        // 設置初始頁籤
+        // 设置初始頁籤
         this.setInitialTab(initialTab);
     };
 
     /**
-     * 設置初始頁籤（不觸發保存）
+     * 设置初始頁籤（不觸發保存）
      */
     UIManager.prototype.setInitialTab = function(tabName) {
         this.currentTab = tabName;
@@ -132,7 +132,7 @@
     };
 
     /**
-     * 更新頁籤顯示
+     * 更新頁籤显示
      */
     UIManager.prototype.updateTabDisplay = function(tabName) {
         // 更新按鈕狀態
@@ -144,7 +144,7 @@
             }
         });
 
-        // 更新內容顯示
+        // 更新內容显示
         this.tabContents.forEach(function(content) {
             if (content.id === 'tab-' + tabName) {
                 content.classList.add('active');
@@ -155,7 +155,7 @@
     };
 
     /**
-     * 處理特殊頁籤
+     * 处理特殊頁籤
      */
     UIManager.prototype.handleSpecialTabs = function(tabName) {
         if (tabName === 'combined') {
@@ -164,12 +164,12 @@
     };
 
     /**
-     * 處理合併模式
+     * 处理合併模式
      */
     UIManager.prototype.handleCombinedMode = function() {
         console.log('切換到組合模式');
         
-        // 確保合併模式的佈局樣式正確應用
+        // 確保合併模式的佈局样式正確應用
         const combinedTab = Utils.safeQuerySelector('#tab-combined');
         if (combinedTab) {
             combinedTab.classList.remove('combined-vertical', 'combined-horizontal');
@@ -189,14 +189,14 @@
         const feedbackTab = document.querySelector('.tab-button[data-tab="feedback"]');
         const summaryTab = document.querySelector('.tab-button[data-tab="summary"]');
 
-        // 只使用合併模式：顯示合併模式頁籤，隱藏回饋和AI摘要頁籤
+        // 只使用合併模式：显示合併模式頁籤，隱藏回饋和AI摘要頁籤
         if (combinedTab) combinedTab.style.display = 'inline-block';
         if (feedbackTab) feedbackTab.style.display = 'none';
         if (summaryTab) summaryTab.style.display = 'none';
     };
 
     /**
-     * 設置回饋狀態
+     * 设置回饋狀態
      */
     UIManager.prototype.setFeedbackState = function(state, sessionId) {
         const previousState = this.feedbackState;
@@ -239,7 +239,7 @@
                     button.disabled = false;
                     break;
                 case Utils.CONSTANTS.FEEDBACK_PROCESSING:
-                    button.textContent = window.i18nManager ? window.i18nManager.t('buttons.processing') : '處理中...';
+                    button.textContent = window.i18nManager ? window.i18nManager.t('buttons.processing') : '处理中...';
                     button.className = 'btn btn-secondary';
                     button.disabled = true;
                     break;
@@ -300,7 +300,7 @@
             this._originalUpdateStatusIndicatorElement(combinedStatusIndicator, statusInfo);
         }
 
-        // 減少重複日誌：只在狀態真正改變時記錄
+        // 減少重複日誌：只在狀態真正改變時记录
         if (!this._lastStatusInfo || this._lastStatusInfo.status !== statusInfo.status) {
             console.log('✅ 狀態指示器已更新: ' + statusInfo.status + ' - ' + statusInfo.title);
             this._lastStatusInfo = statusInfo;
@@ -335,7 +335,7 @@
 
             case Utils.CONSTANTS.FEEDBACK_PROCESSING:
                 icon = '⚙️';
-                title = window.i18nManager ? window.i18nManager.t('status.processing.title') : '處理中';
+                title = window.i18nManager ? window.i18nManager.t('status.processing.title') : '处理中';
                 message = window.i18nManager ? window.i18nManager.t('status.processing.message') : '正在提交您的回饋...';
                 status = 'processing';
                 break;
@@ -384,7 +384,7 @@
             messageElement.textContent = statusInfo.message;
         }
 
-        // 減少重複日誌：只記錄元素 ID 變化
+        // 減少重複日誌：只记录元素 ID 變化
         if (element.id) {
             console.log('🔧 已更新狀態指示器: ' + element.id + ' -> ' + statusInfo.status);
         }
@@ -403,7 +403,7 @@
     };
 
     /**
-     * 更新連接狀態
+     * 更新连接狀態
      */
     UIManager.prototype.updateConnectionStatus = function(status, text) {
         if (this.connectionIndicator) {
@@ -419,9 +419,9 @@
      */
     UIManager.prototype.renderMarkdownSafely = function(content) {
         try {
-            // 檢查 marked 和 DOMPurify 是否可用
+            // 检查 marked 和 DOMPurify 是否可用
             if (typeof window.marked === 'undefined' || typeof window.DOMPurify === 'undefined') {
-                console.warn('⚠️ Markdown 庫未載入，使用純文字顯示');
+                console.warn('⚠️ Markdown 庫未载入，使用純文字显示');
                 return this.escapeHtml(content);
             }
 
@@ -488,7 +488,7 @@
 
     /**
      * 重置回饋表單
-     * @param {boolean} clearText - 是否清空文字內容，預設為 false
+     * @param {boolean} clearText - 是否清空文字內容，预设為 false
      */
     UIManager.prototype.resetFeedbackForm = function(clearText) {
         console.log('🔄 重置回饋表單...');
@@ -559,7 +559,7 @@
     };
 
     /**
-     * 設置最後提交時間
+     * 设置最後提交時間
      */
     UIManager.prototype.setLastSubmissionTime = function(timestamp) {
         this.lastSubmissionTime = timestamp;
@@ -569,6 +569,6 @@
     // 將 UIManager 加入命名空間
     window.MCPFeedback.UIManager = UIManager;
 
-    console.log('✅ UIManager 模組載入完成');
+    console.log('✅ UIManager 模組载入完成');
 
 })();

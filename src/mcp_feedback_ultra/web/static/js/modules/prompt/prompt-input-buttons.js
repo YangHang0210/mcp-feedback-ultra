@@ -1,8 +1,8 @@
 /**
- * MCP Feedback Enhanced - 提示詞輸入按鈕模組
+ * MCP Feedback Ultra - 提示詞輸入按鈕模組
  * ==========================================
  * 
- * 處理 input-group 區域的提示詞功能按鈕
+ * 处理 input-group 區域的提示詞功能按鈕
  */
 
 (function() {
@@ -57,7 +57,7 @@
         });
 
         if (successCount > 0) {
-            // 設置事件監聽器
+            // 设置事件監聽器
             this.setupEventListeners();
 
             // 更新按鈕狀態和文字
@@ -90,7 +90,7 @@
         const lastUsedBtn = buttonContainer.querySelector('.last-prompt-btn');
 
         if (selectBtn && lastUsedBtn) {
-            // 設置正確的 data-container-index
+            // 设置正確的 data-container-index
             selectBtn.setAttribute('data-container-index', index);
             lastUsedBtn.setAttribute('data-container-index', index);
 
@@ -107,12 +107,12 @@
     };
 
     /**
-     * 設置事件監聽器
+     * 设置事件監聽器
      */
     PromptInputButtons.prototype.setupEventListeners = function() {
         const self = this;
 
-        // 選擇提示詞按鈕事件
+        // 选择提示詞按鈕事件
         this.selectButtons.forEach(function(button) {
             if (button) {
                 button.addEventListener('click', function() {
@@ -132,7 +132,7 @@
             }
         });
 
-        // 設置提示詞管理器回調
+        // 设置提示詞管理器回調
         if (this.promptManager) {
             this.promptManager.addPromptsChangeCallback(function() {
                 self.updateButtonStates();
@@ -143,7 +143,7 @@
             });
         }
 
-        // 設置彈窗回調
+        // 设置彈窗回調
         if (this.promptModal) {
             this.promptModal.onSelect = function(promptId) {
                 self.handlePromptSelected(promptId);
@@ -152,34 +152,34 @@
     };
 
     /**
-     * 處理選擇提示詞
+     * 处理选择提示詞
      */
     PromptInputButtons.prototype.handleSelectPrompt = function(containerIndex) {
         if (!this.promptManager || !this.promptModal) {
-            console.error('❌ PromptManager 或 PromptModal 未設定');
+            console.error('❌ PromptManager 或 PromptModal 未设定');
             return;
         }
 
         const prompts = this.promptManager.getPromptsSortedByUsage();
         
         if (prompts.length === 0) {
-            this.showError(this.t('prompts.buttons.noPrompts', '尚無常用提示詞，請先在設定中新增'));
+            this.showError(this.t('prompts.buttons.noPrompts', '尚無常用提示詞，請先在设定中新增'));
             return;
         }
 
-        // 記錄當前容器索引，用於後續插入文字
+        // 记录當前容器索引，用於後續插入文字
         this.currentContainerIndex = containerIndex;
 
-        // 顯示選擇彈窗
+        // 显示选择彈窗
         this.promptModal.showSelectModal(prompts);
     };
 
     /**
-     * 處理使用上次提示詞
+     * 处理使用上次提示詞
      */
     PromptInputButtons.prototype.handleUseLastPrompt = function(containerIndex) {
         if (!this.promptManager) {
-            console.error('❌ PromptManager 未設定');
+            console.error('❌ PromptManager 未设定');
             return;
         }
 
@@ -193,18 +193,18 @@
         // 插入提示詞內容
         this.insertPromptContent(containerIndex, lastPrompt);
 
-        // 更新使用記錄
+        // 更新使用记录
         this.promptManager.usePrompt(lastPrompt.id);
 
         this.showSuccess(this.t('prompts.buttons.lastPromptApplied', '已套用上次使用的提示詞'));
     };
 
     /**
-     * 處理提示詞選擇完成
+     * 处理提示詞选择完成
      */
     PromptInputButtons.prototype.handlePromptSelected = function(promptId) {
         if (!this.promptManager) {
-            console.error('❌ PromptManager 未設定');
+            console.error('❌ PromptManager 未设定');
             return;
         }
 
@@ -217,7 +217,7 @@
         // 插入提示詞內容
         this.insertPromptContent(this.currentContainerIndex, prompt);
 
-        // 更新使用記錄
+        // 更新使用记录
         this.promptManager.usePrompt(promptId);
 
         this.showSuccess(this.t('prompts.buttons.promptApplied', '已套用提示詞：') + prompt.name);
@@ -234,7 +234,7 @@
 
         const container = this.containers[containerIndex];
 
-        // 檢查容器本身是否是輸入元素
+        // 检查容器本身是否是輸入元素
         let textarea = null;
         if (container.tagName === 'TEXTAREA' || container.tagName === 'INPUT') {
             textarea = container;
@@ -275,7 +275,7 @@
         // 更新內容
         textarea.value = newContent;
         
-        // 設置游標位置
+        // 设置游標位置
         textarea.focus();
         textarea.setSelectionRange(newCursorPosition, newCursorPosition);
 
@@ -288,7 +288,7 @@
      * 更新按鈕文字
      */
     PromptInputButtons.prototype.updateButtonTexts = function() {
-        // 更新選擇提示詞按鈕文字
+        // 更新选择提示詞按鈕文字
         this.selectButtons.forEach(function(button) {
             if (button) {
                 const textSpan = button.querySelector('.button-text');
@@ -326,7 +326,7 @@
         const prompts = this.promptManager.getAllPrompts();
         const lastPrompt = this.promptManager.getLastUsedPrompt();
 
-        // 更新選擇提示詞按鈕
+        // 更新选择提示詞按鈕
         this.selectButtons.forEach(function(button) {
             if (button) {
                 button.disabled = prompts.length === 0;
@@ -338,7 +338,7 @@
                 } else {
                     const tooltipText = window.i18nManager ?
                         window.i18nManager.t('prompts.buttons.selectPromptTooltipAvailable', { count: prompts.length }) :
-                        `選擇常用提示詞 (${prompts.length} 個可用)`;
+                        `选择常用提示詞 (${prompts.length} 個可用)`;
                     button.title = tooltipText;
                 }
             }
@@ -367,7 +367,7 @@
     };
 
     /**
-     * 顯示成功訊息
+     * 显示成功訊息
      */
     PromptInputButtons.prototype.showSuccess = function(message) {
         if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
@@ -378,7 +378,7 @@
     };
 
     /**
-     * 顯示錯誤訊息
+     * 显示错误訊息
      */
     PromptInputButtons.prototype.showError = function(message) {
         if (window.MCPFeedback && window.MCPFeedback.Utils && window.MCPFeedback.Utils.showMessage) {
@@ -422,6 +422,6 @@
     // 將 PromptInputButtons 加入命名空間
     window.MCPFeedback.Prompt.PromptInputButtons = PromptInputButtons;
 
-    console.log('✅ PromptInputButtons 模組載入完成');
+    console.log('✅ PromptInputButtons 模組载入完成');
 
 })();

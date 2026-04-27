@@ -67,7 +67,7 @@
         <div>
             <label>WebSocket URL:</label>
             <input type="text" id="wsUrl" value="ws://127.0.0.1:8767/ws" style="width: 300px;">
-            <button onclick="testConnection()">🔗 測試連接</button>
+            <button onclick="testConnection()">🔗 测试连接</button>
             <button onclick="clearLog()">🗑️ 清除日誌</button>
         </div>
 
@@ -104,18 +104,18 @@
             const url = document.getElementById('wsUrl').value;
 
             if (websocket) {
-                log('關閉現有連接...', 'warning');
+                log('关闭現有连接...', 'warning');
                 websocket.close();
                 websocket = null;
             }
 
-            log(`嘗試連接到: ${url}`, 'info');
+            log(`嘗試连接到: ${url}`, 'info');
 
             try {
                 websocket = new WebSocket(url);
 
                 websocket.onopen = function(event) {
-                    log('✅ WebSocket 連接成功！', 'success');
+                    log('✅ WebSocket 连接成功！', 'success');
                 };
 
                 websocket.onmessage = function(event) {
@@ -130,17 +130,17 @@
                 };
 
                 websocket.onclose = function(event) {
-                    log(`🔌 連接已關閉 - Code: ${event.code}, Reason: ${event.reason}`, 'warning');
+                    log(`🔌 连接已关闭 - Code: ${event.code}, Reason: ${event.reason}`, 'warning');
                     websocket = null;
                 };
 
                 websocket.onerror = function(error) {
-                    log(`❌ WebSocket 錯誤: ${error}`, 'error');
+                    log(`❌ WebSocket 错误: ${error}`, 'error');
                     console.error('WebSocket error:', error);
                 };
 
             } catch (error) {
-                log(`❌ 連接失敗: ${error.message}`, 'error');
+                log(`❌ 连接失敗: ${error.message}`, 'error');
             }
         }
 
@@ -154,7 +154,7 @@
             }
 
             if (!websocket || websocket.readyState !== WebSocket.OPEN) {
-                log('❌ WebSocket 未連接', 'error');
+                log('❌ WebSocket 未连接', 'error');
                 return;
             }
 
@@ -167,10 +167,10 @@
             }
         }
 
-        // 頁面加載時自動測試
+        // 頁面加載時自動测试
         window.onload = function() {
-            log('🚀 WebSocket 診斷工具已載入');
-            log('💡 點擊 "測試連接" 開始診斷');
+            log('🚀 WebSocket 診斷工具已载入');
+            log('💡 點擊 "测试连接" 開始診斷');
         };
 
         // Enter 鍵發送消息
