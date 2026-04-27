@@ -44,8 +44,8 @@
     "externalBin": [],
     "copyright": "Copyright © 2024 Minidoracat",
     "category": "DeveloperTool",
-    "shortDescription": "Enhanced MCP server for interactive user feedback",
-    "longDescription": "An enhanced MCP server that provides interactive user feedback functionality for AI-assisted development, featuring Web UI with intelligent environment detection.",
+    "shortDescription": "MCP Feedback Ultra - 交互式用户反馈服务器",
+    "longDescription": "MCP Feedback Ultra 提供 AI 辅助开发中的交互式用户反馈功能，支持 Web UI 和桌面应用，智能环境检测。",
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
