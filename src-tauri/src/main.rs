@@ -42,7 +42,7 @@ fn main() {
     // 初始化日誌
     env_logger::init();
 
-    println!("正在啟動 MCP Feedback Enhanced 桌面應用程式...");
+    println!("正在啟動 MCP Feedback Ultra 桌面應用程式...");
 
     // 創建 Tauri 應用程式
     Builder::default()

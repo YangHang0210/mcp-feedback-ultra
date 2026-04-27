@@ -1,5 +1,5 @@
 {
-  "productName": "MCP Feedback Enhanced",
+  "productName": "MCP Feedback Ultra",
   "version": "2.4.3",
   "identifier": "com.minidoracat.mcp-feedback-ultra",
   "build": {
@@ -12,7 +12,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "MCP Feedback Enhanced",
+        "title": "MCP Feedback Ultra",
         "width": 1200,
         "height": 800,
         "minWidth": 800,

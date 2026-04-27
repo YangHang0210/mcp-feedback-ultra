@@ -3,7 +3,7 @@ name = "mcp-feedback-ultra-desktop"
 version = "2.4.3"
 edition = "2021"
 rust-version = "1.70"
-description = "Desktop application for MCP Feedback Enhanced using Tauri"
+description = "Desktop application for MCP Feedback Ultra using Tauri"
 authors = ["Minidoracat <minidora0702@gmail.com>"]
 license = "MIT"
 
