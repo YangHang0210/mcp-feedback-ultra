@@ -3,8 +3,8 @@
 壓縮配置管理器
 ==============
 
-管理 Web UI 的 Gzip 壓縮配置和靜態文件緩存策略。
-支持可配置的壓縮參數和性能優化選項。
+管理 Web UI 的 Gzip 壓縮配置和靜態文件缓存策略。
+支持可配置的壓縮參數和性能優化选项。
 """
 
 import os
@@ -20,9 +20,9 @@ class CompressionConfig:
     minimum_size: int = 1000  # 最小壓縮大小（bytes）
     compression_level: int = 6  # 壓縮級別 (1-9, 6为平衡點)
 
-    # 緩存设定
-    static_cache_max_age: int = 3600  # 靜態文件緩存時間（秒）
-    api_cache_max_age: int = 0  # API 響應緩存時間（秒，0表示不緩存）
+    # 缓存设定
+    static_cache_max_age: int = 3600  # 靜態文件缓存時間（秒）
+    api_cache_max_age: int = 0  # API 響應缓存時間（秒，0表示不缓存）
 
     # 支持的 MIME 類型
     compressible_types: list[str] = field(default_factory=list)
@@ -64,7 +64,7 @@ class CompressionConfig:
         )
 
     def should_compress(self, content_type: str, content_length: int) -> bool:
-        """判斷是否應該壓縮"""
+        """判斷是否应该壓縮"""
         if content_length < self.minimum_size:
             return False
 
@@ -79,26 +79,26 @@ class CompressionConfig:
         return False
 
     def should_exclude_path(self, path: str) -> bool:
-        """判斷路徑是否應該排除壓縮"""
+        """判斷路徑是否应该排除壓縮"""
         for exclude_path in self.exclude_paths:
             if path.startswith(exclude_path):
                 return True
         return False
 
     def get_cache_headers(self, path: str) -> dict[str, str]:
-        """獲取緩存頭"""
+        """獲取缓存頭"""
         headers = {}
 
         if path.startswith("/static/"):
-            # 靜態文件緩存
+            # 靜態文件缓存
             headers["Cache-Control"] = f"public, max-age={self.static_cache_max_age}"
             headers["Expires"] = self._get_expires_header(self.static_cache_max_age)
         elif path.startswith("/api/") and self.api_cache_max_age > 0:
-            # API 緩存（如果啟用）
+            # API 缓存（如果啟用）
             headers["Cache-Control"] = f"public, max-age={self.api_cache_max_age}"
             headers["Expires"] = self._get_expires_header(self.api_cache_max_age)
         else:
-            # 其他路徑不緩存
+            # 其他路徑不缓存
             headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
             headers["Pragma"] = "no-cache"
             headers["Expires"] = "0"

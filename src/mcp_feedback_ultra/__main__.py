@@ -66,7 +66,7 @@ def main():
     elif args.command == "server" or args.command is None:
         run_server()
     else:
-        # 不應該到達這裡
+        # 不应该到達這裡
         parser.print_help()
         sys.exit(1)
 
@@ -80,7 +80,7 @@ def run_server():
 
 def run_tests(args):
     """执行测试"""
-    # 啟用調試模式以顯示测试過程
+    # 啟用调试模式以顯示测试過程
     os.environ["MCP_DEBUG"] = "true"
 
     # 在 Windows 上抑制 asyncio 警告
@@ -110,7 +110,7 @@ def run_tests(args):
             sys.exit(1)
     else:
         print("❌ 测试功能已簡化")
-        print("💡 可用的测试選項：")
+        print("💡 可用的测试选项：")
         print("  --web         测试 Web UI")
         print("  --desktop     启动桌面应用程序")
         print("💡 對於开发者：使用 'uv run pytest' 执行完整测试")
@@ -129,7 +129,7 @@ def test_web_ui_simple():
         # 设置测试模式，禁用自動清理避免權限問題
         os.environ["MCP_TEST_MODE"] = "true"
         os.environ["MCP_WEB_HOST"] = "127.0.0.1"
-        # 设置更高的端口範圍避免系統保留端口
+        # 设置更高的端口范围避免系統保留端口
         os.environ["MCP_WEB_PORT"] = "9765"
 
         print("🔧 創建 Web UI 管理器...")
@@ -179,7 +179,7 @@ def process_feedback(data):
 **有序列表：**
 1. 初始化 Markdown 渲染器
 2. 載入 marked.js 和 DOMPurify
-3. 配置安全選項
+3. 配置安全选项
 4. 渲染內容
 
 #### 链接和引用
@@ -200,7 +200,7 @@ def process_feedback(data):
 
 ### 🔒 安全特性
 - XSS 防護：使用 DOMPurify 清理
-- 白名單標籤：僅允許安全的 HTML 標籤
+- 白名單标签：僅允許安全的 HTML 标签
 - URL 验证：限制允許的 URL 協議
 
 ### 📝 测试結果

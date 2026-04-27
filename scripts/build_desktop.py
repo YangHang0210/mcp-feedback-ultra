@@ -3,7 +3,7 @@
 桌面应用程序构建腳本
 
 此腳本負責构建 Tauri 桌面应用程序和 Python 擴展模組，
-確保在 PyPI 發布時包含預編譯的二進制文件。
+確保在 PyPI 发布時包含預編譯的二進制文件。
 
 使用方法：
     python scripts/build_desktop.py [--release] [--clean]
@@ -270,8 +270,8 @@ def build_tauri_app_multiplatform(project_root: Path, release: bool = True):
 def copy_multiplatform_artifacts(
     project_root: Path, successful_builds: list, release: bool = True
 ):
-    """複製多平台构建產物到適當位置"""
-    print("📦 複製多平台构建產物...")
+    """复制多平台构建產物到適當位置"""
+    print("📦 复制多平台构建產物...")
 
     src_tauri = project_root / "src-tauri"
     build_type = "release" if release else "debug"
@@ -305,12 +305,12 @@ def copy_multiplatform_artifacts(
             if not dst_filename.endswith(".exe"):
                 os.chmod(dst_file, 0o755)  # noqa: S103
             copied_files.append(dst_filename)
-            print(f"✅ 複製 {target} 二進制文件: {src_file} -> {dst_file}")
+            print(f"✅ 复制 {target} 二進制文件: {src_file} -> {dst_file}")
         else:
             print(f"⚠️  找不到 {target} 的二進制文件: {src_file}")
 
     if not copied_files:
-        print("⚠️  沒有找到可複製的二進制文件")
+        print("⚠️  沒有找到可复制的二進制文件")
         return False
 
     # 創建 __init__.py 文件，讓 desktop 目錄成為 Python 包
@@ -319,13 +319,13 @@ def copy_multiplatform_artifacts(
         desktop_init.write_text('"""桌面应用程序二進制文件"""', encoding="utf-8")
         print(f"✅ 創建 __init__.py: {desktop_init}")
 
-    print(f"✅ 成功複製 {len(copied_files)} 個平台的二進制文件")
+    print(f"✅ 成功复制 {len(copied_files)} 個平台的二進制文件")
     return True
 
 
 def copy_desktop_python_module(project_root: Path):
-    """複製桌面应用 Python 模組到發佈位置"""
-    print("📦 複製桌面应用 Python 模組...")
+    """复制桌面应用 Python 模組到發佈位置"""
+    print("📦 复制桌面应用 Python 模組...")
 
     # 源路徑和目標路徑
     python_src = project_root / "src-tauri" / "python" / "mcp_feedback_ultra_desktop"
@@ -340,9 +340,9 @@ def copy_desktop_python_module(project_root: Path):
         shutil.rmtree(python_dst)
         print(f"🗑️  清理舊的模組目錄: {python_dst}")
 
-    # 複製模組
+    # 复制模組
     shutil.copytree(python_src, python_dst)
-    print(f"✅ 複製桌面应用模組: {python_src} -> {python_dst}")
+    print(f"✅ 复制桌面应用模組: {python_src} -> {python_dst}")
 
     return True
 
@@ -350,7 +350,7 @@ def copy_desktop_python_module(project_root: Path):
 def main():
     """主函數"""
     parser = argparse.ArgumentParser(
-        description="构建 MCP Feedback Enhanced 桌面应用程序",
+        description="构建 MCP Feedback Ultra 桌面应用程序",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 範例:
@@ -368,7 +368,7 @@ def main():
         """,
     )
     parser.add_argument(
-        "--release", action="store_true", help="构建發布版本 (预设為 Debug)"
+        "--release", action="store_true", help="构建发布版本 (预设為 Debug)"
     )
     parser.add_argument("--clean", action="store_true", help="清理构建產物")
 
@@ -400,16 +400,16 @@ def main():
             print("❌ 沒有成功构建任何平台")
             sys.exit(1)
 
-        # 複製多平台构建產物
+        # 复制多平台构建產物
         if not copy_multiplatform_artifacts(
             project_root, successful_builds, args.release
         ):
-            print("⚠️  构建產物複製失敗，但 Rust 編譯成功")
+            print("⚠️  构建產物复制失敗，但 Rust 編譯成功")
             return
 
-        # 複製桌面应用 Python 模組
+        # 复制桌面应用 Python 模組
         if not copy_desktop_python_module(project_root):
-            print("⚠️  桌面应用模組複製失敗")
+            print("⚠️  桌面应用模組复制失敗")
             return
 
         print("🎉 多平台桌面应用程序构建完成！")
@@ -426,7 +426,7 @@ def main():
         print("🚀 下一步:")
         print("   测试桌面应用程序: python -m mcp_feedback_ultra test --desktop")
         print("   或使用 Makefile: make test-desktop")
-        print("   构建發布包: make build-all")
+        print("   构建发布包: make build-all")
 
     except Exception as e:
         print(f"❌ 构建失敗: {e}")

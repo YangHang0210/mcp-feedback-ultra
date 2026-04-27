@@ -58,7 +58,7 @@ class PortManager:
 
         Args:
             port: 要清理的端口號
-            force: 是否強制终止进程
+            force: 是否强制终止进程
 
         Returns:
             bool: 是否成功终止进程
@@ -80,7 +80,7 @@ class PortManager:
                 debug_log("检测到 MCP Feedback Ultra 相关进程，尝试优雅终止")
 
             if force:
-                debug_log(f"強制终止进程 {process_name} (PID: {pid})")
+                debug_log(f"强制终止进程 {process_name} (PID: {pid})")
                 process.kill()
             else:
                 debug_log(f"优雅终止进程 {process_name} (PID: {pid})")
@@ -93,11 +93,11 @@ class PortManager:
                 return True
             except psutil.TimeoutExpired:
                 if not force:
-                    debug_log(f"优雅终止超時，強制终止进程 {process_name} (PID: {pid})")
+                    debug_log(f"优雅终止超時，强制终止进程 {process_name} (PID: {pid})")
                     process.kill()
                     process.wait(timeout=3)
                     return True
-                debug_log(f"強制终止进程 {process_name} (PID: {pid}) 失敗")
+                debug_log(f"强制终止进程 {process_name} (PID: {pid}) 失敗")
                 return False
 
         except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
@@ -180,7 +180,7 @@ class PortManager:
                     f"端口 {preferred_port} 被进程 {process_info['name']} (PID: {process_info['pid']}) 占用"
                 )
 
-                # 詢問用戶是否清理（在實際使用中可能需要配置選項）
+                # 詢問用戶是否清理（在實際使用中可能需要配置选项）
                 if PortManager._should_cleanup_process(process_info):
                     if PortManager.kill_process_on_port(preferred_port):
                         # 等待一下讓端口釋放
@@ -208,20 +208,20 @@ class PortManager:
                 return port
 
         raise RuntimeError(
-            f"无法在 {preferred_port}±{max_attempts} 範圍內找到可用端口。"
+            f"无法在 {preferred_port}±{max_attempts} 范围內找到可用端口。"
             f"請检查是否有過多进程占用端口，或手動指定其他端口。"
         )
 
     @staticmethod
     def _should_cleanup_process(process_info: dict[str, Any]) -> bool:
         """
-        判斷是否應該清理指定进程
+        判斷是否应该清理指定进程
 
         Args:
             process_info: 进程信息字典
 
         Returns:
-            bool: 是否應該清理該进程
+            bool: 是否应该清理該进程
         """
         # 检查是否是 MCP Feedback Ultra 相关进程
         cmdline = process_info.get("cmdline", "").lower()
@@ -285,7 +285,7 @@ class PortManager:
         start_port: int = 8000, end_port: int = 9000
     ) -> list[dict[str, Any]]:
         """
-        列出指定範圍內正在監聽的端口
+        列出指定范围內正在監聽的端口
 
         Args:
             start_port: 起始端口

@@ -36,7 +36,7 @@ class MemorySnapshot:
     process_rss: int  # 进程常駐內存 (bytes)
     process_vms: int  # 进程虛擬內存 (bytes)
     process_percent: float  # 进程內存使用率 (%)
-    gc_objects: int  # Python 垃圾回收對象數量
+    gc_objects: int  # Python 垃圾回收对象數量
 
 
 @dataclass
@@ -249,7 +249,7 @@ class MemoryMonitor:
                 message=f"內存使用率達到緊急水平: {snapshot.system_percent:.1f}%",
                 timestamp=snapshot.timestamp,
                 memory_percent=snapshot.system_percent,
-                recommended_action="立即执行強制清理和垃圾回收",
+                recommended_action="立即执行强制清理和垃圾回收",
             )
             self._handle_alert(alert)
             self._trigger_emergency_cleanup()
@@ -302,7 +302,7 @@ class MemoryMonitor:
 
         # 执行 Python 垃圾回收
         collected = gc.collect()
-        debug_log(f"垃圾回收清理了 {collected} 個對象")
+        debug_log(f"垃圾回收清理了 {collected} 個对象")
 
         # 調用清理回調
         for callback in self.cleanup_callbacks:
@@ -315,12 +315,12 @@ class MemoryMonitor:
         """觸發緊急清理操作"""
         debug_log("觸發緊急內存清理操作")
 
-        # 执行強制垃圾回收
+        # 执行强制垃圾回收
         for _ in range(3):
             collected = gc.collect()
-            debug_log(f"強制垃圾回收清理了 {collected} 個對象")
+            debug_log(f"强制垃圾回收清理了 {collected} 個对象")
 
-        # 調用清理回調（強制模式）
+        # 調用清理回調（强制模式）
         for callback in self.cleanup_callbacks:
             try:
                 # 修復 unreachable 错误 - 簡化邏輯，移除不可達的 else 分支

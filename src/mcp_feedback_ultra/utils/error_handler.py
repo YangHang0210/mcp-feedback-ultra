@@ -225,7 +225,7 @@ class ErrorHandler:
         根據異常類型自動分類错误
 
         Args:
-            error: Python 異常對象
+            error: Python 異常对象
 
         Returns:
             ErrorType: 错误類型
@@ -302,7 +302,7 @@ class ErrorHandler:
         將技術错误轉換为用戶友好的错误信息
 
         Args:
-            error: Python 異常對象
+            error: Python 異常对象
             error_type: 错误類型（可選，會自動分類）
             context: 错误上下文信息
             include_technical: 是否包含技術細節
@@ -370,7 +370,7 @@ class ErrorHandler:
         记录帶上下文的错误信息（不影響 JSON RPC）
 
         Args:
-            error: Python 異常對象
+            error: Python 異常对象
             context: 错误上下文信息
             error_type: 错误類型
             severity: 错误嚴重程度
@@ -387,7 +387,7 @@ class ErrorHandler:
 
         # 错误记录已通過 debug_log 輸出，無需額外存儲
 
-        # 记录到調試日誌（不影響 JSON RPC）
+        # 记录到调试日誌（不影響 JSON RPC）
         debug_log(f"错误记录 [{error_id}]: {error_type.value} - {error!s}")
 
         if context:
@@ -411,7 +411,7 @@ class ErrorHandler:
         創建標準化的错误響應
 
         Args:
-            error: Python 異常對象
+            error: Python 異常对象
             context: 错误上下文
             error_type: 错误類型
             include_solutions: 是否包含解決建議
@@ -442,7 +442,7 @@ class ErrorHandler:
             solutions = ErrorHandler.get_error_solutions(error_type)
             response["solutions"] = solutions  # 即使为空列表也添加
 
-        # 添加上下文（僅用於調試）
+        # 添加上下文（僅用於调试）
         if context and not for_user:
             response["context"] = context
 

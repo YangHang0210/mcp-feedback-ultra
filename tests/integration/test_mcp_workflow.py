@@ -27,7 +27,7 @@ class TestMCPBasicWorkflow:
 
             # 验证進程存在
             assert client.server_process is not None
-            assert client.server_process.poll() is None  # 進程應該還在运行
+            assert client.server_process.poll() is None  # 進程应该還在运行
 
         finally:
             await client.cleanup()
@@ -136,7 +136,7 @@ class TestMCPWorkflowIntegration:
             str(test_project_dir), "第二次 AI 調用 - 根據回饋調整"
         )
 
-        # 兩次調用都應該成功启动服務器和初始化
+        # 兩次調用都应该成功启动服務器和初始化
         for i, result in enumerate([result1, result2], 1):
             assert result["steps"].get("server_started") == True, (
                 f"第{i}次調用服務器启动失敗"
@@ -161,7 +161,7 @@ class TestMCPErrorHandling:
                 "/non/existent/directory", "测试無效目錄", timeout=5
             )
 
-            # 應該能处理错误而不崩潰
+            # 应该能处理错误而不崩潰
             assert isinstance(result, dict)
 
         finally:
@@ -184,16 +184,16 @@ class TestMCPErrorHandling:
                 "/test", "测试错误处理", timeout=5
             )
 
-            # 應該返回错误
+            # 应该返回错误
             assert "error" in result
 
         finally:
-            # 清理應該正常工作
+            # 清理应该正常工作
             await client.cleanup()
 
             # 验证進程已被清理
             if process:
-                assert process.poll() is not None  # 進程應該已結束
+                assert process.poll() is not None  # 進程应该已結束
 
 
 class TestMCPPerformance:
@@ -211,14 +211,14 @@ class TestMCPPerformance:
                 success = await client.start_server()
                 assert success == True
 
-            # 启动時間應該在合理範圍內（30秒內）
+            # 启动時間应该在合理范围內（30秒內）
             assert timer.duration < 30, f"服務器启动時間過長: {timer.duration:.2f}秒"
 
             with PerformanceTimer() as timer:
                 success = await client.initialize()
                 assert success == True
 
-            # 初始化時間應該很快（5秒內）
+            # 初始化時間应该很快（5秒內）
             assert timer.duration < 5, f"初始化時間過長: {timer.duration:.2f}秒"
 
         finally:
@@ -236,7 +236,7 @@ class TestMCPPerformance:
                 *startup_tasks, return_exceptions=True
             )
 
-            # 至少有一個應該成功（其他可能因為端口衝突失敗）
+            # 至少有一個应该成功（其他可能因為端口衝突失敗）
             successful_clients = []
             for i, (client, result) in enumerate(
                 zip(clients, startup_results, strict=False)
@@ -246,7 +246,7 @@ class TestMCPPerformance:
                 elif isinstance(result, Exception):
                     print(f"客戶端 {i} 启动失敗（預期）: {result}")
 
-            assert len(successful_clients) >= 1, "至少應該有一個客戶端成功启动"
+            assert len(successful_clients) >= 1, "至少应该有一個客戶端成功启动"
 
             # 测试成功的客戶端初始化
             for client in successful_clients:

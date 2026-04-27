@@ -43,7 +43,7 @@ def find_free_port(
             continue
 
     raise RuntimeError(
-        f"无法在 {start_port}-{start_port + max_attempts - 1} 範圍內找到可用端口"
+        f"无法在 {start_port}-{start_port + max_attempts - 1} 范围內找到可用端口"
     )
 
 

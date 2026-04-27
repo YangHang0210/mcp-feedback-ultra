@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-本地發布腳本
+本地发布腳本
 用法：
   python scripts/release.py patch   # 2.0.0 -> 2.0.1
   python scripts/release.py minor   # 2.0.0 -> 2.1.0
@@ -60,7 +60,7 @@ def main():
 
     version_type = sys.argv[1]
 
-    print("🚀 開始發布流程...")
+    print("🚀 開始发布流程...")
 
     # 检查 Git 狀態（僅提示，不阻止）
     result = run_cmd("git status --porcelain", check=False)
@@ -86,23 +86,23 @@ def main():
     run_cmd(f'git commit -m "🔖 Release v{new_version}"')
     run_cmd(f'git tag "v{new_version}"')
 
-    # 詢問是否發布
-    print(f"\n✅ 準備發布版本 {old_version} -> {new_version}")
-    choice = input("是否發布到 PyPI？ (y/N): ")
+    # 詢問是否发布
+    print(f"\n✅ 准备发布版本 {old_version} -> {new_version}")
+    choice = input("是否发布到 PyPI？ (y/N): ")
 
     if choice.lower() == "y":
-        print("🚀 發布到 PyPI...")
+        print("🚀 发布到 PyPI...")
         run_cmd("uv run twine upload dist/*")
 
         print("📤 推送到 GitHub...")
         run_cmd("git push origin main")
         run_cmd(f'git push origin "v{new_version}"')
 
-        print(f"🎉 發布完成！版本 v{new_version} 已上線")
+        print(f"🎉 发布完成！版本 v{new_version} 已上線")
         print("📦 安裝命令: uvx mcp-feedback-ultra")
     else:
-        print("⏸️  發布已取消，版本已更新但未發布")
-        print("💡 您可以稍後手動發布: uv run twine upload dist/*")
+        print("⏸️  发布已取消，版本已更新但未发布")
+        print("💡 您可以稍後手動发布: uv run twine upload dist/*")
 
 
 if __name__ == "__main__":

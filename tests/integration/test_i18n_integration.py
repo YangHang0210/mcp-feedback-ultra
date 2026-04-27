@@ -42,11 +42,11 @@ class TestI18NWebIntegration:
                     assert response.status == 200
                     text = await response.text()
 
-                    # 頁面應該包含當前語言的內容
+                    # 頁面应该包含當前語言的內容
                     assert len(text) > 0
 
                     # 检查是否包含基本的 UI 元素
-                    # 這些元素應該根據語言進行本地化
+                    # 這些元素应该根據語言進行本地化
                     assert "MCP Feedback" in text
 
     def test_i18n_api_endpoints(self, web_ui_manager, i18n_manager):
@@ -85,7 +85,7 @@ class TestI18NMCPIntegration:
                 assert isinstance(message, str)
                 assert len(message) > 0
 
-                # 不同語言的消息應該不同（除非回退到同一語言）
+                # 不同語言的消息应该不同（除非回退到同一語言）
                 if lang != i18n_manager._fallback_language:
                     # 簡化测试，只检查翻譯是否存在
                     if message != key:  # 如果不是回退到 key 本身
@@ -229,7 +229,7 @@ class TestI18NEnvironmentIntegration:
                 success = i18n_manager.set_language(lang)
                 assert success == True
 
-                # WebUIManager 應該能夠訪問當前語言设置
+                # WebUIManager 应该能夠訪問當前語言设置
                 current_lang = web_ui_manager.i18n.get_current_language()
                 assert current_lang == lang
                 break

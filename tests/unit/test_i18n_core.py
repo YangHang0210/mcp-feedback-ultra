@@ -62,7 +62,7 @@ class TestI18NManager:
             translation = i18n_manager.t(key)
             assert isinstance(translation, str)
             assert len(translation) > 0
-            # 翻譯結果不應該等於 key（除非是回退情況）
+            # 翻譯結果不应该等於 key（除非是回退情況）
             if key in i18n_manager._translations.get(
                 i18n_manager.get_current_language(), {}
             ):
@@ -74,7 +74,7 @@ class TestI18NManager:
         test_key = "test.message.withParam"
         test_params = {"name": "测试用戶", "count": 5}
 
-        # 即使 key 不存在，也應該返回合理的結果
+        # 即使 key 不存在，也应该返回合理的結果
         translation = i18n_manager.t(test_key, **test_params)
         assert isinstance(translation, str)
         assert len(translation) > 0
@@ -91,7 +91,7 @@ class TestI18NManager:
             non_existent_key = "non.existent.key.for.testing"
             translation = i18n_manager.t(non_existent_key)
 
-            # 應該返回 key 本身或合理的回退值
+            # 应该返回 key 本身或合理的回退值
             assert isinstance(translation, str)
             assert len(translation) > 0
 
@@ -165,7 +165,7 @@ class TestI18NTranslationCompleteness:
 
             for key in common_keys:
                 translation = i18n_manager.t(key)
-                # 翻譯應該存在且不為空
+                # 翻譯应该存在且不為空
                 assert isinstance(translation, str)
                 assert len(translation.strip()) > 0
 
@@ -215,9 +215,9 @@ class TestI18NEnvironmentDetection:
 
             test_manager = I18nManager()
 
-            # 應該檢測到繁體中文
+            # 应该檢測到繁體中文
             detected_lang = test_manager._detect_language()
-            assert detected_lang in ["zh-TW", "zh-CN", "en"]  # 應該是支援的語言之一
+            assert detected_lang in ["zh-TW", "zh-CN", "en"]  # 应该是支援的語言之一
 
         finally:
             # 恢復环境变量
@@ -245,7 +245,7 @@ class TestI18NEnvironmentDetection:
             test_manager = I18nManager()
 
             detected_lang = test_manager._detect_language()
-            # 應該回退到支援的語言
+            # 应该回退到支援的語言
             assert detected_lang in TestData.SUPPORTED_LANGUAGES
 
         finally:

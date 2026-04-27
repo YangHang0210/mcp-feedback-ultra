@@ -23,7 +23,7 @@ class TestUtils:
             except OSError:
                 continue
         raise RuntimeError(
-            f"無法找到可用端口 (嘗試範圍: {start_port}-{start_port + max_attempts})"
+            f"無法找到可用端口 (嘗試范围: {start_port}-{start_port + max_attempts})"
         )
 
     @staticmethod

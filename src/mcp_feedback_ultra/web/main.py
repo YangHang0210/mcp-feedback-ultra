@@ -84,7 +84,7 @@ class WebUIManager:
                     debug_log(f"使用环境变量指定的端口: {preferred_port}")
                 else:
                     debug_log(
-                        f"MCP_WEB_PORT 值無效 ({custom_port})，必須在 1024-65535 範圍內或为 0，使用预设端口 8765"
+                        f"MCP_WEB_PORT 值無效 ({custom_port})，必須在 1024-65535 范围內或为 0，使用预设端口 8765"
                     )
             except ValueError:
                 debug_log(
@@ -126,7 +126,7 @@ class WebUIManager:
             )
         self.app = FastAPI(title="MCP Feedback Ultra")
 
-        # 设置壓縮和緩存中間件
+        # 设置壓縮和缓存中間件
         self._setup_compression_middleware()
 
         # 设置內存监控
@@ -136,7 +136,7 @@ class WebUIManager:
         self.current_session: WebFeedbackSession | None = None
         self.sessions: dict[str, WebFeedbackSession] = {}  # 保留用於向後兼容
 
-        # 全局標籤頁狀態管理 - 跨會話保持
+        # 全局标签頁狀態管理 - 跨會話保持
         self.global_active_tabs: dict[str, dict] = {}
 
         # 會話更新通知標記
@@ -221,13 +221,13 @@ class WebUIManager:
                 debug_log(f"I18N 资源預載入失敗: {e}")
                 return False
 
-        # 在線程池中执行
+        # 在线程池中执行
         loop = asyncio.get_event_loop()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             await loop.run_in_executor(executor, preload_i18n)
 
     def _setup_compression_middleware(self):
-        """设置壓縮和緩存中間件"""
+        """设置壓縮和缓存中間件"""
         # 獲取壓縮管理器
         compression_manager = get_compression_manager()
         config = compression_manager.config
@@ -235,13 +235,13 @@ class WebUIManager:
         # 添加 Gzip 壓縮中間件
         self.app.add_middleware(GZipMiddleware, minimum_size=config.minimum_size)
 
-        # 添加緩存和壓縮統計中間件
+        # 添加缓存和壓縮統計中間件
         @self.app.middleware("http")
         async def compression_and_cache_middleware(request: Request, call_next):
-            """壓縮和緩存中間件"""
+            """壓縮和缓存中間件"""
             response = await call_next(request)
 
-            # 添加緩存頭
+            # 添加缓存頭
             if not config.should_exclude_path(request.url.path):
                 cache_headers = config.get_cache_headers(request.url.path)
                 for key, value in cache_headers.items():
@@ -269,7 +269,7 @@ class WebUIManager:
 
             return response
 
-        debug_log("壓縮和緩存中間件设置完成")
+        debug_log("壓縮和缓存中間件设置完成")
 
     def _setup_memory_monitoring(self):
         """设置內存监控"""
@@ -286,9 +286,9 @@ class WebUIManager:
                     cleaned = self.cleanup_expired_sessions()
                     debug_log(f"內存危險警告觸發，清理了 {cleaned} 個過期會話")
                 elif alert.level == "emergency":
-                    # 緊急級別：強制清理會話
+                    # 緊急級別：强制清理會話
                     cleaned = self.cleanup_sessions_by_memory_pressure(force=True)
-                    debug_log(f"內存緊急警告觸發，強制清理了 {cleaned} 個會話")
+                    debug_log(f"內存緊急警告觸發，强制清理了 {cleaned} 個會話")
 
             self.memory_monitor.add_alert_callback(web_memory_alert)
 
@@ -297,9 +297,9 @@ class WebUIManager:
                 """內存监控觸發的會話清理回調"""
                 try:
                     if force:
-                        # 強制清理：包括內存壓力清理
+                        # 强制清理：包括內存壓力清理
                         cleaned = self.cleanup_sessions_by_memory_pressure(force=True)
-                        debug_log(f"內存监控強制清理了 {cleaned} 個會話")
+                        debug_log(f"內存监控强制清理了 {cleaned} 個會話")
                     else:
                         # 常規清理：只清理過期會話
                         cleaned = self.cleanup_expired_sessions()
@@ -349,7 +349,7 @@ class WebUIManager:
             raise RuntimeError(f"Templates directory not found: {web_templates_path}")
 
     def create_session(self, project_directory: str, summary: str) -> str:
-        """創建新的反馈會話 - 重構为單一活躍會話模式，保留標籤頁狀態"""
+        """創建新的反馈會話 - 重構为單一活躍會話模式，保留标签頁狀態"""
         # 保存舊會話的引用和 WebSocket 连接
         old_session = self.current_session
         old_websocket = None
@@ -367,7 +367,7 @@ class WebUIManager:
                 f"处理舊會話 {old_session.session_id} 的狀態轉換，當前狀態: {old_session.status.value}"
             )
 
-            # 保存標籤頁狀態到全局
+            # 保存标签頁狀態到全局
             if hasattr(old_session, "active_tabs"):
                 self._merge_tabs_to_global(old_session.active_tabs)
 
@@ -396,7 +396,7 @@ class WebUIManager:
             # 同步清理會話资源（但保留 WebSocket 连接）
             old_session._cleanup_sync()
 
-        # 將全局標籤頁狀態繼承到新會話
+        # 將全局标签頁狀態繼承到新會話
         session.active_tabs = self.global_active_tabs.copy()
 
         # 设置为當前活躍會話
@@ -405,7 +405,7 @@ class WebUIManager:
         self.sessions[session_id] = session
 
         debug_log(f"創建新的活躍會話: {session_id}")
-        debug_log(f"繼承 {len(session.active_tabs)} 個活躍標籤頁")
+        debug_log(f"繼承 {len(session.active_tabs)} 個活躍标签頁")
 
         # 处理WebSocket连接轉移
         if old_websocket:
@@ -455,30 +455,30 @@ class WebUIManager:
             debug_log("已清空當前活躍會話")
 
     def _merge_tabs_to_global(self, session_tabs: dict):
-        """將會話的標籤頁狀態合併到全局狀態"""
+        """將會話的标签頁狀態合併到全局狀態"""
         current_time = time.time()
         expired_threshold = 60  # 60秒過期閾值
 
-        # 清理過期的全局標籤頁
+        # 清理過期的全局标签頁
         self.global_active_tabs = {
             tab_id: tab_info
             for tab_id, tab_info in self.global_active_tabs.items()
             if current_time - tab_info.get("last_seen", 0) <= expired_threshold
         }
 
-        # 合併會話標籤頁到全局
+        # 合併會話标签頁到全局
         for tab_id, tab_info in session_tabs.items():
             if current_time - tab_info.get("last_seen", 0) <= expired_threshold:
                 self.global_active_tabs[tab_id] = tab_info
 
-        debug_log(f"合併標籤頁狀態，全局活躍標籤頁數量: {len(self.global_active_tabs)}")
+        debug_log(f"合併标签頁狀態，全局活躍标签頁數量: {len(self.global_active_tabs)}")
 
     def get_global_active_tabs_count(self) -> int:
-        """獲取全局活躍標籤頁數量"""
+        """獲取全局活躍标签頁數量"""
         current_time = time.time()
         expired_threshold = 60
 
-        # 清理過期標籤頁並返回數量
+        # 清理過期标签頁並返回數量
         valid_tabs = {
             tab_id: tab_info
             for tab_id, tab_info in self.global_active_tabs.items()
@@ -489,14 +489,14 @@ class WebUIManager:
         return len(valid_tabs)
 
     async def broadcast_to_active_tabs(self, message: dict):
-        """向所有活躍標籤頁廣播消息"""
+        """向所有活躍标签頁廣播消息"""
         if not self.current_session or not self.current_session.websocket:
             debug_log("沒有活躍的 WebSocket 连接，无法廣播消息")
             return
 
         try:
             await self.current_session.websocket.send_json(message)
-            debug_log(f"已廣播消息到活躍標籤頁: {message.get('type', 'unknown')}")
+            debug_log(f"已廣播消息到活躍标签頁: {message.get('type', 'unknown')}")
         except Exception as e:
             debug_log(f"廣播消息失敗: {e}")
 
@@ -625,7 +625,7 @@ class WebUIManager:
                     debug_log(f"服务器运行错误 [错误ID: {error_id}]: {e}")
                     break
 
-        # 在新線程中启动服务器
+        # 在新线程中启动服务器
         self.server_thread = threading.Thread(target=run_server_with_retry, daemon=True)
         self.server_thread.start()
 
@@ -642,10 +642,10 @@ class WebUIManager:
             debug_log(f"无法开启瀏覽器: {e}")
 
     async def smart_open_browser(self, url: str) -> bool:
-        """智能开启瀏覽器 - 检测是否已有活躍標籤頁
+        """智能开启瀏覽器 - 检测是否已有活躍标签頁
 
         Returns:
-            bool: True 表示检测到活躍標籤頁或桌面模式，False 表示开启了新視窗
+            bool: True 表示检测到活躍标签頁或桌面模式，False 表示开启了新视窗
         """
 
         try:
@@ -654,22 +654,22 @@ class WebUIManager:
                 debug_log("检测到桌面模式，跳過瀏覽器开启")
                 return True
 
-            # 检查是否有活躍標籤頁
+            # 检查是否有活躍标签頁
             has_active_tabs = await self._check_active_tabs()
 
             if has_active_tabs:
-                debug_log("检测到活躍標籤頁，發送刷新通知")
-                debug_log(f"向現有標籤頁發送刷新通知：{url}")
+                debug_log("检测到活躍标签頁，發送刷新通知")
+                debug_log(f"向現有标签頁發送刷新通知：{url}")
 
-                # 向現有標籤頁發送刷新通知
+                # 向現有标签頁發送刷新通知
                 refresh_success = await self.notify_existing_tab_to_refresh()
 
                 debug_log(f"刷新通知發送結果: {refresh_success}")
-                debug_log("检测到活躍標籤頁，不开启新瀏覽器視窗")
+                debug_log("检测到活躍标签頁，不开启新瀏覽器视窗")
                 return True
 
-            # 沒有活躍標籤頁，开启新瀏覽器視窗
-            debug_log("沒有检测到活躍標籤頁，开启新瀏覽器視窗")
+            # 沒有活躍标签頁，开启新瀏覽器视窗
+            debug_log("沒有检测到活躍标签頁，开启新瀏覽器视窗")
             self.open_browser(url)
             return False
 
@@ -780,7 +780,7 @@ class WebUIManager:
             debug_log(f"检查 WebSocket 连接狀態時發生错误: {e}")
 
     async def notify_existing_tab_to_refresh(self) -> bool:
-        """通知現有標籤頁刷新顯示新會話內容
+        """通知現有标签頁刷新顯示新會話內容
 
         Returns:
             bool: True 表示成功發送，False 表示失敗
@@ -805,7 +805,7 @@ class WebUIManager:
 
             # 發送刷新通知
             await self.current_session.websocket.send_json(refresh_message)
-            debug_log(f"已向現有標籤頁發送刷新通知: {self.current_session.session_id}")
+            debug_log(f"已向現有标签頁發送刷新通知: {self.current_session.session_id}")
 
             # 簡單等待一下讓消息發送完成
             await asyncio.sleep(0.2)
@@ -817,7 +817,7 @@ class WebUIManager:
             return False
 
     async def _check_active_tabs(self) -> bool:
-        """检查是否有活躍標籤頁 - 使用分層检测機制"""
+        """检查是否有活躍标签頁 - 使用分層检测機制"""
         try:
             # 快速检测層：检查 WebSocket 物件是否存在
             if not self.current_session or not self.current_session.websocket:
@@ -947,7 +947,7 @@ class WebUIManager:
         # 根據優先級選擇要清理的會話
         # 優先級：已完成 > 已提交反饋 > 错误狀態 > 空閒時間最長
         for session_id, session in self.sessions.items():
-            # 跳過當前活躍會話（除非強制清理）
+            # 跳過當前活躍會話（除非强制清理）
             if (
                 not force
                 and self.current_session
@@ -1134,7 +1134,7 @@ async def launch_web_feedback_ui(
     """
     manager = get_web_ui_manager()
 
-    # 創建新會話（每次AI調用都應該創建新會話）
+    # 創建新會話（每次AI調用都应该創建新會話）
     manager.create_session(project_directory, summary)
     session = manager.get_current_session()
 
@@ -1161,9 +1161,9 @@ async def launch_web_feedback_ui(
 
     debug_log(f"[DEBUG] 服務器地址: {feedback_url}")
 
-    # 如果检测到活躍標籤頁，消息已在 smart_open_browser 中發送，無需額外处理
+    # 如果检测到活躍标签頁，消息已在 smart_open_browser 中發送，無需額外处理
     if has_active_tabs:
-        debug_log("检测到活躍標籤頁，會話更新通知已發送")
+        debug_log("检测到活躍标签頁，會話更新通知已發送")
 
     try:
         # 等待用戶反馈，傳遞 timeout 參數

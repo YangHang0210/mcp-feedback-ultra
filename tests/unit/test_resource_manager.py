@@ -149,7 +149,7 @@ class TestResourceManager:
         assert result is True
         assert temp_file not in rm.temp_files
 
-        # 再次取消追蹤（應該返回 False）
+        # 再次取消追蹤（应该返回 False）
         result = rm.unregister_temp_file(temp_file)
         assert result is False
 
@@ -171,7 +171,7 @@ class TestResourceManager:
         assert result is True
         assert current_pid not in rm.processes
 
-        # 再次取消追蹤（應該返回 False）
+        # 再次取消追蹤（应该返回 False）
         result = rm.unregister_process(current_pid)
         assert result is False
 
@@ -254,7 +254,7 @@ class TestResourceManager:
         assert temp_file not in rm.temp_files
         assert temp_dir not in rm.temp_dirs
 
-        # 進程不應該被清理（auto_cleanup=False）
+        # 進程不应该被清理（auto_cleanup=False）
         assert current_pid in rm.processes
 
     def test_get_resource_stats(self):
@@ -328,8 +328,8 @@ class TestResourceManager:
             temp_file_max_age=100,  # 小於最小值 300
         )
 
-        assert rm.cleanup_interval == 60  # 應該被限制為最小值
-        assert rm.temp_file_max_age == 300  # 應該被限制為最小值
+        assert rm.cleanup_interval == 60  # 应该被限制為最小值
+        assert rm.temp_file_max_age == 300  # 应该被限制為最小值
 
     def test_cleanup_all_convenience_function(self):
         """测试全面清理便捷函數"""
@@ -375,7 +375,7 @@ class TestResourceManager:
         os.remove(temp_file)
 
     def test_auto_cleanup_thread(self):
-        """测试自動清理線程"""
+        """测试自動清理线程"""
         rm = get_resource_manager()
 
         # 確保自動清理已启动

@@ -14,12 +14,12 @@ import sys
 import time
 
 
-# 導入現有的 MCP Feedback Enhanced 模組
+# 導入現有的 MCP Feedback Ultra 模組
 try:
     from mcp_feedback_ultra.debug import server_debug_log as debug_log
     from mcp_feedback_ultra.web.main import WebUIManager, get_web_ui_manager
 except ImportError as e:
-    print(f"無法導入 MCP Feedback Enhanced 模組: {e}")
+    print(f"無法導入 MCP Feedback Ultra 模組: {e}")
     sys.exit(1)
 
 
@@ -103,7 +103,7 @@ class DesktopApp:
 
     async def launch_tauri_app(self, server_url: str):
         """启动 Tauri 桌面应用程序"""
-        debug_log("正在启动 Tauri 桌面視窗...")
+        debug_log("正在启动 Tauri 桌面视窗...")
 
         import os
         import subprocess
@@ -144,7 +144,7 @@ class DesktopApp:
             if tauri_exe.exists():
                 debug_log(f"找到打包後的 Tauri 可执行文件: {tauri_exe}")
             else:
-                # 嘗試回退選項
+                # 嘗試回退选项
                 fallback_files = [
                     desktop_dir / "mcp-feedback-ultra-desktop.exe",
                     desktop_dir / "mcp-feedback-ultra-desktop-macos-intel",
@@ -205,7 +205,7 @@ class DesktopApp:
 
             if not tauri_exe.exists():
                 raise FileNotFoundError(
-                    "找不到 Tauri 可执行文件，已嘗試的路徑包括开发和發布目錄"
+                    "找不到 Tauri 可执行文件，已嘗試的路徑包括开发和发布目錄"
                 ) from None
 
         debug_log(f"找到 Tauri 可执行文件: {tauri_exe}")
@@ -217,7 +217,7 @@ class DesktopApp:
 
         # 启动 Tauri 应用程序
         try:
-            # Windows 下隱藏控制台視窗
+            # Windows 下隱藏控制台视窗
             creation_flags = 0
             if os.name == "nt":
                 creation_flags = subprocess.CREATE_NO_WINDOW

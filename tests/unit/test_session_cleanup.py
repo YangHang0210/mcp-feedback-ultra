@@ -64,7 +64,7 @@ class TestWebFeedbackSessionCleanup:
 
     def test_is_expired_by_idle_time(self):
         """测试空閒時間過期檢測"""
-        # 新創建的會話不應該過期
+        # 新創建的會話不应该過期
         assert not self.session.is_expired()
 
         # 模擬空閒時間過長
@@ -87,12 +87,12 @@ class TestWebFeedbackSessionCleanup:
         # 测试年齡
         age = self.session.get_age()
         assert age >= 0
-        assert age < 1  # 剛創建，應該小於1秒
+        assert age < 1  # 剛創建，应该小於1秒
 
         # 测试空閒時間
         idle_time = self.session.get_idle_time()
         assert idle_time >= 0
-        assert idle_time < 1  # 剛創建，應該小於1秒
+        assert idle_time < 1  # 剛創建，应该小於1秒
 
     def test_cleanup_timer_scheduling(self):
         """测试清理定時器調度"""
@@ -104,7 +104,7 @@ class TestWebFeedbackSessionCleanup:
         old_timer = self.session.cleanup_timer
         self.session.extend_cleanup_timer(120)
 
-        # 應該創建新的定時器
+        # 应该創建新的定時器
         assert self.session.cleanup_timer != old_timer
         assert self.session.cleanup_timer.is_alive()
 

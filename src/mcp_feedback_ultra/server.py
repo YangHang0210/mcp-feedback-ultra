@@ -37,7 +37,7 @@ from fastmcp.utilities.types import Image as MCPImage
 from mcp.types import TextContent
 from pydantic import Field
 
-# 导入統一的調試功能
+# 导入統一的调试功能
 from .debug import server_debug_log as debug_log
 
 # 导入多語系支持
@@ -87,7 +87,7 @@ def init_encoding():
             if hasattr(sys.stdin, "reconfigure"):
                 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
-        # 设置 stderr 編碼（用於調試訊息）
+        # 设置 stderr 編碼（用於调试訊息）
         if hasattr(sys.stderr, "reconfigure"):
             sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
@@ -238,7 +238,7 @@ def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> 
     if directory and not os.path.exists(directory):
         os.makedirs(directory, exist_ok=True)
 
-    # 複製數據以避免修改原始數據
+    # 复制數據以避免修改原始數據
     json_data = feedback_data.copy()
 
     # 处理图片數據：將 bytes 轉換为 base64 字符串以便 JSON 序列化
@@ -328,7 +328,7 @@ def create_feedback_text(feedback_data: dict) -> str:
                         img_info += f"\n     完整 Base64 長度: {len(img_base64)} 字符"
 
                         # 如果 AI 助手不支持 MCP 图片，可以提供完整 base64
-                        debug_log(f"图片 {i} Base64 已準備，長度: {len(img_base64)}")
+                        debug_log(f"图片 {i} Base64 已准备，長度: {len(img_base64)}")
 
                         # 检查是否啟用 Base64 詳細模式（從 UI 设定中獲取）
                         include_full_base64 = feedback_data.get("settings", {}).get(
@@ -364,13 +364,13 @@ def create_feedback_text(feedback_data: dict) -> str:
 
 def process_images(images_data: list[dict]) -> list[MCPImage]:
     """
-    处理图片资料，轉換为 MCP 图片對象
+    处理图片资料，轉換为 MCP 图片对象
 
     Args:
         images_data: 图片资料列表
 
     Returns:
-        List[MCPImage]: MCP 图片對象列表
+        List[MCPImage]: MCP 图片对象列表
     """
     mcp_images = []
 
@@ -408,7 +408,7 @@ def process_images(images_data: list[dict]) -> list[MCPImage]:
             else:
                 image_format = "png"  # 默認使用 PNG
 
-            # 創建 MCPImage 對象
+            # 創建 MCPImage 对象
             mcp_image = MCPImage(data=image_bytes, format=image_format)
             mcp_images.append(mcp_image)
 
@@ -664,13 +664,13 @@ def main():
     3. 上传图片作为反馈
     4. 查看 AI 的工作摘要
 
-    調試模式：
-    - 设置环境变量 MCP_DEBUG=true 可啟用詳細調試輸出
-    - 生產环境建議关闭調試模式以避免輸出干擾
+    调试模式：
+    - 设置环境变量 MCP_DEBUG=true 可啟用詳細调试輸出
+    - 生產环境建議关闭调试模式以避免輸出干擾
 
 
     """
-    # 检查是否啟用調試模式
+    # 检查是否啟用调试模式
     debug_enabled = os.getenv("MCP_DEBUG", "").lower() in ("true", "1", "yes", "on")
 
     # 检查是否啟用桌面模式
@@ -692,7 +692,7 @@ def main():
         debug_log(f"   桌面模式: {'啟用' if desktop_mode else '禁用'}")
         debug_log("   介面類型: Web UI")
         debug_log("   等待來自 AI 助手的調用...")
-        debug_log("準備启动 MCP 服务器...")
+        debug_log("准备启动 MCP 服务器...")
         debug_log("調用 mcp.run()...")
 
     try:

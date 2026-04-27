@@ -104,7 +104,7 @@ class DesktopApp:
 
     async def launch_tauri_app(self, server_url: str):
         """启动 Tauri 桌面应用程序"""
-        debug_log("正在启动 Tauri 桌面視窗...")
+        debug_log("正在启动 Tauri 桌面视窗...")
 
         import os
         import subprocess
@@ -145,7 +145,7 @@ class DesktopApp:
             if tauri_exe.exists():
                 debug_log(f"找到打包後的 Tauri 可执行文件: {tauri_exe}")
             else:
-                # 尝试回退選項
+                # 尝试回退选项
                 fallback_files = [
                     desktop_dir / "mcp-feedback-ultra-desktop.exe",
                     desktop_dir / "mcp-feedback-ultra-desktop-macos-intel",
@@ -206,7 +206,7 @@ class DesktopApp:
 
             if not tauri_exe.exists():
                 raise FileNotFoundError(
-                    "找不到 Tauri 可执行文件，已尝试的路徑包括开发和發布目錄"
+                    "找不到 Tauri 可执行文件，已尝试的路徑包括开发和发布目錄"
                 ) from None
 
         debug_log(f"找到 Tauri 可执行文件: {tauri_exe}")
@@ -218,7 +218,7 @@ class DesktopApp:
 
         # 启动 Tauri 应用程序
         try:
-            # Windows 下隱藏控制台視窗
+            # Windows 下隱藏控制台视窗
             creation_flags = 0
             if os.name == "nt":
                 # CREATE_NO_WINDOW 只在 Windows 上存在

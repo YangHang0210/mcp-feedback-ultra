@@ -174,7 +174,7 @@ class SimpleMCPClient:
                         asyncio.to_thread(self.server_process.wait), timeout=5
                     )
                 except TimeoutError:
-                    # 強制終止
+                    # 强制終止
                     self.server_process.kill()
                     await asyncio.to_thread(self.server_process.wait)
 

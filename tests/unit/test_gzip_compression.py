@@ -6,7 +6,7 @@ Gzip 壓縮功能测试
 测试 FastAPI Gzip 壓縮中間件的功能，包括：
 - 壓縮效果验证
 - WebSocket 兼容性
-- 靜態文件緩存
+- 靜態文件缓存
 - 性能提升测试
 """
 
@@ -65,11 +65,11 @@ class TestCompressionConfig:
         """测试壓縮判斷邏輯"""
         config = CompressionConfig()
 
-        # 應該壓縮的情況
+        # 应该壓縮的情況
         assert config.should_compress("text/html", 2000) == True
         assert config.should_compress("application/json", 1500) == True
 
-        # 不應該壓縮的情況
+        # 不应该壓縮的情況
         assert config.should_compress("text/html", 500) == False  # 太小
         assert config.should_compress("image/jpeg", 2000) == False  # 不支援的類型
         assert config.should_compress("", 2000) == False  # 無內容類型
@@ -85,7 +85,7 @@ class TestCompressionConfig:
         assert config.should_exclude_path("/api/feedback") == False
 
     def test_get_cache_headers(self):
-        """测试緩存頭生成"""
+        """测试缓存頭生成"""
         config = CompressionConfig()
 
         # 靜態文件
@@ -93,7 +93,7 @@ class TestCompressionConfig:
         assert "Cache-Control" in static_headers
         assert "public, max-age=3600" in static_headers["Cache-Control"]
 
-        # API 路徑（预设不緩存）
+        # API 路徑（预设不缓存）
         api_headers = config.get_cache_headers("/api/feedback")
         assert "no-cache" in api_headers["Cache-Control"]
 
@@ -277,7 +277,7 @@ class TestGzipIntegration:
         response = client.get("/test-small", headers={"Accept-Encoding": "gzip"})
 
         assert response.status_code == 200
-        # 小內容不應該被壓縮
+        # 小內容不应该被壓縮
         assert response.headers.get("content-encoding") != "gzip"
 
     def test_gzip_compression_html_content(self):
@@ -300,7 +300,7 @@ class TestGzipIntegration:
         response = client.get("/test-large", headers={"Accept-Encoding": "identity"})
 
         assert response.status_code == 200
-        # 當明確要求不壓縮時，應該不會有 gzip 編碼
+        # 當明確要求不壓縮時，应该不會有 gzip 編碼
         # 注意：某些情況下 FastAPI 仍可能壓縮，這是正常行為
 
 
@@ -312,7 +312,7 @@ class TestWebSocketCompatibility:
         # 這個测试確保 WebSocket 路徑被正確排除
         config = CompressionConfig()
 
-        # WebSocket 路徑應該被排除
+        # WebSocket 路徑应该被排除
         assert config.should_exclude_path("/ws") == True
         assert config.should_exclude_path("/api/ws") == True
 
@@ -337,7 +337,7 @@ async def test_compression_performance():
     compressed_size = len(compressed_data)
     compression_ratio = (1 - compressed_size / original_size) * 100
 
-    # 壓縮比應該大於 50%（JSON 數據通常壓縮效果很好）
+    # 壓縮比应该大於 50%（JSON 數據通常壓縮效果很好）
     assert compression_ratio > 50
     assert compressed_size < original_size
 

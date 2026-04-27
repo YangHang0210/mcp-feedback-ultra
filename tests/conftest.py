@@ -59,7 +59,7 @@ def web_ui_manager() -> Generator[WebUIManager, None, None]:
 
     os.environ["MCP_TEST_MODE"] = "true"
     os.environ["MCP_WEB_HOST"] = "127.0.0.1"  # 確保测试使用本地主機
-    # 使用動態端口範圍避免衝突
+    # 使用動態端口范围避免衝突
     os.environ["MCP_WEB_PORT"] = "0"  # 讓系統自動分配端口
 
     try:

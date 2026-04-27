@@ -11,7 +11,7 @@ import subprocess
 import webbrowser
 from collections.abc import Callable
 
-# 导入調試功能
+# 导入调试功能
 from ...debug import server_debug_log as debug_log
 
 

@@ -112,7 +112,7 @@ class TestErrorHandler:
 
         assert isinstance(solutions, list)
         assert len(solutions) > 0
-        # 應該包含網絡相關的解決方案
+        # 应该包含網絡相關的解決方案
         solutions_text = " ".join(solutions).lower()
         assert any(
             keyword in solutions_text
@@ -153,7 +153,7 @@ class TestErrorHandler:
 
         assert response["success"] is False
         assert "context" not in response  # 用戶界面不應包含技術上下文
-        assert "❌" in response["message"]  # 應該包含用戶友好的格式
+        assert "❌" in response["message"]  # 应该包含用戶友好的格式
 
     @patch(
         "mcp_feedback_ultra.utils.error_handler.ErrorHandler.get_i18n_error_message"
@@ -229,18 +229,18 @@ class TestErrorHandler:
         assert isinstance(error_id, str)
         assert error_id.startswith("ERR_")
 
-        # 上下文應該被记录到調試日誌中（通過 debug_log）
+        # 上下文应该被记录到调试日誌中（通過 debug_log）
         # 這裡我們主要验证函數不會拋出異常
 
     def test_json_rpc_safety(self):
         """测试不影響 JSON RPC 通信"""
-        # 错误处理應該只记录到 stderr（通過 debug_log）
-        # 不應該影響 stdout 或 JSON RPC 響應
+        # 错误处理应该只记录到 stderr（通過 debug_log）
+        # 不应该影響 stdout 或 JSON RPC 響應
 
         error = Exception("Test error for JSON RPC safety")
         context = {"operation": "JSON RPC 测试"}
 
-        # 這些操作不應該影響 stdout
+        # 這些操作不应该影響 stdout
         error_id = ErrorHandler.log_error_with_context(error, context=context)
         user_message = ErrorHandler.format_user_error(error)
         response = ErrorHandler.create_error_response(error)

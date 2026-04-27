@@ -287,7 +287,7 @@ def setup_routes(manager: "WebUIManager"):
 
             # 检查是否有待發送的會話更新
             if getattr(manager, "_pending_session_update", False):
-                debug_log("检测到待發送的會話更新，準備發送通知")
+                debug_log("检测到待發送的會話更新，准备發送通知")
                 await websocket.send_json(
                     {
                         "type": "session_updated",

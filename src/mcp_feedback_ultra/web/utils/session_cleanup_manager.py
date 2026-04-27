@@ -214,7 +214,7 @@ class SessionCleanupManager:
         cleaned_sessions = 0
 
         try:
-            debug_log(f"觸發清理操作，觸發器: {trigger.value}，強制: {force}")
+            debug_log(f"觸發清理操作，觸發器: {trigger.value}，强制: {force}")
 
             if trigger == CleanupTrigger.MEMORY_PRESSURE:
                 cleaned_sessions = (
@@ -493,7 +493,7 @@ class SessionCleanupManager:
         debug_log("清理統計數據已重置")
 
     def force_cleanup_all(self, exclude_current: bool = True) -> int:
-        """強制清理所有會話"""
+        """强制清理所有會話"""
         sessions_to_clean = []
 
         for session_id, session in self.web_ui_manager.sessions.items():
@@ -516,10 +516,10 @@ class SessionCleanupManager:
                     del self.web_ui_manager.sessions[session_id]
                     cleaned_count += 1
             except Exception as e:
-                debug_log(f"強制清理會話 {session_id} 失敗: {e}")
+                debug_log(f"强制清理會話 {session_id} 失敗: {e}")
 
         # 更新統計
         self._update_cleanup_stats(CleanupTrigger.MANUAL, cleaned_count, 0.0)
 
-        debug_log(f"強制清理完成，清理了 {cleaned_count} 個會話")
+        debug_log(f"强制清理完成，清理了 {cleaned_count} 個會話")
         return cleaned_count

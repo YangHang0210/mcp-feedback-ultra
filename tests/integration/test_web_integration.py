@@ -38,11 +38,11 @@ class TestWebUIIntegration:
             async with session.get(f"{base_url}/") as response:
                 assert response.status == 200
                 text = await response.text()
-                assert "MCP Feedback Enhanced" in text
+                assert "MCP Feedback Ultra" in text
 
             # 测试靜態文件
             async with session.get(f"{base_url}/static/css/style.css") as response:
-                # 可能返回 200 或 404，但不應該是服務器错误
+                # 可能返回 200 或 404，但不应该是服務器错误
                 assert response.status in [200, 404]
 
     @pytest.mark.asyncio
@@ -90,7 +90,7 @@ class TestWebUIIntegration:
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.ws_connect(ws_url) as ws:
-                    # 應該收到连接确认消息
+                    # 应该收到连接确认消息
                     msg = await asyncio.wait_for(ws.receive(), timeout=5)
                     assert msg.type == aiohttp.WSMsgType.TEXT
 
@@ -123,7 +123,7 @@ class TestWebUIIntegration:
                     }
                     await ws.send_str(str(heartbeat_msg).replace("'", '"'))
 
-                    # 應該收到心跳回應
+                    # 应该收到心跳回應
                     response = await asyncio.wait_for(ws.receive(), timeout=5)
                     if response.type == aiohttp.WSMsgType.TEXT:
                         response_data = response.json()
@@ -153,7 +153,7 @@ class TestWebUISessionManagement:
             str(test_project_dir), "第二個會話"
         )
 
-        # 當前會話應該切換到新會話
+        # 當前會話应该切換到新會話
         current_session = web_ui_manager.get_current_session()
         assert current_session.session_id == session_id_2
         assert current_session.summary == "第二個會話"
@@ -207,7 +207,7 @@ class TestWebUISessionManagement:
                 session.wait_for_feedback(timeout=1),  # 1秒超時
                 timeout=2,  # 外部超時保護
             )
-            # 如果沒有超時，應該返回默認結果
+            # 如果沒有超時，应该返回默認結果
             assert TestUtils.validate_web_response(result)
         except TimeoutError:
             # 超時是預期的行為
@@ -232,13 +232,13 @@ class TestWebUIErrorHandling:
         base_url = f"http://{web_ui_manager.host}:{web_ui_manager.port}"
 
         async with aiohttp.ClientSession() as session:
-            # 测试主頁應該顯示等待頁面
+            # 测试主頁应该顯示等待頁面
             async with session.get(f"{base_url}/") as response:
                 assert response.status == 200
                 text = await response.text()
-                assert "MCP Feedback Enhanced" in text
+                assert "MCP Feedback Ultra" in text
 
-            # 测试當前會話 API 應該返回無會話狀態
+            # 测试當前會話 API 应该返回無會話狀態
             async with session.get(f"{base_url}/api/current-session") as response:
                 assert response.status == 404  # 或其他適當的狀態碼
 
@@ -259,13 +259,13 @@ class TestWebUIErrorHandling:
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.ws_connect(ws_url) as ws:
-                    # 连接應該被拒絕或立即关闭
+                    # 连接应该被拒絕或立即关闭
                     msg = await asyncio.wait_for(ws.receive(), timeout=5)
 
                     if msg.type == aiohttp.WSMsgType.CLOSE:
                         # 连接被关闭是預期的
                         assert True
-                    # 如果收到消息，應該是错误消息
+                    # 如果收到消息，应该是错误消息
                     elif msg.type == aiohttp.WSMsgType.TEXT:
                         data = msg.json()
                         assert "error" in data or data.get("type") == "error"
@@ -290,7 +290,7 @@ class TestWebUIPerformance:
             web_ui_manager.start_server()
             await asyncio.sleep(3)  # 等待启动完成
 
-        # 启动時間應該在合理範圍內
+        # 启动時間应该在合理范围內
         assert timer.duration < 10, f"Web 服務器启动時間過長: {timer.duration:.2f}秒"
 
         # 验证服務器確實在运行
@@ -312,7 +312,7 @@ class TestWebUIPerformance:
                 )
                 session_ids.append(session_id)
 
-        # 創建會話的時間應該是線性的，不應該有明顯的性能下降
+        # 創建會話的時間应该是線性的，不应该有明顯的性能下降
         avg_time_per_session = timer.duration / 10
         assert avg_time_per_session < 0.1, (
             f"每個會話創建時間過長: {avg_time_per_session:.3f}秒"

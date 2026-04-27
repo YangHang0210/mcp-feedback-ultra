@@ -165,7 +165,7 @@ class WebFeedbackSession:
             "resources_cleaned": 0,
         }
 
-        # 新增：活躍標籤頁管理
+        # 新增：活躍标签頁管理
         self.active_tabs: dict[str, Any] = {}
 
         # 新增：用戶设定的會話超時
@@ -702,11 +702,11 @@ class WebFeedbackSession:
                 auto_cleanup=True,
             )
 
-            # 在背景線程中讀取輸出
+            # 在背景线程中讀取輸出
             async def read_output():
                 loop = asyncio.get_event_loop()
                 try:
-                    # 使用線程池执行器來处理阻塞的讀取操作
+                    # 使用线程池执行器來处理阻塞的讀取操作
                     def read_line():
                         if self.process and self.process.stdout:
                             return self.process.stdout.readline()
@@ -846,7 +846,7 @@ class WebFeedbackSession:
                         debug_log(f"會話 {self.session_id} 命令进程已正常终止")
                     except subprocess.TimeoutExpired:
                         self.process.kill()
-                        debug_log(f"會話 {self.session_id} 命令进程已強制终止")
+                        debug_log(f"會話 {self.session_id} 命令进程已强制终止")
                     resources_cleaned += 1
                 except Exception as e:
                     debug_log(f"终止命令进程時發生错误: {e}")
@@ -982,7 +982,7 @@ class WebFeedbackSession:
                 except:
                     try:
                         self.process.kill()
-                        debug_log(f"會話 {self.session_id} 命令进程已強制终止")
+                        debug_log(f"會話 {self.session_id} 命令进程已强制终止")
                         resources_cleaned += 1
                     except:
                         pass

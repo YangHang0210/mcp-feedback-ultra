@@ -10,11 +10,11 @@ UV Cache 清理腳本
   python scripts/cleanup_cache.py --size       # 查看 cache 大小和詳細資訊
   python scripts/cleanup_cache.py --dry-run    # 預覽將要清理的內容（不實際清理）
   python scripts/cleanup_cache.py --clean      # 执行標準清理
-  python scripts/cleanup_cache.py --force      # 強制清理（會嘗試关闭相關程序）
+  python scripts/cleanup_cache.py --force      # 强制清理（會嘗試关闭相關程序）
 
 功能特色：
   - 智能跳過正在使用中的文件
-  - 提供強制清理模式
+  - 提供强制清理模式
   - 詳細的清理統計和進度顯示
   - 支援 Windows/macOS/Linux 跨平台
 """
@@ -208,8 +208,8 @@ def clean_cache(dry_run=False):
 
 
 def force_clean_cache():
-    """強制清理 cache（关闭相關程序後）"""
-    print("🔥 強制清理模式")
+    """强制清理 cache（关闭相關程序後）"""
+    print("🔥 强制清理模式")
     print("=" * 50)
     print("⚠️  警告：此模式會嘗試关闭可能使用 cache 的程序")
 
@@ -263,7 +263,7 @@ def force_clean_cache():
     print("\n🗑️  执行清理...")
     result = run_uv_command(["cache", "clean"], check=False)
     if result and result.returncode == 0:
-        print("✅ 強制清理成功")
+        print("✅ 强制清理成功")
     else:
         print("⚠️  標準清理仍然失敗，使用文件級清理...")
         cleaned_count, skipped_count, total_saved = clean_cache_selective(
@@ -287,7 +287,7 @@ def main():
     )
     group.add_argument("--clean", action="store_true", help="执行 cache 清理")
     group.add_argument(
-        "--force", action="store_true", help="強制清理（會嘗試关闭相關程序）"
+        "--force", action="store_true", help="强制清理（會嘗試关闭相關程序）"
     )
 
     args = parser.parse_args()

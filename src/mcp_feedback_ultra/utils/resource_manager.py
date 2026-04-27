@@ -73,7 +73,7 @@ class ResourceManager:
         self.cleanup_interval = 300  # 5分鐘
         self.temp_file_max_age = 3600  # 1小時
 
-        # 清理線程
+        # 清理线程
         self._cleanup_thread: threading.Thread | None = None
         self._stop_cleanup = threading.Event()
 
@@ -125,7 +125,7 @@ class ResourceManager:
             # 清理文件句柄
             cleaned_handles = self.cleanup_file_handles()
 
-            # 如果是強制清理，也清理进程
+            # 如果是强制清理，也清理进程
             cleaned_processes = 0
             if force:
                 cleaned_processes = self.cleanup_processes(force=True)
@@ -241,7 +241,7 @@ class ResourceManager:
         註冊进程追蹤
 
         Args:
-            process: 进程對象或 PID
+            process: 进程对象或 PID
             description: 进程描述
             auto_cleanup: 是否自動清理
 
@@ -284,7 +284,7 @@ class ResourceManager:
         註冊文件句柄追蹤
 
         Args:
-            file_handle: 文件句柄對象
+            file_handle: 文件句柄对象
         """
         try:
             # 使用弱引用避免循環引用
@@ -435,7 +435,7 @@ class ResourceManager:
         清理进程
 
         Args:
-            force: 是否強制终止进程
+            force: 是否强制终止进程
 
         Returns:
             int: 清理的进程數量
@@ -455,7 +455,7 @@ class ResourceManager:
                 if process_obj and hasattr(process_obj, "poll"):
                     if process_obj.poll() is None:  # 进程還在运行
                         if force:
-                            debug_log(f"強制终止进程: PID {pid}")
+                            debug_log(f"强制终止进程: PID {pid}")
                             process_obj.kill()
                         else:
                             debug_log(f"优雅终止进程: PID {pid}")
@@ -467,7 +467,7 @@ class ResourceManager:
                             cleaned_count += 1
                         except subprocess.TimeoutExpired:
                             if not force:
-                                debug_log(f"进程 {pid} 优雅终止超時，強制终止")
+                                debug_log(f"进程 {pid} 优雅终止超時，强制终止")
                                 process_obj.kill()
                                 process_obj.wait(timeout=3)
                                 cleaned_count += 1
@@ -554,7 +554,7 @@ class ResourceManager:
         清理所有资源
 
         Args:
-            force: 是否強制清理
+            force: 是否强制清理
 
         Returns:
             Dict[str, int]: 清理統計
@@ -592,12 +592,12 @@ class ResourceManager:
         return results
 
     def _start_auto_cleanup(self) -> None:
-        """启动自動清理線程"""
+        """启动自動清理线程"""
         if not self.auto_cleanup_enabled or self._cleanup_thread:
             return
 
         def cleanup_worker():
-            """清理工作線程"""
+            """清理工作线程"""
             while not self._stop_cleanup.wait(self.cleanup_interval):
                 try:
                     # 执行定期清理
@@ -616,7 +616,7 @@ class ResourceManager:
             target=cleanup_worker, name="ResourceManager-AutoCleanup", daemon=True
         )
         self._cleanup_thread.start()
-        debug_log("自動清理線程已启动")
+        debug_log("自動清理线程已启动")
 
     def _check_process_health(self) -> None:
         """检查进程健康狀態"""
@@ -650,7 +650,7 @@ class ResourceManager:
             self._stop_cleanup.set()
             self._cleanup_thread.join(timeout=5)
             self._cleanup_thread = None
-            debug_log("自動清理線程已停止")
+            debug_log("自動清理线程已停止")
 
     def get_resource_stats(self) -> dict[str, Any]:
         """
@@ -740,7 +740,7 @@ class ResourceManager:
             elif not old_enabled and auto_cleanup_enabled:
                 self._start_auto_cleanup()
             elif auto_cleanup_enabled and self._cleanup_thread is None:
-                # 如果啟用了自動清理但線程不存在，重新启动
+                # 如果啟用了自動清理但线程不存在，重新启动
                 self._start_auto_cleanup()
 
         if cleanup_interval is not None:

@@ -18,7 +18,7 @@ class TestWebUIManager:
         """测试 WebUIManager 創建"""
         assert web_ui_manager is not None
         assert web_ui_manager.host == "127.0.0.1"
-        assert web_ui_manager.port > 0  # 應該分配了端口
+        assert web_ui_manager.port > 0  # 应该分配了端口
         assert web_ui_manager.app is not None
 
     def test_web_ui_manager_session_management(self, web_ui_manager, test_project_dir):
@@ -54,26 +54,26 @@ class TestWebUIManager:
         assert current_session.summary == "第二個會話"
 
     def test_global_tabs_management(self, web_ui_manager):
-        """测试全局標籤頁管理"""
+        """测试全局标签頁管理"""
         # 测试初始狀態
         assert web_ui_manager.get_global_active_tabs_count() == 0
 
-        # 模擬添加活躍標籤頁
+        # 模擬添加活躍标签頁
         tab_info = {"timestamp": time.time(), "last_seen": time.time()}
         web_ui_manager.global_active_tabs["tab-1"] = tab_info
 
         assert web_ui_manager.get_global_active_tabs_count() == 1
 
-        # 测试過期標籤頁清理
+        # 测试過期标签頁清理
         old_tab_info = {
             "timestamp": time.time() - 120,  # 2分鐘前
             "last_seen": time.time() - 120,
         }
         web_ui_manager.global_active_tabs["tab-old"] = old_tab_info
 
-        # 獲取計數時應該自動清理過期標籤頁
+        # 獲取計數時应该自動清理過期标签頁
         count = web_ui_manager.get_global_active_tabs_count()
-        assert count == 1  # 只剩下有效的標籤頁
+        assert count == 1  # 只剩下有效的标签頁
 
 
 class TestWebFeedbackSession:
@@ -130,12 +130,12 @@ class TestWebFeedbackSession:
         # 测试年齡計算
         age = session.get_age()
         assert age >= 0
-        assert age < 1  # 應該小於1秒
+        assert age < 1  # 应该小於1秒
 
         # 测试空閒時間
         idle_time = session.get_idle_time()
         assert idle_time >= 0
-        assert idle_time < 1  # 應該小於1秒
+        assert idle_time < 1  # 应该小於1秒
 
     @pytest.mark.asyncio
     async def test_session_feedback_submission(self, test_project_dir):
@@ -175,7 +175,7 @@ class TestWebUIRoutes:
         response = client.get("/")
 
         assert response.status_code == 200
-        assert "MCP Feedback Enhanced" in response.text
+        assert "MCP Feedback Ultra" in response.text
 
     @pytest.mark.asyncio
     async def test_index_route_with_session(self, web_ui_manager, test_project_dir):

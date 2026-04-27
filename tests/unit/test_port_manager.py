@@ -73,7 +73,7 @@ class TestPortManager:
                 preferred_port=occupied_port, auto_cleanup=False
             )
             assert result_port != occupied_port
-            assert result_port > occupied_port  # 應該向上查找
+            assert result_port > occupied_port  # 应该向上查找
 
             # 验证返回的端口確實可用
             assert PortManager.is_port_available("127.0.0.1", result_port) is True
@@ -195,7 +195,7 @@ class TestPortManager:
 
     @patch("mcp_feedback_ultra.web.utils.port_manager.psutil.Process")
     def test_should_cleanup_process_mcp_process(self, mock_process):
-        """测试是否應該清理 MCP 相關進程"""
+        """测试是否应该清理 MCP 相關進程"""
         # 模擬 MCP 相關進程
         process_info = {
             "pid": 1234,
@@ -210,7 +210,7 @@ class TestPortManager:
 
     @patch("mcp_feedback_ultra.web.utils.port_manager.psutil.Process")
     def test_should_cleanup_process_other_process(self, mock_process):
-        """测试是否應該清理其他進程"""
+        """测试是否应该清理其他進程"""
         # 模擬其他進程
         process_info = {
             "pid": 5678,

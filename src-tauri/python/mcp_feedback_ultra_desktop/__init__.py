@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-MCP Feedback Enhanced Desktop Application
+MCP Feedback Ultra Desktop Application
 =========================================
 
-基於 Tauri 的桌面应用程序包裝器，為 MCP Feedback Enhanced 提供原生桌面體驗。
+基於 Tauri 的桌面应用程序包裝器，為 MCP Feedback Ultra 提供原生桌面體驗。
 
 主要功能：
 - 原生桌面应用程序界面
