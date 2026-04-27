@@ -15,18 +15,9 @@ MCP Feedback Ultra
 - 跨平台支持：Windows、macOS、Linux
 """
 
-特色：
-- Web UI 介面支持
-- 智慧环境检测
-- 命令执行功能
-- 图片上传支持
-- 现代化深色主題
-- 重構的模块化架構
-"""
-
-__version__ = "2.7.0"
-__author__ = "Minidoracat"
-__email__ = "minidora0702@gmail.com"
+__version__ = "2.6.8"
+__author__ = "YangHang"
+__email__ = "yanghang0210@gmail.com"
 
 import os
 
@@ -36,10 +27,10 @@ from .server import main as run_server
 from .web import WebUIManager, get_web_ui_manager, launch_web_feedback_ui, stop_web_ui
 
 
-# 保持向後兼容性
+# 保持向后兼容性
 feedback_ui = None
 
-# 主要導出介面
+# 主要导出接口
 __all__ = [
     "WebUIManager",
     "__author__",
@@ -53,7 +44,7 @@ __all__ = [
 
 
 def main():
-    """主要入口點，用於 uvx 执行"""
+    """主要入口点，用于 uvx 执行"""
     from .__main__ import main as cli_main
 
     return cli_main()
