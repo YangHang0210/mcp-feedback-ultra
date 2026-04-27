@@ -238,7 +238,7 @@ class CompressionMonitor:
             self._start_time = datetime.now()
 
     def export_stats(self) -> dict:
-        """導出統計數據為字典格式"""
+        """導出統計數據为字典格式"""
         summary = self.get_summary()
 
         return {

@@ -1,5 +1,5 @@
 """
-MCP Feedback Enhanced 工具模組
+MCP Feedback Ultra 工具模块
 ============================
 
 提供各種工具類和函數，包括错误处理、资源管理等。

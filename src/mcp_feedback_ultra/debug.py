@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-統一調試日誌模組
+統一調試日誌模块
 ================
 
 提供統一的調試日誌功能，確保調試輸出不會干擾 MCP 通信。
@@ -31,7 +31,7 @@ def debug_log(message: Any, prefix: str = "DEBUG") -> None:
 
     Args:
         message: 要輸出的調試信息
-        prefix: 調試信息的前綴標識，默認為 "DEBUG"
+        prefix: 調試信息的前綴標識，默認为 "DEBUG"
     """
     # 只在啟用調試模式時才輸出，避免干擾 MCP 通信
     if os.getenv("MCP_DEBUG", "").lower() not in ("true", "1", "yes", "on"):
@@ -55,17 +55,17 @@ def debug_log(message: Any, prefix: str = "DEBUG") -> None:
 
 
 def i18n_debug_log(message: Any) -> None:
-    """國際化模組專用的調試日誌"""
+    """國際化模块專用的調試日誌"""
     debug_log(message, "I18N")
 
 
 def server_debug_log(message: Any) -> None:
-    """伺服器模組專用的調試日誌"""
+    """服务器模块專用的調試日誌"""
     debug_log(message, "SERVER")
 
 
 def web_debug_log(message: Any) -> None:
-    """Web UI 模組專用的調試日誌"""
+    """Web UI 模块專用的調試日誌"""
     debug_log(message, "WEB")
 
 

@@ -1,20 +1,27 @@
 #!/usr/bin/env python3
 """
-MCP Interactive Feedback Enhanced
-==================================
+MCP Feedback Ultra
+==================
 
-互動式用戶回饋 MCP 伺服器，提供 AI 輔助开发中的回饋收集功能。
+交互式用户反馈 MCP 服务器，提供 AI 辅助开发中的反馈收集功能。
 
-作者: Fábio Ferreira
-增強功能: Web UI 支援、圖片上傳、現代化界面設計
+原作者: Fábio Ferreira (noopstudios/interactive-feedback-mcp)
+增强功能: Web UI 支持、图片上传、现代化界面设计、桌面应用
+
+主要特性：
+- 双界面模式：Web UI 和桌面应用
+- 智能环境检测：SSH Remote、WSL 等
+- 交互式反馈收集
+- 跨平台支持：Windows、macOS、Linux
+"""
 
 特色：
-- Web UI 介面支援
-- 智慧环境檢測
+- Web UI 介面支持
+- 智慧环境检测
 - 命令执行功能
-- 圖片上傳支援
-- 現代化深色主題
-- 重構的模組化架構
+- 图片上传支持
+- 现代化深色主題
+- 重構的模块化架構
 """
 
 __version__ = "2.7.0"
@@ -25,7 +32,7 @@ import os
 
 from .server import main as run_server
 
-# 導入新的 Web UI 模組
+# 导入新的 Web UI 模块
 from .web import WebUIManager, get_web_ui_manager, launch_web_feedback_ui, stop_web_ui
 
 

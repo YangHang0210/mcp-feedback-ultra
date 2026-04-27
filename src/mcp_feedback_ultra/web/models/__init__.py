@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Web UI 资料模型模組
+Web UI 资料模型模块
 ==================
 
-定義 Web UI 相關的资料結構和型別。
+定義 Web UI 相关的资料結構和型別。
 """
 
 from .feedback_result import FeedbackResult

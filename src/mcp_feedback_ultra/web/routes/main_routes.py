@@ -46,7 +46,7 @@ def load_user_layout_settings() -> str:
 
 
 # 使用統一的訊息代碼系統
-# 從 ..constants 導入的 get_msg_code 函數會处理所有訊息代碼
+# 從 ..constants 导入的 get_msg_code 函數會处理所有訊息代碼
 # 舊的 key 會自動映射到新的常量
 
 
@@ -55,7 +55,7 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.get("/", response_class=HTMLResponse)
     async def index(request: Request):
-        """統一回饋頁面 - 重構後的主頁面"""
+        """統一反馈頁面 - 重構後的主頁面"""
         # 獲取當前活躍會話
         current_session = manager.get_current_session()
 
@@ -65,13 +65,13 @@ def setup_routes(manager: "WebUIManager"):
                 request,
                 "index.html",
                 {
-                    "title": "MCP Feedback Enhanced",
+                    "title": "MCP Feedback Ultra",
                     "has_session": False,
                     "version": __version__,
                 },
             )
 
-        # 有活躍會話時顯示回饋頁面
+        # 有活躍會話時顯示反馈頁面
         # 載入用戶的佈局模式设定
         layout_mode = load_user_layout_settings()
 
@@ -81,7 +81,7 @@ def setup_routes(manager: "WebUIManager"):
             {
                 "project_directory": current_session.project_directory,
                 "summary": current_session.summary,
-                "title": "Interactive Feedback - 回饋收集",
+                "title": "Interactive Feedback - 反馈收集",
                 "version": __version__,
                 "has_session": True,
                 "layout_mode": layout_mode,
@@ -192,7 +192,7 @@ def setup_routes(manager: "WebUIManager"):
                     "summary": session.summary,
                     "status": session.status.value,
                     "status_message": session.status_message,
-                    "created_at": int(session.created_at * 1000),  # 轉換為毫秒
+                    "created_at": int(session.created_at * 1000),  # 轉換为毫秒
                     "last_activity": int(session.last_activity * 1000),
                     "feedback_completed": session.feedback_completed.is_set(),
                     "has_websocket": session.websocket is not None,
@@ -271,7 +271,7 @@ def setup_routes(manager: "WebUIManager"):
 
         # 检查會話是否已有 WebSocket 连接
         if session.websocket and session.websocket != websocket:
-            debug_log("會話已有 WebSocket 连接，替換為新连接")
+            debug_log("會話已有 WebSocket 连接，替換为新连接")
 
         session.websocket = websocket
         debug_log(f"WebSocket 连接建立: 當前活躍會話 {session.session_id}")
@@ -287,7 +287,7 @@ def setup_routes(manager: "WebUIManager"):
 
             # 检查是否有待發送的會話更新
             if getattr(manager, "_pending_session_update", False):
-                debug_log("檢測到待發送的會話更新，準備發送通知")
+                debug_log("检测到待發送的會話更新，準備發送通知")
                 await websocket.send_json(
                     {
                         "type": "session_updated",
@@ -593,7 +593,7 @@ def setup_routes(manager: "WebUIManager"):
             with open(settings_file, "w", encoding="utf-8") as f:
                 json.dump(settings_data, f, ensure_ascii=False, indent=2)
 
-            debug_log(f"日誌等級已设定為: {log_level}")
+            debug_log(f"日誌等級已设定为: {log_level}")
 
             return JSONResponse(
                 content={
@@ -620,7 +620,7 @@ async def handle_websocket_message(manager: "WebUIManager", session, data: dict)
     message_type = data.get("type")
 
     if message_type == "submit_feedback":
-        # 提交回饋
+        # 提交反馈
         feedback = data.get("feedback", "")
         images = data.get("images", [])
         settings = data.get("settings", {})
@@ -665,10 +665,10 @@ async def handle_websocket_message(manager: "WebUIManager", session, data: dict)
         debug_log(f"收到用戶超時通知: {session.session_id}")
         # 清理會話资源
         await session._cleanup_resources_on_timeout()
-        # 重構：不再自動停止服務器，保持服務器运行以支援持久性
+        # 重構：不再自動停止服務器，保持服務器运行以支持持久性
 
     elif message_type == "pong":
-        # 处理來自前端的 pong 回應（用於连接檢測）
+        # 处理來自前端的 pong 回應（用於连接检测）
         debug_log(f"收到 pong 回應，時間戳: {data.get('timestamp', 'N/A')}")
         # 可以在這裡记录延遲或更新连接狀態
 

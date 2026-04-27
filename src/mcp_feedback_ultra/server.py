@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-MCP Feedback Enhanced 伺服器主要模組
+MCP Feedback Ultra 服务器主要模块
 
-此模組提供 MCP (Model Context Protocol) 的增強回饋收集功能，
-支援智能环境檢測，自動使用 Web UI 介面。
+此模块提供 MCP (Model Context Protocol) 的增强反馈收集功能，
+支持智能环境检测，自動使用 Web UI 介面。
 
 主要功能：
 - MCP 工具實現
 - 介面選擇（Web UI）
-- 环境檢測 (SSH Remote, WSL, Local)
-- 國際化支援
-- 圖片处理與上傳
+- 环境检测 (SSH Remote, WSL, Local)
+- 國際化支持
+- 图片处理與上传
 - 命令执行與結果展示
-- 專案目錄管理
+- 项目目錄管理
 
 主要 MCP 工具：
-- interactive_feedback: 收集用戶互動回饋
+- interactive_feedback: 收集用戶交互反馈
 - get_system_info: 獲取系統环境資訊
 
 作者: Fábio Ferreira (原作者)
-增強: Minidoracat (Web UI, 圖片支援, 环境檢測)
+增强: Minidoracat (Web UI, 图片支持, 环境检测)
 重構: 模塊化設計
 """
 
@@ -37,14 +37,14 @@ from fastmcp.utilities.types import Image as MCPImage
 from mcp.types import TextContent
 from pydantic import Field
 
-# 導入統一的調試功能
+# 导入統一的調試功能
 from .debug import server_debug_log as debug_log
 
-# 導入多語系支援
-# 導入错误处理框架
+# 导入多語系支持
+# 导入错误处理框架
 from .utils.error_handler import ErrorHandler, ErrorType
 
-# 導入资源管理器
+# 导入资源管理器
 from .utils.resource_manager import create_temp_file
 
 
@@ -56,11 +56,11 @@ def init_encoding():
         if sys.platform == "win32":
             import msvcrt
 
-            # 设置為二進制模式
+            # 设置为二進制模式
             msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
             msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
-            # 重新包裝為 UTF-8 文本流，並禁用緩衝
+            # 重新包裝为 UTF-8 文本流，並禁用緩衝
             # 修復 union-attr 错误 - 安全獲取 buffer 或 detach
             stdin_buffer = getattr(sys.stdin, "buffer", None)
             if stdin_buffer is None and hasattr(sys.stdin, "detach"):
@@ -93,7 +93,7 @@ def init_encoding():
 
         return True
     except Exception:
-        # 如果編碼设置失敗，嘗試基本设置
+        # 如果編碼设置失敗，尝试基本设置
         try:
             if hasattr(sys.stdout, "reconfigure"):
                 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -106,11 +106,11 @@ def init_encoding():
         return False
 
 
-# 初始化編碼（在導入時就执行）
+# 初始化編碼（在导入時就执行）
 _encoding_initialized = init_encoding()
 
 # ===== 常數定義 =====
-SERVER_NAME = "互動式回饋收集 MCP"
+SERVER_NAME = "交互式反馈收集 MCP"
 SSH_ENV_VARS = ["SSH_CONNECTION", "SSH_CLIENT", "SSH_TTY"]
 REMOTE_ENV_VARS = ["REMOTE_CONTAINERS", "CODESPACES"]
 
@@ -119,7 +119,7 @@ REMOTE_ENV_VARS = ["REMOTE_CONTAINERS", "CODESPACES"]
 from . import __version__
 
 
-# 確保 log_level 设定為正確的大寫格式
+# 確保 log_level 设定为正確的大寫格式
 fastmcp_settings = {}
 
 # 检查环境变量並设定正確的 log_level
@@ -136,7 +136,7 @@ mcp: Any = FastMCP(SERVER_NAME)
 # ===== 工具函數 =====
 def is_wsl_environment() -> bool:
     """
-    檢測是否在 WSL (Windows Subsystem for Linux) 环境中运行
+    检测是否在 WSL (Windows Subsystem for Linux) 环境中运行
 
     Returns:
         bool: True 表示 WSL 环境，False 表示其他环境
@@ -150,7 +150,7 @@ def is_wsl_environment() -> bool:
                     debug_log("偵測到 WSL 环境（通過 /proc/version）")
                     return True
 
-        # 检查 WSL 相關环境变量
+        # 检查 WSL 相关环境变量
         wsl_env_vars = ["WSL_DISTRO_NAME", "WSL_INTEROP", "WSLENV"]
         for env_var in wsl_env_vars:
             if os.getenv(env_var):
@@ -165,21 +165,21 @@ def is_wsl_environment() -> bool:
                 return True
 
     except Exception as e:
-        debug_log(f"WSL 檢測過程中發生错误: {e}")
+        debug_log(f"WSL 检测過程中發生错误: {e}")
 
     return False
 
 
 def is_remote_environment() -> bool:
     """
-    檢測是否在遠端环境中运行
+    检测是否在遠端环境中运行
 
     Returns:
         bool: True 表示遠端环境，False 表示本地环境
     """
-    # WSL 不應被視為遠端环境，因為它可以訪問 Windows 瀏覽器
+    # WSL 不應被視为遠端环境，因为它可以訪問 Windows 瀏覽器
     if is_wsl_environment():
-        debug_log("WSL 环境不被視為遠端环境")
+        debug_log("WSL 环境不被視为遠端环境")
         return False
 
     # 检查 SSH 连线指標
@@ -220,11 +220,11 @@ def is_remote_environment() -> bool:
 
 def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> str:
     """
-    將回饋资料儲存到 JSON 文件
+    將反馈资料儲存到 JSON 文件
 
     Args:
-        feedback_data: 回饋资料字典
-        file_path: 儲存路徑，若為 None 則自動產生臨時文件
+        feedback_data: 反馈资料字典
+        file_path: 儲存路徑，若为 None 則自動產生臨時文件
 
     Returns:
         str: 儲存的文件路徑
@@ -241,13 +241,13 @@ def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> 
     # 複製數據以避免修改原始數據
     json_data = feedback_data.copy()
 
-    # 处理圖片數據：將 bytes 轉換為 base64 字符串以便 JSON 序列化
+    # 处理图片數據：將 bytes 轉換为 base64 字符串以便 JSON 序列化
     if "images" in json_data and isinstance(json_data["images"], list):
         processed_images = []
         for img in json_data["images"]:
             if isinstance(img, dict) and "data" in img:
                 processed_img = img.copy()
-                # 如果 data 是 bytes，轉換為 base64 字符串
+                # 如果 data 是 bytes，轉換为 base64 字符串
                 if isinstance(img["data"], bytes):
                     processed_img["data"] = base64.b64encode(img["data"]).decode(
                         "utf-8"
@@ -262,34 +262,34 @@ def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> 
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(json_data, f, ensure_ascii=False, indent=2)
 
-    debug_log(f"回饋资料已儲存至: {file_path}")
+    debug_log(f"反馈资料已儲存至: {file_path}")
     return file_path
 
 
 def create_feedback_text(feedback_data: dict) -> str:
     """
-    建立格式化的回饋文字
+    建立格式化的反馈文字
 
     Args:
-        feedback_data: 回饋资料字典
+        feedback_data: 反馈资料字典
 
     Returns:
-        str: 格式化後的回饋文字
+        str: 格式化後的反馈文字
     """
     text_parts = []
 
-    # 基本回饋內容
+    # 基本反馈內容
     if feedback_data.get("interactive_feedback"):
-        text_parts.append(f"=== 用戶回饋 ===\n{feedback_data['interactive_feedback']}")
+        text_parts.append(f"=== 用戶反馈 ===\n{feedback_data['interactive_feedback']}")
 
     # 命令执行日誌
     if feedback_data.get("command_logs"):
         text_parts.append(f"=== 命令执行日誌 ===\n{feedback_data['command_logs']}")
 
-    # 圖片附件概要
+    # 图片附件概要
     if feedback_data.get("images"):
         images = feedback_data["images"]
-        text_parts.append(f"=== 圖片附件概要 ===\n用戶提供了 {len(images)} 張圖片：")
+        text_parts.append(f"=== 图片附件概要 ===\n用戶提供了 {len(images)} 張图片：")
 
         for i, img in enumerate(images, 1):
             size = img.get("size", 0)
@@ -307,7 +307,7 @@ def create_feedback_text(feedback_data: dict) -> str:
 
             img_info = f"  {i}. {name} ({size_str})"
 
-            # 為提高兼容性，添加 base64 預覽信息
+            # 为提高兼容性，添加 base64 預覽信息
             if img.get("data"):
                 try:
                     if isinstance(img["data"], bytes):
@@ -327,8 +327,8 @@ def create_feedback_text(feedback_data: dict) -> str:
                         img_info += f"\n     Base64 預覽: {preview}"
                         img_info += f"\n     完整 Base64 長度: {len(img_base64)} 字符"
 
-                        # 如果 AI 助手不支援 MCP 圖片，可以提供完整 base64
-                        debug_log(f"圖片 {i} Base64 已準備，長度: {len(img_base64)}")
+                        # 如果 AI 助手不支持 MCP 图片，可以提供完整 base64
+                        debug_log(f"图片 {i} Base64 已準備，長度: {len(img_base64)}")
 
                         # 检查是否啟用 Base64 詳細模式（從 UI 设定中獲取）
                         include_full_base64 = feedback_data.get("settings", {}).get(
@@ -350,34 +350,34 @@ def create_feedback_text(feedback_data: dict) -> str:
                             img_info += f"\n     完整 Base64: data:{mime_type};base64,{img_base64}"
 
                 except Exception as e:
-                    debug_log(f"圖片 {i} Base64 处理失敗: {e}")
+                    debug_log(f"图片 {i} Base64 处理失敗: {e}")
 
             text_parts.append(img_info)
 
         # 添加兼容性說明
         text_parts.append(
-            "\n💡 注意：如果 AI 助手無法顯示圖片，圖片數據已包含在上述 Base64 信息中。"
+            "\n💡 注意：如果 AI 助手无法顯示图片，图片數據已包含在上述 Base64 信息中。"
         )
 
-    return "\n\n".join(text_parts) if text_parts else "用戶未提供任何回饋內容。"
+    return "\n\n".join(text_parts) if text_parts else "用戶未提供任何反馈內容。"
 
 
 def process_images(images_data: list[dict]) -> list[MCPImage]:
     """
-    处理圖片资料，轉換為 MCP 圖片對象
+    处理图片资料，轉換为 MCP 图片對象
 
     Args:
-        images_data: 圖片资料列表
+        images_data: 图片资料列表
 
     Returns:
-        List[MCPImage]: MCP 圖片對象列表
+        List[MCPImage]: MCP 图片對象列表
     """
     mcp_images = []
 
     for i, img in enumerate(images_data, 1):
         try:
             if not img.get("data"):
-                debug_log(f"圖片 {i} 沒有资料，跳過")
+                debug_log(f"图片 {i} 沒有资料，跳過")
                 continue
 
             # 检查數據類型並相應处理
@@ -385,18 +385,18 @@ def process_images(images_data: list[dict]) -> list[MCPImage]:
                 # 如果是原始 bytes 數據，直接使用
                 image_bytes = img["data"]
                 debug_log(
-                    f"圖片 {i} 使用原始 bytes 數據，大小: {len(image_bytes)} bytes"
+                    f"图片 {i} 使用原始 bytes 數據，大小: {len(image_bytes)} bytes"
                 )
             elif isinstance(img["data"], str):
                 # 如果是 base64 字符串，進行解碼
                 image_bytes = base64.b64decode(img["data"])
-                debug_log(f"圖片 {i} 從 base64 解碼，大小: {len(image_bytes)} bytes")
+                debug_log(f"图片 {i} 從 base64 解碼，大小: {len(image_bytes)} bytes")
             else:
-                debug_log(f"圖片 {i} 數據類型不支援: {type(img['data'])}")
+                debug_log(f"图片 {i} 數據類型不支持: {type(img['data'])}")
                 continue
 
             if len(image_bytes) == 0:
-                debug_log(f"圖片 {i} 數據為空，跳過")
+                debug_log(f"图片 {i} 數據为空，跳過")
                 continue
 
             # 根據文件名推斷格式
@@ -412,29 +412,29 @@ def process_images(images_data: list[dict]) -> list[MCPImage]:
             mcp_image = MCPImage(data=image_bytes, format=image_format)
             mcp_images.append(mcp_image)
 
-            debug_log(f"圖片 {i} ({file_name}) 处理成功，格式: {image_format}")
+            debug_log(f"图片 {i} ({file_name}) 处理成功，格式: {image_format}")
 
         except Exception as e:
             # 使用統一错误处理（不影響 JSON RPC）
             error_id = ErrorHandler.log_error_with_context(
                 e,
-                context={"operation": "圖片处理", "image_index": i},
+                context={"operation": "图片处理", "image_index": i},
                 error_type=ErrorType.FILE_IO,
             )
-            debug_log(f"圖片 {i} 处理失敗 [错误ID: {error_id}]: {e}")
+            debug_log(f"图片 {i} 处理失敗 [错误ID: {error_id}]: {e}")
 
-    debug_log(f"共处理 {len(mcp_images)} 張圖片")
+    debug_log(f"共处理 {len(mcp_images)} 張图片")
     return mcp_images
 
 
 # ===== MCP 工具定義 =====
 @mcp.tool(output_schema=None)
 async def interactive_feedback(
-    project_directory: Annotated[str, Field(description="專案目錄路徑")] = ".",
+    project_directory: Annotated[str, Field(description="项目目錄路徑")] = ".",
     summary: Annotated[
         str, Field(description="AI 工作完成的摘要說明")
     ] = "我已完成了您請求的任務。",
-    timeout: Annotated[int, Field(description="等待用戶回饋的超時時間（秒）")] = 600,
+    timeout: Annotated[int, Field(description="等待用戶反馈的超時時間（秒）")] = 600,
 ) -> list:
     """Interactive feedback collection tool for LLM agents.
 
@@ -466,7 +466,7 @@ async def interactive_feedback(
     debug_log("使用介面: Web UI")
 
     try:
-        # 確保專案目錄存在
+        # 確保项目目錄存在
         if not os.path.exists(project_directory):
             project_directory = os.getcwd()
         project_directory = os.path.abspath(project_directory)
@@ -488,21 +488,21 @@ async def interactive_feedback(
                 )
 
         # 使用 Web 模式
-        debug_log(f"回饋模式: web，超時時間: {effective_timeout} 秒")
+        debug_log(f"反馈模式: web，超時時間: {effective_timeout} 秒")
 
         result = await launch_web_feedback_ui(project_directory, summary, effective_timeout)
 
         # 处理取消情況
         if not result:
-            return [TextContent(type="text", text="用戶取消了回饋。")]
+            return [TextContent(type="text", text="用戶取消了反馈。")]
 
         # 儲存詳細結果
         save_feedback_to_file(result)
 
-        # 建立回饋項目列表
+        # 建立反馈項目列表
         feedback_items = []
 
-        # 添加文字回饋
+        # 添加文字反馈
         if (
             result.get("interactive_feedback")
             or result.get("command_logs")
@@ -510,19 +510,19 @@ async def interactive_feedback(
         ):
             feedback_text = create_feedback_text(result)
             feedback_items.append(TextContent(type="text", text=feedback_text))
-            debug_log("文字回饋已添加")
+            debug_log("文字反馈已添加")
 
-        # 添加圖片回饋
+        # 添加图片反馈
         if result.get("images"):
             mcp_images = process_images(result["images"])
             # 修復 arg-type 错误 - 直接擴展列表
             feedback_items.extend(mcp_images)
-            debug_log(f"已添加 {len(mcp_images)} 張圖片")
+            debug_log(f"已添加 {len(mcp_images)} 張图片")
 
-        # 確保至少有一個回饋項目
+        # 確保至少有一個反馈項目
         if not feedback_items:
             feedback_items.append(
-                TextContent(type="text", text="用戶未提供任何回饋內容。")
+                TextContent(type="text", text="用戶未提供任何反馈內容。")
             )
 
         # Append built-in reminder if enabled
@@ -531,20 +531,20 @@ async def interactive_feedback(
             feedback_items.append(TextContent(type="text", text=reminder_text))
             debug_log("已添加內置反饋提醒")
 
-        debug_log(f"回饋收集完成，共 {len(feedback_items)} 個項目")
+        debug_log(f"反馈收集完成，共 {len(feedback_items)} 個項目")
         return feedback_items
 
     except Exception as e:
         # 使用統一错误处理，但不影響 JSON RPC 響應
         error_id = ErrorHandler.log_error_with_context(
             e,
-            context={"operation": "回饋收集", "project_dir": project_directory},
+            context={"operation": "反馈收集", "project_dir": project_directory},
             error_type=ErrorType.SYSTEM,
         )
 
         # 生成用戶友好的错误信息
         user_error_msg = ErrorHandler.format_user_error(e, include_technical=False)
-        debug_log(f"回饋收集错误 [错误ID: {error_id}]: {e!s}")
+        debug_log(f"反馈收集错误 [错误ID: {error_id}]: {e!s}")
 
         return [TextContent(type="text", text=user_error_msg)]
 
@@ -583,20 +583,20 @@ def _get_feedback_reminder(result: dict) -> str | None:
 
 async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -> dict:
     """
-    启动 Web UI 收集回饋，支援自訂超時時間
+    启动 Web UI 收集反馈，支持自訂超時時間
 
     Args:
-        project_dir: 專案目錄路徑
+        project_dir: 项目目錄路徑
         summary: AI 工作摘要
         timeout: 超時時間（秒）
 
     Returns:
-        dict: 收集到的回饋资料
+        dict: 收集到的反馈资料
     """
     debug_log(f"启动 Web UI 介面，超時時間: {timeout} 秒")
 
     try:
-        # 使用新的 web 模組
+        # 使用新的 web 模块
         from .web import launch_web_feedback_ui as web_launch
 
         # 傳遞 timeout 參數給 Web UI
@@ -605,13 +605,13 @@ async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -
         # 使用統一错误处理
         error_id = ErrorHandler.log_error_with_context(
             e,
-            context={"operation": "Web UI 模組導入", "module": "web"},
+            context={"operation": "Web UI 模块导入", "module": "web"},
             error_type=ErrorType.DEPENDENCY,
         )
         user_error_msg = ErrorHandler.format_user_error(
             e, ErrorType.DEPENDENCY, include_technical=False
         )
-        debug_log(f"Web UI 模組導入失敗 [错误ID: {error_id}]: {e}")
+        debug_log(f"Web UI 模块导入失敗 [错误ID: {error_id}]: {e}")
 
         return {
             "command_logs": "",
@@ -655,13 +655,13 @@ def get_system_info() -> str:
 # ===== 主程序入口 =====
 def main():
     """主要入口點，用於套件执行
-    收集用戶的互動回饋，支援文字和圖片
-    此工具使用 Web UI 介面收集用戶回饋，支援智能环境檢測。
+    收集用戶的交互反馈，支持文字和图片
+    此工具使用 Web UI 介面收集用戶反馈，支持智能环境检测。
 
     用戶可以：
     1. 执行命令來验证結果
-    2. 提供文字回饋
-    3. 上傳圖片作為回饋
+    2. 提供文字反馈
+    3. 上传图片作为反馈
     4. 查看 AI 的工作摘要
 
     調試模式：
@@ -682,7 +682,7 @@ def main():
     )
 
     if debug_enabled:
-        debug_log("🚀 启动互動式回饋收集 MCP 服務器")
+        debug_log("🚀 启动交互式反馈收集 MCP 服務器")
         debug_log(f"   服務器名稱: {SERVER_NAME}")
         debug_log(f"   版本: {__version__}")
         debug_log(f"   平台: {sys.platform}")
@@ -692,13 +692,13 @@ def main():
         debug_log(f"   桌面模式: {'啟用' if desktop_mode else '禁用'}")
         debug_log("   介面類型: Web UI")
         debug_log("   等待來自 AI 助手的調用...")
-        debug_log("準備启动 MCP 伺服器...")
+        debug_log("準備启动 MCP 服务器...")
         debug_log("調用 mcp.run()...")
 
     try:
         # 使用正確的 FastMCP API
         # show_banner=False: 抑制 FastMCP 的 Rich banner 輸出到 stderr，
-        # 避免 Cursor IDE 將其誤報為 [error] 並產生 "undefined" 噪音
+        # 避免 Cursor IDE 將其誤報为 [error] 並產生 "undefined" 噪音
         mcp.run(show_banner=False)
     except KeyboardInterrupt:
         if debug_enabled:

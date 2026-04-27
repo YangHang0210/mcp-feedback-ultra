@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-MCP Feedback Enhanced Web UI 模組
+MCP Feedback Ultra Web UI 模块
 
-基於 FastAPI 和 WebSocket 的 Web 用戶介面，提供豐富的互動回饋功能。
-支援文字輸入、圖片上傳、命令执行等功能，設計採用現代化的 Web UI 架構。
+基于 FastAPI 和 WebSocket 的 Web 用戶介面，提供豐富的交互反馈功能。
+支持文字輸入、图片上传、命令执行等功能，設計採用现代化的 Web UI 架構。
 
 主要功能：
 - FastAPI Web 应用程序
 - WebSocket 實時通訊
-- 多語言國際化支援
-- 圖片上傳與預覽
+- 多語言國際化支持
+- 图片上传與預覽
 - 命令执行與結果展示
 - 響應式設計
 - 本地和遠端环境適配

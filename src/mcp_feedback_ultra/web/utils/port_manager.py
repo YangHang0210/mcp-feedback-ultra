@@ -1,9 +1,9 @@
 """
-端口管理工具模組
+端口管理工具模块
 
-提供增強的端口管理功能，包括：
+提供增强的端口管理功能，包括：
 - 智能端口查找
-- 進程檢測和清理
+- 进程检测和清理
 - 端口衝突解決
 """
 
@@ -17,19 +17,19 @@ from ...debug import debug_log
 
 
 class PortManager:
-    """端口管理器 - 提供增強的端口管理功能"""
+    """端口管理器 - 提供增强的端口管理功能"""
 
     @staticmethod
     def find_process_using_port(port: int) -> dict[str, Any] | None:
         """
-        查找占用指定端口的進程
+        查找占用指定端口的进程
 
         Args:
             port: 要检查的端口號
 
         Returns:
-            Dict[str, Any]: 進程信息字典，包含 pid, name, cmdline 等
-            None: 如果沒有進程占用該端口
+            Dict[str, Any]: 进程信息字典，包含 pid, name, cmdline 等
+            None: 如果沒有进程占用該端口
         """
         try:
             for conn in psutil.net_connections(kind="inet"):
@@ -44,28 +44,28 @@ class PortManager:
                             "status": process.status(),
                         }
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        # 進程可能已經結束或無權限訪問
+                        # 进程可能已經結束或無權限訪問
                         continue
         except Exception as e:
-            debug_log(f"查找端口 {port} 占用進程時發生错误: {e}")
+            debug_log(f"查找端口 {port} 占用进程時發生错误: {e}")
 
         return None
 
     @staticmethod
     def kill_process_on_port(port: int, force: bool = False) -> bool:
         """
-        終止占用指定端口的進程
+        终止占用指定端口的进程
 
         Args:
             port: 要清理的端口號
-            force: 是否強制終止進程
+            force: 是否強制终止进程
 
         Returns:
-            bool: 是否成功終止進程
+            bool: 是否成功终止进程
         """
         process_info = PortManager.find_process_using_port(port)
         if not process_info:
-            debug_log(f"端口 {port} 沒有被任何進程占用")
+            debug_log(f"端口 {port} 沒有被任何进程占用")
             return True
 
         try:
@@ -73,38 +73,38 @@ class PortManager:
             process = psutil.Process(pid)
             process_name = process_info["name"]
 
-            debug_log(f"發現進程 {process_name} (PID: {pid}) 占用端口 {port}")
+            debug_log(f"發現进程 {process_name} (PID: {pid}) 占用端口 {port}")
 
-            # 检查是否是自己的進程（避免誤殺）
+            # 检查是否是自己的进程（避免誤殺）
             if "mcp-feedback-ultra" in process_info["cmdline"].lower():
-                debug_log("檢測到 MCP Feedback Enhanced 相關進程，嘗試優雅終止")
+                debug_log("检测到 MCP Feedback Ultra 相关进程，尝试优雅终止")
 
             if force:
-                debug_log(f"強制終止進程 {process_name} (PID: {pid})")
+                debug_log(f"強制终止进程 {process_name} (PID: {pid})")
                 process.kill()
             else:
-                debug_log(f"優雅終止進程 {process_name} (PID: {pid})")
+                debug_log(f"优雅终止进程 {process_name} (PID: {pid})")
                 process.terminate()
 
-            # 等待進程結束
+            # 等待进程結束
             try:
                 process.wait(timeout=5)
-                debug_log(f"成功終止進程 {process_name} (PID: {pid})")
+                debug_log(f"成功终止进程 {process_name} (PID: {pid})")
                 return True
             except psutil.TimeoutExpired:
                 if not force:
-                    debug_log(f"優雅終止超時，強制終止進程 {process_name} (PID: {pid})")
+                    debug_log(f"优雅终止超時，強制终止进程 {process_name} (PID: {pid})")
                     process.kill()
                     process.wait(timeout=3)
                     return True
-                debug_log(f"強制終止進程 {process_name} (PID: {pid}) 失敗")
+                debug_log(f"強制终止进程 {process_name} (PID: {pid}) 失敗")
                 return False
 
         except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-            debug_log(f"無法終止進程 (PID: {process_info['pid']}): {e}")
+            debug_log(f"无法终止进程 (PID: {process_info['pid']}): {e}")
             return False
         except Exception as e:
-            debug_log(f"終止端口 {port} 占用進程時發生错误: {e}")
+            debug_log(f"终止端口 {port} 占用进程時發生错误: {e}")
             return False
 
     @staticmethod
@@ -120,13 +120,13 @@ class PortManager:
             bool: 端口是否可用
         """
         try:
-            # 首先嘗試不使用 SO_REUSEADDR 來檢測端口
+            # 首先尝试不使用 SO_REUSEADDR 來检测端口
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.bind((host, port))
                 return True
         except OSError:
-            # 如果綁定失敗，再检查是否真的有進程在監聽
-            # 使用 psutil 检查是否有進程在監聽該端口
+            # 如果綁定失敗，再检查是否真的有进程在監聽
+            # 使用 psutil 检查是否有进程在監聽該端口
             try:
                 import psutil
 
@@ -137,10 +137,10 @@ class PortManager:
                         and conn.status == psutil.CONN_LISTEN
                     ):
                         return False
-                # 沒有找到監聽的進程，可能是臨時占用，認為可用
+                # 沒有找到監聽的进程，可能是臨時占用，認为可用
                 return True
             except Exception:
-                # 如果 psutil 检查失敗，保守地認為端口不可用
+                # 如果 psutil 检查失敗，保守地認为端口不可用
                 return False
 
     @staticmethod
@@ -151,13 +151,13 @@ class PortManager:
         max_attempts: int = 100,
     ) -> int:
         """
-        增強的端口查找功能
+        增强的端口查找功能
 
         Args:
             preferred_port: 偏好端口號
-            auto_cleanup: 是否自動清理占用端口的進程
+            auto_cleanup: 是否自動清理占用端口的进程
             host: 主機地址
-            max_attempts: 最大嘗試次數
+            max_attempts: 最大尝试次數
 
         Returns:
             int: 可用的端口號
@@ -165,19 +165,19 @@ class PortManager:
         Raises:
             RuntimeError: 如果找不到可用端口
         """
-        # 首先嘗試偏好端口
+        # 首先尝试偏好端口
         if PortManager.is_port_available(host, preferred_port):
             debug_log(f"偏好端口 {preferred_port} 可用")
             return preferred_port
 
         # 如果偏好端口被占用且啟用自動清理
         if auto_cleanup:
-            debug_log(f"偏好端口 {preferred_port} 被占用，嘗試清理占用進程")
+            debug_log(f"偏好端口 {preferred_port} 被占用，尝试清理占用进程")
             process_info = PortManager.find_process_using_port(preferred_port)
 
             if process_info:
                 debug_log(
-                    f"端口 {preferred_port} 被進程 {process_info['name']} (PID: {process_info['pid']}) 占用"
+                    f"端口 {preferred_port} 被进程 {process_info['name']} (PID: {process_info['pid']}) 占用"
                 )
 
                 # 詢問用戶是否清理（在實際使用中可能需要配置選項）
@@ -198,7 +198,7 @@ class PortManager:
                 debug_log(f"找到可用端口: {port}")
                 return port
 
-        # 如果向上查找失敗，嘗試向下查找
+        # 如果向上查找失敗，尝试向下查找
         for i in range(1, min(preferred_port - 1024, max_attempts)):
             port = preferred_port - i
             if port < 1024:  # 避免使用系統保留端口
@@ -208,41 +208,41 @@ class PortManager:
                 return port
 
         raise RuntimeError(
-            f"無法在 {preferred_port}±{max_attempts} 範圍內找到可用端口。"
-            f"請检查是否有過多進程占用端口，或手動指定其他端口。"
+            f"无法在 {preferred_port}±{max_attempts} 範圍內找到可用端口。"
+            f"請检查是否有過多进程占用端口，或手動指定其他端口。"
         )
 
     @staticmethod
     def _should_cleanup_process(process_info: dict[str, Any]) -> bool:
         """
-        判斷是否應該清理指定進程
+        判斷是否應該清理指定进程
 
         Args:
-            process_info: 進程信息字典
+            process_info: 进程信息字典
 
         Returns:
-            bool: 是否應該清理該進程
+            bool: 是否應該清理該进程
         """
-        # 检查是否是 MCP Feedback Enhanced 相關進程
+        # 检查是否是 MCP Feedback Ultra 相关进程
         cmdline = process_info.get("cmdline", "").lower()
         process_name = process_info.get("name", "").lower()
 
-        # 如果是自己的進程，允許清理
+        # 如果是自己的进程，允許清理
         if any(
             keyword in cmdline
             for keyword in ["mcp-feedback-ultra", "mcp_feedback_ultra"]
         ):
             return True
 
-        # 如果是 Python 進程且命令行包含相關關鍵字
+        # 如果是 Python 进程且命令行包含相关關鍵字
         if "python" in process_name and any(
             keyword in cmdline for keyword in ["uvicorn", "fastapi"]
         ):
             return True
 
-        # 其他情況下，為了安全起見，不自動清理
+        # 其他情況下，为了安全起見，不自動清理
         debug_log(
-            f"進程 {process_info['name']} (PID: {process_info['pid']}) 不是 MCP 相關進程，跳過自動清理"
+            f"进程 {process_info['name']} (PID: {process_info['pid']}) 不是 MCP 相关进程，跳過自動清理"
         )
         return False
 
@@ -270,7 +270,7 @@ class PortManager:
             # 检查端口是否可用
             status["available"] = PortManager.is_port_available(host, port)
 
-            # 如果不可用，查找占用進程
+            # 如果不可用，查找占用进程
             if not status["available"]:
                 status["process"] = PortManager.find_process_using_port(port)
 

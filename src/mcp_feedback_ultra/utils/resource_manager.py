@@ -4,7 +4,7 @@
 
 提供統一的资源管理功能，包括：
 - 臨時文件和目錄管理
-- 進程生命週期追蹤
+- 进程生命週期追蹤
 - 自動资源清理
 - 资源使用监控
 """
@@ -91,7 +91,7 @@ class ResourceManager:
     def _setup_memory_monitoring(self):
         """设置內存监控集成"""
         try:
-            # 延遲導入避免循環依賴
+            # 延遲导入避免循環依賴
             from .memory_monitor import get_memory_monitor
 
             self.memory_monitor = get_memory_monitor()
@@ -125,14 +125,14 @@ class ResourceManager:
             # 清理文件句柄
             cleaned_handles = self.cleanup_file_handles()
 
-            # 如果是強制清理，也清理進程
+            # 如果是強制清理，也清理进程
             cleaned_processes = 0
             if force:
                 cleaned_processes = self.cleanup_processes(force=True)
 
             debug_log(
                 f"內存觸發清理完成: 文件={cleaned_files}, 目錄={cleaned_dirs}, "
-                f"句柄={cleaned_handles}, 進程={cleaned_processes}"
+                f"句柄={cleaned_handles}, 进程={cleaned_processes}"
             )
 
             # 更新統計
@@ -161,7 +161,7 @@ class ResourceManager:
             suffix: 文件後綴
             prefix: 文件前綴
             dir: 臨時目錄，None 使用系統默認
-            text: 是否為文本模式
+            text: 是否为文本模式
 
         Returns:
             str: 臨時文件路徑
@@ -238,15 +238,15 @@ class ResourceManager:
         auto_cleanup: bool = True,
     ) -> int:
         """
-        註冊進程追蹤
+        註冊进程追蹤
 
         Args:
-            process: 進程對象或 PID
-            description: 進程描述
+            process: 进程對象或 PID
+            description: 进程描述
             auto_cleanup: 是否自動清理
 
         Returns:
-            int: 進程 PID
+            int: 进程 PID
         """
         try:
             if isinstance(process, subprocess.Popen):
@@ -256,7 +256,7 @@ class ResourceManager:
                 pid = process
                 process_obj = None
 
-            # 註冊進程
+            # 註冊进程
             self.processes[pid] = {
                 "process": process_obj,
                 "description": description,
@@ -267,16 +267,16 @@ class ResourceManager:
 
             self.stats["processes_registered"] += 1
 
-            debug_log(f"註冊進程追蹤: PID {pid} - {description}")
+            debug_log(f"註冊进程追蹤: PID {pid} - {description}")
             return pid
 
         except Exception as e:
             error_id = ErrorHandler.log_error_with_context(
                 e,
-                context={"operation": "註冊進程", "description": description},
+                context={"operation": "註冊进程", "description": description},
                 error_type=ErrorType.PROCESS,
             )
-            debug_log(f"註冊進程失敗 [错误ID: {error_id}]: {e}")
+            debug_log(f"註冊进程失敗 [错误ID: {error_id}]: {e}")
             raise
 
     def register_file_handle(self, file_handle: Any) -> None:
@@ -325,10 +325,10 @@ class ResourceManager:
 
     def unregister_process(self, pid: int) -> bool:
         """
-        取消進程追蹤
+        取消进程追蹤
 
         Args:
-            pid: 進程 PID
+            pid: 进程 PID
 
         Returns:
             bool: 是否成功取消追蹤
@@ -336,17 +336,17 @@ class ResourceManager:
         try:
             if pid in self.processes:
                 del self.processes[pid]
-                debug_log(f"取消進程追蹤: PID {pid}")
+                debug_log(f"取消进程追蹤: PID {pid}")
                 return True
             return False
 
         except Exception as e:
             error_id = ErrorHandler.log_error_with_context(
                 e,
-                context={"operation": "取消進程追蹤", "pid": pid},
+                context={"operation": "取消进程追蹤", "pid": pid},
                 error_type=ErrorType.PROCESS,
             )
-            debug_log(f"取消進程追蹤失敗 [错误ID: {error_id}]: {e}")
+            debug_log(f"取消进程追蹤失敗 [错误ID: {error_id}]: {e}")
             return False
 
     def cleanup_temp_files(self, max_age: int | None = None) -> int:
@@ -410,7 +410,7 @@ class ResourceManager:
                     dirs_to_remove.add(dir_path)
                     continue
 
-                # 嘗試刪除目錄
+                # 尝试刪除目錄
                 shutil.rmtree(dir_path)
                 dirs_to_remove.add(dir_path)
                 cleaned_count += 1
@@ -432,13 +432,13 @@ class ResourceManager:
 
     def cleanup_processes(self, force: bool = False) -> int:
         """
-        清理進程
+        清理进程
 
         Args:
-            force: 是否強制終止進程
+            force: 是否強制终止进程
 
         Returns:
-            int: 清理的進程數量
+            int: 清理的进程數量
         """
         cleaned_count = 0
         processes_to_remove = []
@@ -451,30 +451,30 @@ class ResourceManager:
                 if not auto_cleanup:
                     continue
 
-                # 检查進程是否還在运行
+                # 检查进程是否還在运行
                 if process_obj and hasattr(process_obj, "poll"):
-                    if process_obj.poll() is None:  # 進程還在运行
+                    if process_obj.poll() is None:  # 进程還在运行
                         if force:
-                            debug_log(f"強制終止進程: PID {pid}")
+                            debug_log(f"強制终止进程: PID {pid}")
                             process_obj.kill()
                         else:
-                            debug_log(f"優雅終止進程: PID {pid}")
+                            debug_log(f"优雅终止进程: PID {pid}")
                             process_obj.terminate()
 
-                        # 等待進程結束
+                        # 等待进程結束
                         try:
                             process_obj.wait(timeout=5)
                             cleaned_count += 1
                         except subprocess.TimeoutExpired:
                             if not force:
-                                debug_log(f"進程 {pid} 優雅終止超時，強制終止")
+                                debug_log(f"进程 {pid} 优雅终止超時，強制终止")
                                 process_obj.kill()
                                 process_obj.wait(timeout=3)
                                 cleaned_count += 1
 
                     processes_to_remove.append(pid)
                 else:
-                    # 使用 psutil 检查進程
+                    # 使用 psutil 检查进程
                     try:
                         import psutil
 
@@ -488,22 +488,22 @@ class ResourceManager:
                             cleaned_count += 1
                         processes_to_remove.append(pid)
                     except ImportError:
-                        debug_log("psutil 不可用，跳過進程检查")
+                        debug_log("psutil 不可用，跳過进程检查")
                         processes_to_remove.append(pid)
                     except Exception as e:
-                        debug_log(f"清理進程 {pid} 失敗: {e}")
+                        debug_log(f"清理进程 {pid} 失敗: {e}")
                         processes_to_remove.append(pid)
 
             except Exception as e:
                 error_id = ErrorHandler.log_error_with_context(
                     e,
-                    context={"operation": "清理進程", "pid": pid},
+                    context={"operation": "清理进程", "pid": pid},
                     error_type=ErrorType.PROCESS,
                 )
-                debug_log(f"清理進程失敗 [错误ID: {error_id}]: {e}")
+                debug_log(f"清理进程失敗 [错误ID: {error_id}]: {e}")
                 processes_to_remove.append(pid)
 
-        # 移除已清理的進程追蹤
+        # 移除已清理的进程追蹤
         for pid in processes_to_remove:
             self.processes.pop(pid, None)
 
@@ -527,7 +527,7 @@ class ResourceManager:
                     handles_to_remove.add(handle_ref)
                     continue
 
-                # 嘗試关闭文件句柄
+                # 尝试关闭文件句柄
                 if hasattr(handle, "close") and not handle.closed:
                     handle.close()
                     cleaned_count += 1
@@ -567,7 +567,7 @@ class ResourceManager:
             # 清理文件句柄
             results["file_handles"] = self.cleanup_file_handles()
 
-            # 清理進程
+            # 清理进程
             results["processes"] = self.cleanup_processes(force=force)
 
             # 清理臨時文件
@@ -619,7 +619,7 @@ class ResourceManager:
         debug_log("自動清理線程已启动")
 
     def _check_process_health(self) -> None:
-        """检查進程健康狀態"""
+        """检查进程健康狀態"""
         current_time = time.time()
 
         for pid, process_info in self.processes.items():
@@ -634,15 +634,15 @@ class ResourceManager:
                 # 更新检查時間
                 process_info["last_check"] = current_time
 
-                # 检查進程是否還在运行
+                # 检查进程是否還在运行
                 if process_obj and hasattr(process_obj, "poll"):
                     if process_obj.poll() is not None:
-                        # 進程已結束，移除追蹤
-                        debug_log(f"檢測到進程 {pid} 已結束，移除追蹤")
+                        # 进程已結束，移除追蹤
+                        debug_log(f"检测到进程 {pid} 已結束，移除追蹤")
                         self.unregister_process(pid)
 
             except Exception as e:
-                debug_log(f"检查進程 {pid} 健康狀態失敗: {e}")
+                debug_log(f"检查进程 {pid} 健康狀態失敗: {e}")
 
     def stop_auto_cleanup(self) -> None:
         """停止自動清理"""
@@ -790,7 +790,7 @@ def create_temp_dir(suffix: str = "", prefix: str = "mcp_", **kwargs) -> str:
 def register_process(
     process: subprocess.Popen | int, description: str = "", **kwargs
 ) -> int:
-    """註冊進程的便捷函數"""
+    """註冊进程的便捷函數"""
     return get_resource_manager().register_process(
         process, description=description, **kwargs
     )

@@ -4,7 +4,7 @@
 ==============
 
 管理 Web UI 的 Gzip 壓縮配置和靜態文件緩存策略。
-支援可配置的壓縮參數和性能優化選項。
+支持可配置的壓縮參數和性能優化選項。
 """
 
 import os
@@ -18,13 +18,13 @@ class CompressionConfig:
 
     # Gzip 壓縮设定
     minimum_size: int = 1000  # 最小壓縮大小（bytes）
-    compression_level: int = 6  # 壓縮級別 (1-9, 6為平衡點)
+    compression_level: int = 6  # 壓縮級別 (1-9, 6为平衡點)
 
     # 緩存设定
     static_cache_max_age: int = 3600  # 靜態文件緩存時間（秒）
     api_cache_max_age: int = 0  # API 響應緩存時間（秒，0表示不緩存）
 
-    # 支援的 MIME 類型
+    # 支持的 MIME 類型
     compressible_types: list[str] = field(default_factory=list)
 
     # 排除的路徑

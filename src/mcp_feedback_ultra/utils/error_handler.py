@@ -9,7 +9,7 @@
 - 解決方案建議
 - 國際化支持
 
-注意：此模組不會影響 JSON RPC 通信，所有错误处理都在应用層進行。
+注意：此模块不會影響 JSON RPC 通信，所有错误处理都在应用層進行。
 """
 
 import os
@@ -24,9 +24,9 @@ from ..debug import debug_log
 class ErrorType(Enum):
     """错误類型枚舉"""
 
-    NETWORK = "network"  # 網絡相關错误
+    NETWORK = "network"  # 網絡相关错误
     FILE_IO = "file_io"  # 文件 I/O 错误
-    PROCESS = "process"  # 進程相關错误
+    PROCESS = "process"  # 进程相关错误
     TIMEOUT = "timeout"  # 超時错误
     USER_CANCEL = "user_cancel"  # 用戶取消操作
     SYSTEM = "system"  # 系統错误
@@ -42,7 +42,7 @@ class ErrorSeverity(Enum):
     LOW = "low"  # 低：不影響核心功能
     MEDIUM = "medium"  # 中：影響部分功能
     HIGH = "high"  # 高：影響核心功能
-    CRITICAL = "critical"  # 嚴重：系統無法正常运行
+    CRITICAL = "critical"  # 嚴重：系統无法正常运行
 
 
 class ErrorHandler:
@@ -61,7 +61,7 @@ class ErrorHandler:
             "en": "File read/write issue",
         },
         ErrorType.PROCESS: {
-            "zh-TW": "進程执行出現問題",
+            "zh-TW": "进程执行出現問題",
             "zh-CN": "进程执行出现问题",
             "en": "Process execution issue",
         },
@@ -105,7 +105,7 @@ class ErrorHandler:
     # 错误解決建議
     _ERROR_SOLUTIONS = {
         ErrorType.NETWORK: {
-            "zh-TW": ["检查網絡连接是否正常", "确认防火牆设置", "嘗試重新启动应用程序"],
+            "zh-TW": ["检查網絡连接是否正常", "确认防火牆设置", "尝试重新启动应用程序"],
             "zh-CN": ["检查网络连接是否正常", "确认防火墙设置", "尝试重新启动应用程序"],
             "en": [
                 "Check network connection",
@@ -124,9 +124,9 @@ class ErrorHandler:
         },
         ErrorType.PROCESS: {
             "zh-TW": [
-                "检查進程是否正在运行",
+                "检查进程是否正在运行",
                 "确认系統资源是否足夠",
-                "嘗試重新启动相關服務",
+                "尝试重新启动相关服務",
             ],
             "zh-CN": [
                 "检查进程是否正在运行",
@@ -163,7 +163,7 @@ class ErrorHandler:
     def get_current_language() -> str:
         """獲取當前語言设置"""
         try:
-            # 嘗試從 i18n 模組獲取當前語言
+            # 尝试從 i18n 模块獲取當前語言
             from ..i18n import get_i18n_manager
 
             return get_i18n_manager().get_current_language()
@@ -207,11 +207,11 @@ class ErrorHandler:
 
             result: Any = i18n_result
 
-            # 检查是否為列表類型且非空
+            # 检查是否为列表類型且非空
             if isinstance(result, list) and len(result) > 0:
                 return result
 
-            # 如果不是列表或為空，使用回退
+            # 如果不是列表或为空，使用回退
             raise Exception("Solutions not found or invalid format")
         except Exception:
             # 回退到內建映射
@@ -246,7 +246,7 @@ class ErrorHandler:
         ):
             return ErrorType.PERMISSION
 
-        # 網絡相關错误
+        # 網絡相关错误
         if any(
             keyword in error_name.lower()
             for keyword in ["connection", "network", "socket"]
@@ -268,7 +268,7 @@ class ErrorHandler:
         ):
             return ErrorType.FILE_IO
 
-        # 進程相關错误
+        # 进程相关错误
         if any(keyword in error_name.lower() for keyword in ["process", "subprocess"]):
             return ErrorType.PROCESS
         if any(
@@ -288,7 +288,7 @@ class ErrorHandler:
         ):
             return ErrorType.CONFIGURATION
 
-        # 默認為系統错误
+        # 默認为系統错误
         return ErrorType.SYSTEM
 
     @staticmethod
@@ -299,7 +299,7 @@ class ErrorHandler:
         include_technical: bool = False,
     ) -> str:
         """
-        將技術错误轉換為用戶友好的错误信息
+        將技術错误轉換为用戶友好的错误信息
 
         Args:
             error: Python 異常對象
@@ -415,7 +415,7 @@ class ErrorHandler:
             context: 错误上下文
             error_type: 错误類型
             include_solutions: 是否包含解決建議
-            for_user: 是否為用戶界面使用
+            for_user: 是否为用戶界面使用
 
         Returns:
             Dict[str, Any]: 標準化错误響應
@@ -440,7 +440,7 @@ class ErrorHandler:
         # 添加解決建議
         if include_solutions:
             solutions = ErrorHandler.get_error_solutions(error_type)
-            response["solutions"] = solutions  # 即使為空列表也添加
+            response["solutions"] = solutions  # 即使为空列表也添加
 
         # 添加上下文（僅用於調試）
         if context and not for_user:

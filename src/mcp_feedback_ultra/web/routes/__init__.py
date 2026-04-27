@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Web UI 路由模組
+Web UI 路由模块
 ==============
 
 提供 Web UI 的路由设置和处理。

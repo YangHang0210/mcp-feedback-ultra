@@ -3,7 +3,7 @@
 瀏覽器工具函數
 ==============
 
-提供瀏覽器相關的工具函數，包含 WSL 环境的特殊处理。
+提供瀏覽器相关的工具函數，包含 WSL 环境的特殊处理。
 """
 
 import os
@@ -11,13 +11,13 @@ import subprocess
 import webbrowser
 from collections.abc import Callable
 
-# 導入調試功能
+# 导入調試功能
 from ...debug import server_debug_log as debug_log
 
 
 def is_wsl_environment() -> bool:
     """
-    檢測是否在 WSL 环境中运行
+    检测是否在 WSL 环境中运行
 
     Returns:
         bool: True 表示 WSL 环境，False 表示其他环境
@@ -30,7 +30,7 @@ def is_wsl_environment() -> bool:
                 if "microsoft" in version_info or "wsl" in version_info:
                     return True
 
-        # 检查 WSL 相關环境变量
+        # 检查 WSL 相关环境变量
         wsl_env_vars = ["WSL_DISTRO_NAME", "WSL_INTEROP", "WSLENV"]
         for env_var in wsl_env_vars:
             if os.getenv(env_var):
@@ -50,7 +50,7 @@ def is_wsl_environment() -> bool:
 
 def is_desktop_mode() -> bool:
     """
-    檢測是否為桌面模式
+    检测是否为桌面模式
 
     當设置了 MCP_DESKTOP_MODE 环境变量時，禁止开启瀏覽器
 
@@ -68,7 +68,7 @@ def open_browser_in_wsl(url: str) -> None:
         url: 要开启的 URL
     """
     try:
-        # 嘗試使用 cmd.exe 启动瀏覽器
+        # 尝试使用 cmd.exe 启动瀏覽器
         cmd = ["cmd.exe", "/c", "start", url]
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=10, check=False
@@ -85,7 +85,7 @@ def open_browser_in_wsl(url: str) -> None:
         debug_log(f"使用 cmd.exe 启动瀏覽器失敗: {e}")
 
     try:
-        # 嘗試使用 powershell.exe 启动瀏覽器
+        # 尝试使用 powershell.exe 启动瀏覽器
         cmd = ["powershell.exe", "-c", f'Start-Process "{url}"']
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=10, check=False
@@ -102,7 +102,7 @@ def open_browser_in_wsl(url: str) -> None:
         debug_log(f"使用 powershell.exe 启动瀏覽器失敗: {e}")
 
     try:
-        # 最後嘗試使用 wslview（如果安裝了 wslu 套件）
+        # 最後尝试使用 wslview（如果安裝了 wslu 套件）
         cmd = ["wslview", url]
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=10, check=False
@@ -119,7 +119,7 @@ def open_browser_in_wsl(url: str) -> None:
         debug_log(f"使用 wslview 启动瀏覽器失敗: {e}")
 
     # 如果所有方法都失敗，拋出異常
-    raise Exception("無法在 WSL 环境中启动 Windows 瀏覽器")
+    raise Exception("无法在 WSL 环境中启动 Windows 瀏覽器")
 
 
 def smart_browser_open(url: str) -> None:
@@ -129,13 +129,13 @@ def smart_browser_open(url: str) -> None:
     Args:
         url: 要开启的 URL
     """
-    # 检查是否為桌面模式
+    # 检查是否为桌面模式
     if is_desktop_mode():
-        debug_log("檢測到桌面模式，跳過瀏覽器开启")
+        debug_log("检测到桌面模式，跳過瀏覽器开启")
         return
 
     if is_wsl_environment():
-        debug_log("檢測到 WSL 环境，使用 WSL 專用瀏覽器启动方式")
+        debug_log("检测到 WSL 环境，使用 WSL 專用瀏覽器启动方式")
         open_browser_in_wsl(url)
     else:
         debug_log("使用標準瀏覽器启动方式")

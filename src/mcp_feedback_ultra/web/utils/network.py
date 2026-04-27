@@ -3,7 +3,7 @@
 網絡工具函數
 ============
 
-提供網絡相關的工具函數，如端口檢測等。
+提供網絡相关的工具函數，如端口检测等。
 """
 
 import socket
@@ -17,7 +17,7 @@ def find_free_port(
 
     Args:
         start_port: 起始端口號
-        max_attempts: 最大嘗試次數
+        max_attempts: 最大尝试次數
         preferred_port: 偏好端口號（用於保持设定持久性）
 
     Returns:
@@ -26,14 +26,14 @@ def find_free_port(
     Raises:
         RuntimeError: 如果找不到可用端口
     """
-    # 首先嘗試偏好端口（通常是 8765）
+    # 首先尝试偏好端口（通常是 8765）
     if is_port_available("127.0.0.1", preferred_port):
         return preferred_port
 
-    # 如果偏好端口不可用，嘗試其他端口
+    # 如果偏好端口不可用，尝试其他端口
     for i in range(max_attempts):
         port = start_port + i
-        if port == preferred_port:  # 跳過已經嘗試過的偏好端口
+        if port == preferred_port:  # 跳過已經尝试過的偏好端口
             continue
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -43,7 +43,7 @@ def find_free_port(
             continue
 
     raise RuntimeError(
-        f"無法在 {start_port}-{start_port + max_attempts - 1} 範圍內找到可用端口"
+        f"无法在 {start_port}-{start_port + max_attempts - 1} 範圍內找到可用端口"
     )
 
 

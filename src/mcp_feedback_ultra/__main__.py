@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-MCP Interactive Feedback Enhanced - 主程序入口
+MCP Feedback Ultra - 主程序入口
 ==============================================
 
 此文件允許套件透過 `python -m mcp_feedback_ultra` 执行。
 
 使用方法:
-  python -m mcp_feedback_ultra        # 启动 MCP 伺服器
+  python -m mcp_feedback_ultra        # 启动 MCP 服务器
   python -m mcp_feedback_ultra test   # 执行测试
 """
 
@@ -34,13 +34,13 @@ if sys.platform == "win32":
 def main():
     """主程序入口點"""
     parser = argparse.ArgumentParser(
-        description="MCP Feedback Enhanced Enhanced - 互動式回饋收集 MCP 伺服器"
+        description="MCP Feedback Ultra - 交互式反馈收集 MCP 服务器"
     )
 
     subparsers = parser.add_subparsers(dest="command", help="可用命令")
 
-    # 伺服器命令（预设）
-    subparsers.add_parser("server", help="启动 MCP 伺服器（预设）")
+    # 服务器命令（预设）
+    subparsers.add_parser("server", help="启动 MCP 服务器（预设）")
 
     # 测试命令
     test_parser = subparsers.add_parser("test", help="执行测试")
@@ -72,7 +72,7 @@ def main():
 
 
 def run_server():
-    """启动 MCP 伺服器"""
+    """启动 MCP 服务器"""
     from .server import main as server_main
 
     return server_main()
@@ -95,7 +95,7 @@ def run_tests(args):
         warnings.filterwarnings("ignore", message=".*unclosed transport.*")
         warnings.filterwarnings("ignore", message=".*I/O operation on closed pipe.*")
         warnings.filterwarnings("ignore", message=".*unclosed.*")
-        # 抑制 asyncio 相關的所有警告
+        # 抑制 asyncio 相关的所有警告
         warnings.filterwarnings("ignore", module="asyncio.*")
 
     if args.web:
@@ -146,7 +146,7 @@ def test_web_ui_simple():
 ## 🎯 测试目標
 验证 **combinedSummaryContent** 區域的 Markdown 語法顯示功能
 
-### ✨ 支援的語法特性
+### ✨ 支持的語法特性
 
 #### 文字格式
 - **粗體文字** 使用雙星號
@@ -182,19 +182,19 @@ def process_feedback(data):
 3. 配置安全選項
 4. 渲染內容
 
-#### 連結和引用
-- 專案連結：[MCP Feedback Enhanced](https://github.com/example/mcp-feedback-ultra)
-- 文檔連結：[Marked.js 官方文檔](https://marked.js.org/)
+#### 链接和引用
+- 项目链接：[MCP Feedback Ultra](https://github.com/example/mcp-feedback-ultra)
+- 文檔链接：[Marked.js 官方文檔](https://marked.js.org/)
 
 > **重要提示：** 所有 HTML 輸出都經過 DOMPurify 清理，確保安全性。
 
 #### 表格範例
 | 功能 | 狀態 | 說明 |
 |------|------|------|
-| 標題渲染 | ✅ | 支援 H1-H6 |
+| 標題渲染 | ✅ | 支持 H1-H6 |
 | 程序碼高亮 | ✅ | 基本語法高亮 |
 | 列表功能 | ✅ | 有序/無序列表 |
-| 連結处理 | ✅ | 安全連結渲染 |
+| 链接处理 | ✅ | 安全链接渲染 |
 
 ---
 
@@ -229,17 +229,17 @@ def process_feedback(data):
                             f"📌 注意：由於端口 9765 被佔用，服務已切換到端口 {manager.port}"
                         )
 
-                    # 嘗試开启瀏覽器
+                    # 尝试开启瀏覽器
                     print("🌐 正在开启瀏覽器...")
                     try:
                         webbrowser.open(url)
                         print("✅ 瀏覽器已开启")
                     except Exception as e:
-                        print(f"⚠️  無法自動开启瀏覽器: {e}")
+                        print(f"⚠️  无法自動开启瀏覽器: {e}")
                         print(f"💡 請手動开启瀏覽器並訪問: {url}")
 
                     print("📝 Web UI 测试完成，進入持續模式...")
-                    print("💡 提示：服務器將持續运行，可在瀏覽器中测试互動功能")
+                    print("💡 提示：服務器將持續运行，可在瀏覽器中测试交互功能")
                     print("💡 按 Ctrl+C 停止服務器")
 
                     try:
@@ -274,21 +274,21 @@ def test_desktop_app():
     try:
         print("🔧 检查桌面应用程序依賴...")
 
-        # 检查是否有 Tauri 桌面模組
+        # 检查是否有 Tauri 桌面模块
         try:
             import os
             import sys
 
-            # 嘗試導入桌面应用程序模組
+            # 尝试导入桌面应用程序模块
             def import_desktop_app():
-                # 首先嘗試從發佈包位置導入
+                # 首先尝试從發佈包位置导入
                 try:
                     from .desktop_app import launch_desktop_app as desktop_func
 
-                    print("✅ 找到發佈包中的桌面应用程序模組")
+                    print("✅ 找到發佈包中的桌面应用程序模块")
                     return desktop_func
                 except ImportError:
-                    print("🔍 發佈包中未找到桌面应用程序模組，嘗試开发环境...")
+                    print("🔍 發佈包中未找到桌面应用程序模块，尝试开发环境...")
 
                 # 回退到开发环境路徑
                 tauri_python_path = os.path.join(
@@ -296,7 +296,7 @@ def test_desktop_app():
                 )
                 if os.path.exists(tauri_python_path):
                     sys.path.insert(0, tauri_python_path)
-                    print(f"✅ 找到 Tauri Python 模組路徑: {tauri_python_path}")
+                    print(f"✅ 找到 Tauri Python 模块路徑: {tauri_python_path}")
                     try:
                         from mcp_feedback_ultra_desktop import (  # type: ignore
                             launch_desktop_app as dev_func,
@@ -304,7 +304,7 @@ def test_desktop_app():
 
                         return dev_func
                     except ImportError:
-                        print("❌ 無法從开发环境路徑導入桌面应用程序模組")
+                        print("❌ 无法從开发环境路徑导入桌面应用程序模块")
                         return None
                 else:
                     print(f"⚠️  开发环境路徑不存在: {tauri_python_path}")
@@ -320,10 +320,10 @@ def test_desktop_app():
                 print("   3. Web 模式指令：uvx mcp-feedback-ultra test --web")
                 return False
 
-            print("✅ 桌面应用程序模組導入成功")
+            print("✅ 桌面应用程序模块导入成功")
 
         except ImportError as e:
-            print(f"❌ 無法導入桌面应用程序模組: {e}")
+            print(f"❌ 无法导入桌面应用程序模块: {e}")
             print(
                 "💡 請確保已执行 'make build-desktop' 或 'python scripts/build_desktop.py'"
             )
@@ -386,9 +386,9 @@ def test_desktop_app():
 
 
 async def wait_for_process(process):
-    """等待進程結束"""
+    """等待进程結束"""
     try:
-        # 等待進程自然結束
+        # 等待进程自然結束
         await process.wait()
 
         # 確保管道正確关闭
@@ -400,17 +400,17 @@ async def wait_for_process(process):
             if hasattr(process, "stdin") and process.stdin:
                 process.stdin.close()
         except Exception as close_error:
-            print(f"关闭進程管道時出錯: {close_error}")
+            print(f"关闭进程管道時出錯: {close_error}")
 
     except Exception as e:
-        print(f"等待進程時出錯: {e}")
+        print(f"等待进程時出錯: {e}")
 
 
 def show_version():
     """顯示版本資訊"""
     from . import __author__, __version__
 
-    print(f"MCP Feedback Enhanced Enhanced v{__version__}")
+    print(f"MCP Feedback Ultra v{__version__}")
     print(f"作者: {__author__}")
     print("GitHub: https://github.com/Minidoracat/mcp-feedback-ultra")
 

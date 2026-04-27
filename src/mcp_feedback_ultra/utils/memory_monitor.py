@@ -4,9 +4,9 @@
 ==================
 
 提供與资源管理器深度集成的內存监控功能，包括：
-- 系統和進程內存使用监控
+- 系統和进程內存使用监控
 - 智能清理觸發機制
-- 內存洩漏檢測和趨勢分析
+- 內存洩漏检测和趨勢分析
 - 性能優化建議
 """
 
@@ -33,9 +33,9 @@ class MemorySnapshot:
     system_available: int  # 系統可用內存 (bytes)
     system_used: int  # 系統已用內存 (bytes)
     system_percent: float  # 系統內存使用率 (%)
-    process_rss: int  # 進程常駐內存 (bytes)
-    process_vms: int  # 進程虛擬內存 (bytes)
-    process_percent: float  # 進程內存使用率 (%)
+    process_rss: int  # 进程常駐內存 (bytes)
+    process_vms: int  # 进程虛擬內存 (bytes)
+    process_percent: float  # 进程內存使用率 (%)
     gc_objects: int  # Python 垃圾回收對象數量
 
 
@@ -58,8 +58,8 @@ class MemoryStats:
     snapshots_count: int  # 快照數量
     average_system_usage: float  # 平均系統內存使用率
     peak_system_usage: float  # 峰值系統內存使用率
-    average_process_usage: float  # 平均進程內存使用率
-    peak_process_usage: float  # 峰值進程內存使用率
+    average_process_usage: float  # 平均进程內存使用率
+    peak_process_usage: float  # 峰值进程內存使用率
     alerts_count: int  # 警告數量
     cleanup_triggers: int  # 清理觸發次數
     memory_trend: str  # 內存趨勢 (stable, increasing, decreasing)
@@ -110,7 +110,7 @@ class MemoryMonitor:
         self.start_time: datetime | None = None
         self.cleanup_triggers_count = 0
 
-        # 進程信息
+        # 进程信息
         self.process = psutil.Process()
 
         debug_log("MemoryMonitor 初始化完成")
@@ -212,7 +212,7 @@ class MemoryMonitor:
             # 系統內存信息
             system_memory = psutil.virtual_memory()
 
-            # 進程內存信息
+            # 进程內存信息
             process_memory = self.process.memory_info()
             process_percent = self.process.memory_percent()
 
@@ -324,7 +324,7 @@ class MemoryMonitor:
         for callback in self.cleanup_callbacks:
             try:
                 # 修復 unreachable 错误 - 簡化邏輯，移除不可達的 else 分支
-                # 嘗試傳遞 force 參數
+                # 尝试傳遞 force 參數
                 import inspect
 
                 sig = inspect.signature(callback)

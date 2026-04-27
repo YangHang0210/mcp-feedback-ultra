@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-國際化支援模組
+國際化支持模块
 ===============
 
-提供統一的多語系支援功能，支援繁體中文、英文等語言。
+提供統一的多語系支持功能，支持繁體中文、英文等語言。
 自動偵測系統語言，並提供語言切換功能。
 
 新架構：
 - 使用分離的 JSON 翻譯文件
-- 支援巢狀翻譯鍵值
-- 元资料支援
+- 支持巢狀翻譯鍵值
+- 元资料支持
 - 易於擴充新語言
 
 作者: Minidoracat
@@ -150,7 +150,7 @@ class I18nManager:
         return False
 
     def get_supported_languages(self) -> list[str]:
-        """獲取支援的語言列表"""
+        """獲取支持的語言列表"""
         return self._supported_languages.copy()
 
     def get_language_info(self, language_code: str) -> dict[str, Any]:
@@ -161,7 +161,7 @@ class I18nManager:
         return {}
 
     def _get_nested_value(self, data: dict[str, Any], key_path: str) -> str | None:
-        """從巢狀字典中獲取值，支援點分隔的鍵路徑"""
+        """從巢狀字典中獲取值，支持點分隔的鍵路徑"""
         keys = key_path.split(".")
         current: Any = data
 
@@ -175,7 +175,7 @@ class I18nManager:
 
     def t(self, key: str, **kwargs) -> str:
         """
-        翻譯函數 - 支援新舊兩種鍵值格式
+        翻譯函數 - 支持新舊兩種鍵值格式
 
         新格式: 'buttons.submit' -> data['buttons']['submit']
         舊格式: 'btn_submit_feedback' -> 兼容舊的鍵值
@@ -183,14 +183,14 @@ class I18nManager:
         # 獲取當前語言的翻譯
         current_translations = self._translations.get(self._current_language, {})
 
-        # 嘗試新格式（巢狀鍵）
+        # 尝试新格式（巢狀鍵）
         text = self._get_nested_value(current_translations, key)
 
-        # 如果沒有找到，嘗試舊格式的兼容映射
+        # 如果沒有找到，尝试舊格式的兼容映射
         if text is None:
             text = self._get_legacy_translation(current_translations, key)
 
-        # 如果還是沒有找到，嘗試使用回退語言
+        # 如果還是沒有找到，尝试使用回退語言
         if text is None:
             fallback_translations = self._translations.get(self._fallback_language, {})
             text = self._get_nested_value(fallback_translations, key)
@@ -225,7 +225,7 @@ class I18nManager:
             "feedback_tab": "tabs.feedback",
             "command_tab": "tabs.command",
             "images_tab": "tabs.images",
-            # 回饋
+            # 反馈
             "feedback_title": "feedback.title",
             "feedback_description": "feedback.description",
             "feedback_placeholder": "feedback.placeholder",
@@ -234,7 +234,7 @@ class I18nManager:
             "command_description": "command.description",
             "command_placeholder": "command.placeholder",
             "command_output": "command.output",
-            # 圖片
+            # 图片
             "images_title": "images.title",
             "images_select": "images.select",
             "images_paste": "images.paste",
@@ -325,7 +325,7 @@ class I18nManager:
         self._load_all_translations()
 
     def add_language(self, language_code: str, translation_file_path: str) -> bool:
-        """動態添加新語言支援"""
+        """动态添加新語言支持"""
         try:
             translation_file = Path(translation_file_path)
             if not translation_file.exists():

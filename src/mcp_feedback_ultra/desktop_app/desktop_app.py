@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-桌面应用程序主要模組
+桌面应用程序主要模块
 
-此模組提供桌面应用程序的核心功能，包括：
-- 桌面模式檢測
+此模块提供桌面应用程序的核心功能，包括：
+- 桌面模式检测
 - Tauri 应用程序启动
 - 與現有 Web UI 的整合
 """
@@ -14,13 +14,13 @@ import sys
 import time
 
 
-# 導入現有的 MCP Feedback Enhanced 模組
+# 导入現有的 MCP Feedback Ultra 模块
 try:
     from mcp_feedback_ultra.debug import server_debug_log as debug_log
     from mcp_feedback_ultra.web.main import WebUIManager, get_web_ui_manager
 except ImportError as e:
-    # 在這裡無法使用 debug_log，因為導入失敗
-    sys.stderr.write(f"無法導入 MCP Feedback Enhanced 模組: {e}\n")
+    # 在這裡无法使用 debug_log，因为导入失敗
+    sys.stderr.write(f"无法导入 MCP Feedback Ultra 模块: {e}\n")
     sys.exit(1)
 
 
@@ -44,7 +44,7 @@ class DesktopApp:
             debug_log("桌面模式已禁用")
 
     def is_desktop_mode(self) -> bool:
-        """检查是否為桌面模式"""
+        """检查是否为桌面模式"""
         return (
             self.desktop_mode
             or os.environ.get("MCP_DESKTOP_MODE", "").lower() == "true"
@@ -111,7 +111,7 @@ class DesktopApp:
         from pathlib import Path
 
         # 找到 Tauri 可执行文件
-        # 首先嘗試從打包後的位置找（PyPI 安裝後的位置）
+        # 首先尝试從打包後的位置找（PyPI 安裝後的位置）
         try:
             from mcp_feedback_ultra.desktop_release import __file__ as desktop_init
 
@@ -127,7 +127,7 @@ class DesktopApp:
             if system == "windows":
                 tauri_exe = desktop_dir / "mcp-feedback-ultra-desktop.exe"
             elif system == "darwin":  # macOS
-                # 檢測 Apple Silicon 或 Intel
+                # 检测 Apple Silicon 或 Intel
                 if machine in ["arm64", "aarch64"]:
                     tauri_exe = (
                         desktop_dir / "mcp-feedback-ultra-desktop-macos-arm64"
@@ -145,7 +145,7 @@ class DesktopApp:
             if tauri_exe.exists():
                 debug_log(f"找到打包後的 Tauri 可执行文件: {tauri_exe}")
             else:
-                # 嘗試回退選項
+                # 尝试回退選項
                 fallback_files = [
                     desktop_dir / "mcp-feedback-ultra-desktop.exe",
                     desktop_dir / "mcp-feedback-ultra-desktop-macos-intel",
@@ -166,7 +166,7 @@ class DesktopApp:
 
         except (ImportError, FileNotFoundError):
             # 回退到开发环境路徑
-            debug_log("未找到打包後的可执行文件，嘗試开发环境路徑...")
+            debug_log("未找到打包後的可执行文件，尝试开发环境路徑...")
             project_root = Path(__file__).parent.parent.parent.parent
             tauri_exe = (
                 project_root
@@ -177,7 +177,7 @@ class DesktopApp:
             )
 
             if not tauri_exe.exists():
-                # 嘗試其他可能的路徑
+                # 尝试其他可能的路徑
                 tauri_exe = (
                     project_root
                     / "src-tauri"
@@ -187,7 +187,7 @@ class DesktopApp:
                 )
 
             if not tauri_exe.exists():
-                # 嘗試 release 版本
+                # 尝试 release 版本
                 tauri_exe = (
                     project_root
                     / "src-tauri"
@@ -206,7 +206,7 @@ class DesktopApp:
 
             if not tauri_exe.exists():
                 raise FileNotFoundError(
-                    "找不到 Tauri 可执行文件，已嘗試的路徑包括开发和發布目錄"
+                    "找不到 Tauri 可执行文件，已尝试的路徑包括开发和發布目錄"
                 ) from None
 
         debug_log(f"找到 Tauri 可执行文件: {tauri_exe}")
@@ -273,7 +273,7 @@ async def launch_desktop_app(test_mode: bool = False) -> DesktopApp:
     """启动桌面应用程序
 
     Args:
-        test_mode: 是否為测试模式，测试模式下會創建测试會話
+        test_mode: 是否为测试模式，测试模式下會創建测试會話
     """
     debug_log("正在启动桌面应用程序...")
 
