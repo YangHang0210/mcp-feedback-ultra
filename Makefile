@@ -1,5 +1,5 @@
-# Makefile for mcp-feedback-enhanced development
-# 適用於 mcp-feedback-enhanced 專案開發
+# Makefile for mcp-feedback-ultra development
+# 適用於 mcp-feedback-ultra 專案開發
 # Compatible with Windows PowerShell and Unix systems
 # 兼容 Windows PowerShell 和 Unix 系統
 
@@ -104,10 +104,10 @@ test-func: ## Run functional tests (standard)
 	uv run python -m mcp_feedback_enhanced test
 
 test-web: ## Run Web UI tests (continuous)
-	uvx --no-cache --with-editable . mcp-feedback-enhanced test --web
+	uvx --no-cache --with-editable . mcp-feedback-ultra test --web
 
 test-desktop-func: ## Run desktop application functional tests
-	uvx --no-cache --with-editable . mcp-feedback-enhanced test --desktop
+	uvx --no-cache --with-editable . mcp-feedback-ultra test --desktop
 
 # 維護相關命令
 clean: ## Clean up cache and temporary files

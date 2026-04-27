@@ -670,7 +670,7 @@
         descriptionElement.textContent = description;
     };
 
-    SettingsManager.DEFAULT_REMINDER_TEXT = '[IMPORTANT] After completing the task based on the feedback above, you MUST call the `mcp-feedback-pro` tool again to report your progress and get further instructions. Do NOT end your turn without calling this tool.';
+    SettingsManager.DEFAULT_REMINDER_TEXT = '[IMPORTANT] After completing the task based on the feedback above, you MUST call the `mcp-feedback-ultra` tool again to report your progress and get further instructions. Do NOT end your turn without calling this tool.';
 
     SettingsManager.DEFAULT_NEW_TASK_INSTRUCTION = '[NEW TASK] The user wants to switch to a new task. Please:\n1. Cancel or deprioritize any ongoing work from previous tasks.\n2. Clear your current TODO list if applicable.\n3. Focus entirely on the user\'s new request below.';
 

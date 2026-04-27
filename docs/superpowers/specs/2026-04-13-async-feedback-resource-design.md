@@ -8,7 +8,7 @@
 
 ## 1. Problem
 
-Agent 在长时间任务中可能走错方向，当前 `mcp-feedback-pro` 仅支持同步反馈（Agent 调用 `interactive_feedback` 时），用户无法在 Agent 工作期间打断或重定向。
+Agent 在长时间任务中可能走错方向，当前 `mcp-feedback-ultra` 仅支持同步反馈（Agent 调用 `interactive_feedback` 时），用户无法在 Agent 工作期间打断或重定向。
 
 ## 2. Solution Overview
 
@@ -47,7 +47,7 @@ Agent 在长时间任务中可能走错方向，当前 `mcp-feedback-pro` 仅支
 
 ### 4.1 AsyncFeedbackQueue
 
-**位置**: `src/mcp_feedback_enhanced/server.py`
+**位置**: `src/mcp_feedback_ultra/server.py`
 
 ```python
 class AsyncFeedbackQueue:
@@ -159,7 +159,7 @@ _DEFAULT_REMINDER_TEXT = (
 
 ### 4.5 Web API Endpoints
 
-**位置**: `src/mcp_feedback_enhanced/web/routes/main_routes.py`
+**位置**: `src/mcp_feedback_ultra/web/routes/main_routes.py`
 
 #### POST `/api/async-feedback`
 
@@ -258,7 +258,7 @@ _async_feedback_queue = AsyncFeedbackQueue()
 Web API endpoints in `main_routes.py` access it via import:
 
 ```python
-from mcp_feedback_enhanced.server import _async_feedback_queue
+from mcp_feedback_ultra.server import _async_feedback_queue
 ```
 
 This works because the MCP server process loads `server.py` first, and the Web server runs in the same process (started from within `launch_web_feedback_ui`).
@@ -267,5 +267,5 @@ This works because the MCP server process loads `server.py` first, and the Web s
 
 | File | Changes |
 |------|---------|
-| `src/mcp_feedback_enhanced/server.py` | Add AsyncFeedbackQueue, global instance, MCP Resource, MCP Tool, update reminder |
-| `src/mcp_feedback_enhanced/web/routes/main_routes.py` | Add async-feedback API endpoints (import queue from server) |
+| `src/mcp_feedback_ultra/server.py` | Add AsyncFeedbackQueue, global instance, MCP Resource, MCP Tool, update reminder |
+| `src/mcp_feedback_ultra/web/routes/main_routes.py` | Add async-feedback API endpoints (import queue from server) |

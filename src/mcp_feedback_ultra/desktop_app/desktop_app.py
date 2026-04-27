@@ -16,8 +16,8 @@ import time
 
 # 導入現有的 MCP Feedback Enhanced 模組
 try:
-    from mcp_feedback_enhanced.debug import server_debug_log as debug_log
-    from mcp_feedback_enhanced.web.main import WebUIManager, get_web_ui_manager
+    from mcp_feedback_ultra.debug import server_debug_log as debug_log
+    from mcp_feedback_ultra.web.main import WebUIManager, get_web_ui_manager
 except ImportError as e:
     # 在這裡無法使用 debug_log，因為導入失敗
     sys.stderr.write(f"無法導入 MCP Feedback Enhanced 模組: {e}\n")
@@ -113,7 +113,7 @@ class DesktopApp:
         # 找到 Tauri 可執行檔案
         # 首先嘗試從打包後的位置找（PyPI 安裝後的位置）
         try:
-            from mcp_feedback_enhanced.desktop_release import __file__ as desktop_init
+            from mcp_feedback_ultra.desktop_release import __file__ as desktop_init
 
             desktop_dir = Path(desktop_init).parent
 

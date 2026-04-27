@@ -8,7 +8,7 @@
 
 ## 1. 背景与问题
 
-当 AI Agent 处理长时间任务时，可能在错误的方向上尝试很久。当前 `mcp-feedback-pro` 仅支持**同步反馈**——Agent 必须主动调用 `interactive_feedback` 工具才能接收用户输入。用户**无法**在 Agent 工作期间进行打断或重定向。
+当 AI Agent 处理长时间任务时，可能在错误的方向上尝试很久。当前 `mcp-feedback-ultra` 仅支持**同步反馈**——Agent 必须主动调用 `interactive_feedback` 工具才能接收用户输入。用户**无法**在 Agent 工作期间进行打断或重定向。
 
 ### 当前流程（仅同步）
 

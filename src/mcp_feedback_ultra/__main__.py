@@ -298,7 +298,7 @@ def test_desktop_app():
                     sys.path.insert(0, tauri_python_path)
                     print(f"✅ 找到 Tauri Python 模組路徑: {tauri_python_path}")
                     try:
-                        from mcp_feedback_enhanced_desktop import (  # type: ignore
+                        from mcp_feedback_ultra_desktop import (  # type: ignore
                             launch_desktop_app as dev_func,
                         )
 

@@ -38,9 +38,6 @@
         this.promptSettingsUI = null;
         this.promptInputButtons = null;
 
-    // 異步反饋管理器
-    this.asyncFeedbackManager = null;
-
     // 音效管理器
     this.audioManager = null;
     this.audioSettingsUI = null;
@@ -252,10 +249,7 @@
                         // 12. 初始化自動提交管理器
                         self.initializeAutoSubmitManager();
 
-                        // 13. 初始化異步反饋管理器
-                        self.initializeAsyncFeedbackManager();
-
-                        // 14. 初始化 Textarea 高度管理器
+                        // 13. 初始化 Textarea 高度管理器
                         self.initializeTextareaHeightManager();
 
                         // 14. 應用設定到 UI
@@ -315,14 +309,6 @@
                     self.submitFeedback();
                 });
             });
-
-            // New Task button
-            var newTaskBtn = window.MCPFeedback.Utils.safeQuerySelector('#newTaskBtn');
-            if (newTaskBtn) {
-                newTaskBtn.addEventListener('click', function() {
-                    self.submitFeedback({ clearContext: true });
-                });
-            }
 
             // 取消按鈕事件 - 已移除取消按鈕，保留 ESC 快捷鍵功能
 
@@ -638,24 +624,6 @@
     /**
      * 初始化異步反饋管理器
      */
-    FeedbackApp.prototype.initializeAsyncFeedbackManager = function () {
-        console.log('📡 初始化異步反饋管理器...');
-
-        try {
-            if (!window.MCPFeedback.AsyncFeedbackManager) {
-                console.warn('⚠️ AsyncFeedbackManager 模組未載入，跳過初始化');
-                return;
-            }
-
-            this.asyncFeedbackManager = new window.MCPFeedback.AsyncFeedbackManager();
-            this.asyncFeedbackManager.initialize();
-
-            console.log('✅ 異步反饋管理器初始化完成');
-        } catch (error) {
-            console.error('❌ 異步反饋管理器初始化失敗:', error);
-        }
-    };
-
     /**
      * 初始化 Textarea 高度管理器
      */
@@ -1144,7 +1112,7 @@
      */
     FeedbackApp.prototype.submitFeedback = function(options) {
         options = options || {};
-        console.log('📤 嘗試提交回饋...', options.clearContext ? '(新任務模式)' : '');
+        console.log('📤 嘗試提交回饋...');
 
         // 檢查是否可以提交回饋
         if (!this.canSubmitFeedback()) {
@@ -1214,12 +1182,10 @@
         const combinedFeedbackInput = window.MCPFeedback.Utils.safeQuerySelector('#combinedFeedbackText');
         feedback = combinedFeedbackInput ? combinedFeedbackInput.value.trim() : '';
 
-        var clearContext = !!options.clearContext;
-
         const images = this.imageHandler ? this.imageHandler.getImages() : [];
 
-        // Allow empty feedback for new task mode (clearContext)
-        if (!feedback && images.length === 0 && !clearContext) {
+        // Check for empty feedback
+        if (!feedback && images.length === 0) {
             const message = window.i18nManager ? 
                 window.i18nManager.t('feedback.provideTextOrImage', '請提供回饋文字或上傳圖片') : 
                 '請提供回饋文字或上傳圖片';
@@ -1230,23 +1196,19 @@
         // Get reminder settings from settingsManager
         var reminderEnabled = true;
         var reminderText = '';
-        var newTaskInstruction = '';
         if (this.settingsManager) {
             reminderEnabled = this.settingsManager.get('feedbackReminderEnabled', true);
             reminderText = this.settingsManager.get('feedbackReminderText', '');
-            newTaskInstruction = this.settingsManager.get('newTaskInstructionText', '');
         }
 
         return {
             feedback: feedback,
             images: images,
-            clear_context: clearContext,
             settings: {
                 image_size_limit: this.imageHandler ? this.imageHandler.imageSizeLimit : 0,
                 enable_base64_detail: this.imageHandler ? this.imageHandler.enableBase64Detail : false,
                 feedbackReminderEnabled: reminderEnabled,
-                feedbackReminderText: reminderText,
-                newTaskInstructionText: newTaskInstruction
+                feedbackReminderText: reminderText
             }
         };
     };
@@ -1283,8 +1245,7 @@
                 type: 'submit_feedback',
                 feedback: feedbackData.feedback,
                 images: feedbackData.images,
-                settings: feedbackData.settings,
-                clear_context: feedbackData.clear_context || false
+                settings: feedbackData.settings
             });
 
             if (success) {
@@ -2341,10 +2302,6 @@
 
         if (this.imageHandler) {
             this.imageHandler.cleanup();
-        }
-
-        if (this.asyncFeedbackManager) {
-            this.asyncFeedbackManager.destroy();
         }
 
         if (this.textareaHeightManager) {

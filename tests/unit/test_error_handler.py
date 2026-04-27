@@ -13,7 +13,7 @@ from unittest.mock import patch
 import pytest
 
 # 移除手動路徑操作，讓 mypy 和 pytest 使用正確的模組解析
-from mcp_feedback_enhanced.utils.error_handler import (
+from mcp_feedback_ultra.utils.error_handler import (
     ErrorHandler,
     ErrorSeverity,
     ErrorType,

@@ -328,7 +328,7 @@ def copy_desktop_python_module(project_root: Path):
     print("📦 複製桌面應用 Python 模組...")
 
     # 源路徑和目標路徑
-    python_src = project_root / "src-tauri" / "python" / "mcp_feedback_enhanced_desktop"
+    python_src = project_root / "src-tauri" / "python" / "mcp_feedback_ultra_desktop"
     python_dst = project_root / "src" / "mcp_feedback_enhanced" / "desktop_app"
 
     if not python_src.exists():
@@ -417,7 +417,7 @@ def main():
         print("📍 構建產物位置:")
         print("   多平台二進制檔案: src/mcp_feedback_enhanced/desktop_release/")
         print("   桌面應用模組: src/mcp_feedback_enhanced/desktop_app/")
-        print("   開發環境模組: src-tauri/python/mcp_feedback_enhanced_desktop/")
+        print("   開發環境模組: src-tauri/python/mcp_feedback_ultra_desktop/")
         print("")
         print("🌍 支援的平台:")
         for target, _ in successful_builds:

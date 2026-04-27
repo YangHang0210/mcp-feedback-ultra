@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from mcp_feedback_enhanced.utils.memory_monitor import (
+from mcp_feedback_ultra.utils.memory_monitor import (
     MemoryAlert,
     MemoryMonitor,
     MemorySnapshot,

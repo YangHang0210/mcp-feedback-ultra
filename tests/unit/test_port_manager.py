@@ -14,7 +14,7 @@ from unittest.mock import patch
 import pytest
 
 # 移除手動路徑操作，讓 mypy 和 pytest 使用正確的模組解析
-from mcp_feedback_enhanced.web.utils.port_manager import PortManager
+from mcp_feedback_ultra.web.utils.port_manager import PortManager
 
 
 class TestPortManager:

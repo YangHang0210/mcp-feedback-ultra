@@ -133,109 +133,6 @@ else:
 mcp: Any = FastMCP(SERVER_NAME)
 
 
-# ===== 異步反饋隊列 =====
-class AsyncFeedbackQueue:
-    """Thread-safe single-slot async feedback queue.
-
-    Allows users to submit feedback via Web UI at any time.
-    Agent reads feedback via MCP Resource (peek) or MCP Tool (consume).
-    """
-
-    EXPIRY_SECONDS = 1800  # 30 minutes
-
-    def __init__(self):
-        self._lock = threading.Lock()
-        self._feedback: str | None = None
-        self._timestamp: float | None = None
-
-    MAX_FEEDBACK_LENGTH = 10000
-
-    def submit(self, feedback: str) -> bool:
-        """Store new feedback. Overwrites any previous pending feedback.
-
-        Returns False if feedback is empty after stripping.
-        """
-        stripped = feedback.strip()
-        if not stripped:
-            return False
-        with self._lock:
-            self._feedback = stripped[: self.MAX_FEEDBACK_LENGTH]
-            self._timestamp = time.time()
-            debug_log(f"異步反饋已提交，長度: {len(self._feedback)}")
-            return True
-
-    def peek(self) -> dict:
-        """Read without clearing. Auto-expires stale feedback."""
-        with self._lock:
-            return self._read(clear=False)
-
-    def consume(self) -> dict:
-        """Read and clear. Auto-expires stale feedback."""
-        with self._lock:
-            return self._read(clear=True)
-
-    def _read(self, clear: bool) -> dict:
-        """Internal read with optional clear. Must be called under lock."""
-        if self._feedback and self._timestamp:
-            if time.time() - self._timestamp > self.EXPIRY_SECONDS:
-                self._feedback = None
-                self._timestamp = None
-                debug_log("異步反饋已過期，自動清除")
-                return {"has_feedback": False}
-            result = {
-                "has_feedback": True,
-                "feedback": self._feedback,
-                "timestamp": self._timestamp,
-            }
-            if clear:
-                self._feedback = None
-                self._timestamp = None
-                debug_log("異步反饋已被消費並清除")
-            return result
-        return {"has_feedback": False}
-
-
-_async_feedback_queue = AsyncFeedbackQueue()
-
-
-def get_async_feedback_queue() -> AsyncFeedbackQueue:
-    """Get the global async feedback queue instance."""
-    return _async_feedback_queue
-
-
-# ===== MCP Resource: 異步反饋 =====
-@mcp.resource(
-    "feedback://pending",
-    name="Async User Feedback",
-    description=(
-        "Check for pending async user feedback submitted via Web UI. "
-        "Returns JSON: {has_feedback: bool, feedback?: str, timestamp?: float}. "
-        "Reading this resource does NOT clear the feedback."
-    ),
-    mime_type="application/json",
-)
-def get_pending_feedback() -> str:
-    """Return pending async feedback as JSON (non-destructive read)."""
-    return json.dumps(_async_feedback_queue.peek(), ensure_ascii=False)
-
-
-# ===== MCP Tool: 檢查異步反饋 =====
-@mcp.tool()
-def check_async_feedback() -> str:
-    """Check and consume pending async user feedback.
-
-    Call this periodically during long-running tasks (every few major steps)
-    to check if the user wants to redirect your current approach.
-
-    Returns the feedback text if available, or empty string if none.
-    Once read, the feedback is cleared. Do NOT call this in a tight loop.
-    """
-    result = _async_feedback_queue.consume()
-    if result["has_feedback"]:
-        return result["feedback"]
-    return ""
-
-
 # ===== 工具函數 =====
 def is_wsl_environment() -> bool:
     """
@@ -628,20 +525,6 @@ async def interactive_feedback(
                 TextContent(type="text", text="用戶未提供任何回饋內容。")
             )
 
-        # Handle clear_context: prepend system instruction when user requests a new task
-        if result.get("clear_context"):
-            clear_instruction = _get_new_task_instruction(result)
-            if feedback_items and isinstance(feedback_items[0], TextContent):
-                feedback_items[0] = TextContent(
-                    type="text",
-                    text=clear_instruction + "\n\n---\n" + feedback_items[0].text,
-                )
-            else:
-                feedback_items.insert(
-                    0, TextContent(type="text", text=clear_instruction)
-                )
-            debug_log("已添加清除上下文指令（新任務模式）")
-
         # Append built-in reminder if enabled
         reminder_text = _get_feedback_reminder(result)
         if reminder_text:
@@ -669,19 +552,7 @@ async def interactive_feedback(
 _DEFAULT_REMINDER_TEXT = (
     "[IMPORTANT] After completing the task based on the feedback above, "
     "you MUST call the `interactive_feedback` tool again to report your progress "
-    "and get further instructions. Do NOT end your turn without calling this tool.\n\n"
-    "During long-running tasks, periodically call `check_async_feedback` "
-    "(every few major steps) to check if the user wants to redirect your approach.\n\n"
-    "Note: If this response begins with [NEW TASK], the user wants to switch focus "
-    "to a completely new task. Deprioritize previous work, clear your TODO list, "
-    "and address the new request as your primary objective."
-)
-
-_DEFAULT_NEW_TASK_INSTRUCTION = (
-    "[NEW TASK] The user wants to switch to a new task. Please:\n"
-    "1. Cancel or deprioritize any ongoing work from previous tasks.\n"
-    "2. Clear your current TODO list if applicable.\n"
-    "3. Focus entirely on the user's new request below."
+    "and get further instructions. Do NOT end your turn without calling this tool."
 )
 
 
@@ -708,18 +579,6 @@ def _get_feedback_reminder(result: dict) -> str | None:
         return env_text.strip()
 
     return _DEFAULT_REMINDER_TEXT
-
-
-def _get_new_task_instruction(result: dict) -> str:
-    """Build the new task system instruction based on settings.
-
-    Priority: UI settings > default.
-    """
-    settings = result.get("settings", {})
-    custom_text = settings.get("newTaskInstructionText")
-    if custom_text and custom_text.strip():
-        return custom_text.strip()
-    return _DEFAULT_NEW_TASK_INSTRUCTION
 
 
 async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -> dict:

@@ -693,7 +693,7 @@ class WebUIManager:
             def import_desktop_app():
                 # 首先嘗試從發佈包位置導入
                 try:
-                    from mcp_feedback_enhanced.desktop_app import (
+                    from mcp_feedback_ultra.desktop_app import (
                         launch_desktop_app as desktop_func,
                     )
 
@@ -712,7 +712,7 @@ class WebUIManager:
                 if desktop_module_path not in sys.path:
                     sys.path.insert(0, desktop_module_path)
                 try:
-                    from mcp_feedback_enhanced_desktop import (  # type: ignore
+                    from mcp_feedback_ultra_desktop import (  # type: ignore
                         launch_desktop_app as dev_func,
                     )
 
