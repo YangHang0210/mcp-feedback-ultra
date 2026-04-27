@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MCP 工作流程集成測試
+MCP 工作流程集成测试
 """
 
 import asyncio
@@ -13,35 +13,35 @@ from tests.helpers.test_utils import TestUtils
 
 
 class TestMCPBasicWorkflow:
-    """MCP 基本工作流程測試"""
+    """MCP 基本工作流程测试"""
 
     @pytest.mark.asyncio
     async def test_mcp_server_startup(self):
-        """測試 MCP 服務器啟動"""
+        """测试 MCP 服務器启动"""
         client = SimpleMCPClient(timeout=30)
 
         try:
-            # 測試服務器啟動
+            # 测试服務器启动
             success = await client.start_server()
-            assert success == True, "MCP 服務器啟動失敗"
+            assert success == True, "MCP 服務器启动失敗"
 
-            # 驗證進程存在
+            # 验证進程存在
             assert client.server_process is not None
-            assert client.server_process.poll() is None  # 進程應該還在運行
+            assert client.server_process.poll() is None  # 進程應該還在运行
 
         finally:
             await client.cleanup()
 
     @pytest.mark.asyncio
     async def test_mcp_initialization(self):
-        """測試 MCP 初始化"""
+        """测试 MCP 初始化"""
         client = SimpleMCPClient(timeout=30)
 
         try:
-            # 啟動服務器
+            # 启动服務器
             assert await client.start_server() == True
 
-            # 測試初始化
+            # 测试初始化
             success = await client.initialize()
             assert success == True, "MCP 初始化失敗"
             assert client.initialized == True
@@ -51,25 +51,25 @@ class TestMCPBasicWorkflow:
 
     @pytest.mark.asyncio
     async def test_interactive_feedback_call_timeout(self, test_project_dir):
-        """測試 interactive_feedback 調用（超時情況）"""
+        """测试 interactive_feedback 調用（超時情況）"""
         client = SimpleMCPClient(timeout=30)
 
         try:
-            # 啟動並初始化
+            # 启动並初始化
             assert await client.start_server() == True
             assert await client.initialize() == True
 
-            # 調用 interactive_feedback（設置短超時）
+            # 調用 interactive_feedback（设置短超時）
             result = await client.call_interactive_feedback(
                 str(test_project_dir),
-                "測試調用 - 預期超時",
+                "测试調用 - 預期超時",
                 timeout=5,  # 5秒超時
             )
 
-            # 驗證結果格式
+            # 验证結果格式
             assert isinstance(result, dict)
 
-            # 由於是自動化測試環境，預期會超時或返回默認回應
+            # 由於是自動化测试环境，預期會超時或返回默認回應
             if "error" in result:
                 # 超時是預期的行為
                 assert "超時" in result["error"] or "timeout" in result["error"].lower()
@@ -82,48 +82,48 @@ class TestMCPBasicWorkflow:
 
 
 class TestMCPWorkflowIntegration:
-    """MCP 工作流程集成測試"""
+    """MCP 工作流程集成测试"""
 
     @pytest.mark.asyncio
     async def test_complete_workflow(self, test_project_dir):
-        """測試完整的 MCP 工作流程"""
+        """测试完整的 MCP 工作流程"""
         tester = MCPWorkflowTester(timeout=60)
 
         result = await tester.test_basic_workflow(
             str(test_project_dir), TestData.SAMPLE_SESSION["summary"]
         )
 
-        # 驗證測試結果
+        # 验证测试結果
         assert isinstance(result, dict)
         assert "success" in result
         assert "steps" in result
         assert "errors" in result
         assert "performance" in result
 
-        # 檢查關鍵步驟
+        # 检查關鍵步驟
         steps = result["steps"]
-        assert steps.get("server_started") == True, "服務器啟動失敗"
+        assert steps.get("server_started") == True, "服務器启动失敗"
         assert steps.get("initialized") == True, "初始化失敗"
 
-        # interactive_feedback 調用可能超時，這在測試環境是正常的
+        # interactive_feedback 調用可能超時，這在测试环境是正常的
         if not steps.get("interactive_feedback_called"):
-            # 檢查是否是超時錯誤
+            # 检查是否是超時错误
             errors = result["errors"]
             timeout_error_found = any(
                 "超時" in error or "timeout" in error.lower() for error in errors
             )
             assert timeout_error_found, (
-                f"interactive_feedback 調用失敗，但不是超時錯誤: {errors}"
+                f"interactive_feedback 調用失敗，但不是超時错误: {errors}"
             )
 
-        # 驗證性能數據
+        # 验证性能數據
         performance = result["performance"]
         assert "total_duration" in performance
         assert performance["total_duration"] > 0
 
     @pytest.mark.asyncio
     async def test_multiple_calls_workflow(self, test_project_dir):
-        """測試多次調用工作流程（模擬第二次循環）"""
+        """测试多次調用工作流程（模擬第二次循環）"""
         tester = MCPWorkflowTester(timeout=60)
 
         # 第一次調用
@@ -136,20 +136,20 @@ class TestMCPWorkflowIntegration:
             str(test_project_dir), "第二次 AI 調用 - 根據回饋調整"
         )
 
-        # 兩次調用都應該成功啟動服務器和初始化
+        # 兩次調用都應該成功启动服務器和初始化
         for i, result in enumerate([result1, result2], 1):
             assert result["steps"].get("server_started") == True, (
-                f"第{i}次調用服務器啟動失敗"
+                f"第{i}次調用服務器启动失敗"
             )
             assert result["steps"].get("initialized") == True, f"第{i}次調用初始化失敗"
 
 
 class TestMCPErrorHandling:
-    """MCP 錯誤處理測試"""
+    """MCP 错误处理测试"""
 
     @pytest.mark.asyncio
     async def test_invalid_project_directory(self):
-        """測試無效專案目錄處理"""
+        """测试無效專案目錄处理"""
         client = SimpleMCPClient(timeout=30)
 
         try:
@@ -158,10 +158,10 @@ class TestMCPErrorHandling:
 
             # 使用不存在的目錄
             result = await client.call_interactive_feedback(
-                "/non/existent/directory", "測試無效目錄", timeout=5
+                "/non/existent/directory", "测试無效目錄", timeout=5
             )
 
-            # 應該能處理錯誤而不崩潰
+            # 應該能处理错误而不崩潰
             assert isinstance(result, dict)
 
         finally:
@@ -169,39 +169,39 @@ class TestMCPErrorHandling:
 
     @pytest.mark.asyncio
     async def test_server_cleanup_on_error(self):
-        """測試錯誤時的服務器清理"""
+        """测试错误時的服務器清理"""
         client = SimpleMCPClient(timeout=30)
 
         try:
             assert await client.start_server() == True
 
-            # 記錄進程 ID
+            # 记录進程 ID
             process = client.server_process
             assert process is not None
 
-            # 模擬錯誤情況（不初始化就調用工具）
+            # 模擬错误情況（不初始化就調用工具）
             result = await client.call_interactive_feedback(
-                "/test", "測試錯誤處理", timeout=5
+                "/test", "测试错误处理", timeout=5
             )
 
-            # 應該返回錯誤
+            # 應該返回错误
             assert "error" in result
 
         finally:
             # 清理應該正常工作
             await client.cleanup()
 
-            # 驗證進程已被清理
+            # 验证進程已被清理
             if process:
                 assert process.poll() is not None  # 進程應該已結束
 
 
 class TestMCPPerformance:
-    """MCP 性能測試"""
+    """MCP 性能测试"""
 
     @pytest.mark.asyncio
     async def test_startup_performance(self):
-        """測試啟動性能"""
+        """测试启动性能"""
         from tests.helpers.test_utils import PerformanceTimer
 
         client = SimpleMCPClient(timeout=30)
@@ -211,8 +211,8 @@ class TestMCPPerformance:
                 success = await client.start_server()
                 assert success == True
 
-            # 啟動時間應該在合理範圍內（30秒內）
-            assert timer.duration < 30, f"服務器啟動時間過長: {timer.duration:.2f}秒"
+            # 启动時間應該在合理範圍內（30秒內）
+            assert timer.duration < 30, f"服務器启动時間過長: {timer.duration:.2f}秒"
 
             with PerformanceTimer() as timer:
                 success = await client.initialize()
@@ -226,11 +226,11 @@ class TestMCPPerformance:
 
     @pytest.mark.asyncio
     async def test_concurrent_initialization(self):
-        """測試並發初始化（確保不會衝突）"""
+        """测试並發初始化（確保不會衝突）"""
         clients = [SimpleMCPClient(timeout=30) for _ in range(2)]
 
         try:
-            # 並發啟動多個客戶端
+            # 並發启动多個客戶端
             startup_tasks = [client.start_server() for client in clients]
             startup_results = await asyncio.gather(
                 *startup_tasks, return_exceptions=True
@@ -244,11 +244,11 @@ class TestMCPPerformance:
                 if isinstance(result, bool) and result:
                     successful_clients.append(client)
                 elif isinstance(result, Exception):
-                    print(f"客戶端 {i} 啟動失敗（預期）: {result}")
+                    print(f"客戶端 {i} 启动失敗（預期）: {result}")
 
-            assert len(successful_clients) >= 1, "至少應該有一個客戶端成功啟動"
+            assert len(successful_clients) >= 1, "至少應該有一個客戶端成功启动"
 
-            # 測試成功的客戶端初始化
+            # 测试成功的客戶端初始化
             for client in successful_clients:
                 success = await client.initialize()
                 assert success == True

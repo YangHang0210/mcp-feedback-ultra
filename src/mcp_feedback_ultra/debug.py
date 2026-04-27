@@ -13,9 +13,9 @@ from .debug import debug_log
 debug_log("這是一條調試信息")
 ```
 
-環境變數控制：
+环境变量控制：
 - MCP_DEBUG=true/1/yes/on: 啟用調試模式
-- MCP_DEBUG=false/0/no/off: 關閉調試模式（默認）
+- MCP_DEBUG=false/0/no/off: 关闭調試模式（默認）
 
 作者: Minidoracat
 """
@@ -27,7 +27,7 @@ from typing import Any
 
 def debug_log(message: Any, prefix: str = "DEBUG") -> None:
     """
-    輸出調試訊息到標準錯誤，避免污染標準輸出
+    輸出調試訊息到標準错误，避免污染標準輸出
 
     Args:
         message: 要輸出的調試信息
@@ -42,7 +42,7 @@ def debug_log(message: Any, prefix: str = "DEBUG") -> None:
         if not isinstance(message, str):
             message = str(message)
 
-        # 安全地輸出到 stderr，處理編碼問題
+        # 安全地輸出到 stderr，处理編碼問題
         try:
             print(f"[{prefix}] {message}", file=sys.stderr, flush=True)
         except UnicodeEncodeError:
@@ -70,10 +70,10 @@ def web_debug_log(message: Any) -> None:
 
 
 def is_debug_enabled() -> bool:
-    """檢查是否啟用了調試模式"""
+    """检查是否啟用了調試模式"""
     return os.getenv("MCP_DEBUG", "").lower() in ("true", "1", "yes", "on")
 
 
 def set_debug_mode(enabled: bool) -> None:
-    """設置調試模式（用於測試）"""
+    """设置調試模式（用於测试）"""
     os.environ["MCP_DEBUG"] = "true" if enabled else "false"

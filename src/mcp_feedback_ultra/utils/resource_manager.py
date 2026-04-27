@@ -1,12 +1,12 @@
 """
-統一資源管理器
+統一资源管理器
 ==============
 
-提供統一的資源管理功能，包括：
+提供統一的资源管理功能，包括：
 - 臨時文件和目錄管理
 - 進程生命週期追蹤
-- 自動資源清理
-- 資源使用監控
+- 自動资源清理
+- 资源使用监控
 """
 
 import atexit
@@ -24,7 +24,7 @@ from .error_handler import ErrorHandler, ErrorType
 
 
 class ResourceType:
-    """資源類型常量"""
+    """资源類型常量"""
 
     TEMP_FILE = "temp_file"
     TEMP_DIR = "temp_dir"
@@ -33,7 +33,7 @@ class ResourceType:
 
 
 class ResourceManager:
-    """統一資源管理器 - 提供完整的資源生命週期管理"""
+    """統一资源管理器 - 提供完整的资源生命週期管理"""
 
     _instance = None
     _lock = threading.Lock()
@@ -47,19 +47,19 @@ class ResourceManager:
         return cls._instance
 
     def __init__(self):
-        """初始化資源管理器"""
+        """初始化资源管理器"""
         if hasattr(self, "_initialized"):
             return
 
         self._initialized = True
 
-        # 資源追蹤集合
+        # 资源追蹤集合
         self.temp_files: set[str] = set()
         self.temp_dirs: set[str] = set()
         self.processes: dict[int, dict[str, Any]] = {}
         self.file_handles: set[Any] = set()
 
-        # 資源統計
+        # 资源統計
         self.stats: dict[str, int | float] = {
             "temp_files_created": 0,
             "temp_dirs_created": 0,
@@ -80,16 +80,16 @@ class ResourceManager:
         # 註冊退出清理
         atexit.register(self.cleanup_all)
 
-        # 啟動自動清理
+        # 启动自動清理
         self._start_auto_cleanup()
 
-        # 集成內存監控
+        # 集成內存监控
         self._setup_memory_monitoring()
 
         debug_log("ResourceManager 初始化完成")
 
     def _setup_memory_monitoring(self):
-        """設置內存監控集成"""
+        """设置內存监控集成"""
         try:
             # 延遲導入避免循環依賴
             from .memory_monitor import get_memory_monitor
@@ -99,21 +99,21 @@ class ResourceManager:
             # 註冊清理回調
             self.memory_monitor.add_cleanup_callback(self._memory_triggered_cleanup)
 
-            # 啟動內存監控
+            # 启动內存监控
             if self.memory_monitor.start_monitoring():
-                debug_log("內存監控已集成到資源管理器")
+                debug_log("內存监控已集成到资源管理器")
             else:
-                debug_log("內存監控啟動失敗")
+                debug_log("內存监控启动失敗")
 
         except Exception as e:
             error_id = ErrorHandler.log_error_with_context(
-                e, context={"operation": "設置內存監控"}, error_type=ErrorType.SYSTEM
+                e, context={"operation": "设置內存监控"}, error_type=ErrorType.SYSTEM
             )
-            debug_log(f"設置內存監控失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"设置內存监控失敗 [错误ID: {error_id}]: {e}")
 
     def _memory_triggered_cleanup(self, force: bool = False):
-        """內存監控觸發的清理操作"""
-        debug_log(f"內存監控觸發清理操作 (force={force})")
+        """內存监控觸發的清理操作"""
+        debug_log(f"內存监控觸發清理操作 (force={force})")
 
         try:
             # 清理臨時文件
@@ -145,7 +145,7 @@ class ResourceManager:
                 context={"operation": "內存觸發清理", "force": force},
                 error_type=ErrorType.SYSTEM,
             )
-            debug_log(f"內存觸發清理失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"內存觸發清理失敗 [错误ID: {error_id}]: {e}")
 
     def create_temp_file(
         self,
@@ -171,7 +171,7 @@ class ResourceManager:
             fd, temp_path = tempfile.mkstemp(
                 suffix=suffix, prefix=prefix, dir=dir, text=text
             )
-            os.close(fd)  # 關閉文件描述符
+            os.close(fd)  # 关闭文件描述符
 
             # 追蹤文件
             self.temp_files.add(temp_path)
@@ -190,7 +190,7 @@ class ResourceManager:
                 },
                 error_type=ErrorType.FILE_IO,
             )
-            debug_log(f"創建臨時文件失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"創建臨時文件失敗 [错误ID: {error_id}]: {e}")
             raise
 
     def create_temp_dir(
@@ -228,7 +228,7 @@ class ResourceManager:
                 },
                 error_type=ErrorType.FILE_IO,
             )
-            debug_log(f"創建臨時目錄失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"創建臨時目錄失敗 [错误ID: {error_id}]: {e}")
             raise
 
     def register_process(
@@ -276,7 +276,7 @@ class ResourceManager:
                 context={"operation": "註冊進程", "description": description},
                 error_type=ErrorType.PROCESS,
             )
-            debug_log(f"註冊進程失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"註冊進程失敗 [错误ID: {error_id}]: {e}")
             raise
 
     def register_file_handle(self, file_handle: Any) -> None:
@@ -295,7 +295,7 @@ class ResourceManager:
             error_id = ErrorHandler.log_error_with_context(
                 e, context={"operation": "註冊文件句柄"}, error_type=ErrorType.FILE_IO
             )
-            debug_log(f"註冊文件句柄失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"註冊文件句柄失敗 [错误ID: {error_id}]: {e}")
 
     def unregister_temp_file(self, file_path: str) -> bool:
         """
@@ -320,7 +320,7 @@ class ResourceManager:
                 context={"operation": "取消文件追蹤", "file_path": file_path},
                 error_type=ErrorType.FILE_IO,
             )
-            debug_log(f"取消文件追蹤失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"取消文件追蹤失敗 [错误ID: {error_id}]: {e}")
             return False
 
     def unregister_process(self, pid: int) -> bool:
@@ -346,7 +346,7 @@ class ResourceManager:
                 context={"operation": "取消進程追蹤", "pid": pid},
                 error_type=ErrorType.PROCESS,
             )
-            debug_log(f"取消進程追蹤失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"取消進程追蹤失敗 [错误ID: {error_id}]: {e}")
             return False
 
     def cleanup_temp_files(self, max_age: int | None = None) -> int:
@@ -372,7 +372,7 @@ class ResourceManager:
                     files_to_remove.add(file_path)
                     continue
 
-                # 檢查文件年齡
+                # 检查文件年齡
                 file_age = current_time - os.path.getmtime(file_path)
                 if file_age > max_age:
                     os.remove(file_path)
@@ -386,7 +386,7 @@ class ResourceManager:
                     context={"operation": "清理臨時文件", "file_path": file_path},
                     error_type=ErrorType.FILE_IO,
                 )
-                debug_log(f"清理臨時文件失敗 [錯誤ID: {error_id}]: {e}")
+                debug_log(f"清理臨時文件失敗 [错误ID: {error_id}]: {e}")
                 files_to_remove.add(file_path)  # 移除無效追蹤
 
         # 移除已清理的文件追蹤
@@ -422,7 +422,7 @@ class ResourceManager:
                     context={"operation": "清理臨時目錄", "dir_path": dir_path},
                     error_type=ErrorType.FILE_IO,
                 )
-                debug_log(f"清理臨時目錄失敗 [錯誤ID: {error_id}]: {e}")
+                debug_log(f"清理臨時目錄失敗 [错误ID: {error_id}]: {e}")
                 dirs_to_remove.add(dir_path)  # 移除無效追蹤
 
         # 移除已清理的目錄追蹤
@@ -451,9 +451,9 @@ class ResourceManager:
                 if not auto_cleanup:
                     continue
 
-                # 檢查進程是否還在運行
+                # 检查進程是否還在运行
                 if process_obj and hasattr(process_obj, "poll"):
-                    if process_obj.poll() is None:  # 進程還在運行
+                    if process_obj.poll() is None:  # 進程還在运行
                         if force:
                             debug_log(f"強制終止進程: PID {pid}")
                             process_obj.kill()
@@ -474,7 +474,7 @@ class ResourceManager:
 
                     processes_to_remove.append(pid)
                 else:
-                    # 使用 psutil 檢查進程
+                    # 使用 psutil 检查進程
                     try:
                         import psutil
 
@@ -488,7 +488,7 @@ class ResourceManager:
                             cleaned_count += 1
                         processes_to_remove.append(pid)
                     except ImportError:
-                        debug_log("psutil 不可用，跳過進程檢查")
+                        debug_log("psutil 不可用，跳過進程检查")
                         processes_to_remove.append(pid)
                     except Exception as e:
                         debug_log(f"清理進程 {pid} 失敗: {e}")
@@ -500,7 +500,7 @@ class ResourceManager:
                     context={"operation": "清理進程", "pid": pid},
                     error_type=ErrorType.PROCESS,
                 )
-                debug_log(f"清理進程失敗 [錯誤ID: {error_id}]: {e}")
+                debug_log(f"清理進程失敗 [错误ID: {error_id}]: {e}")
                 processes_to_remove.append(pid)
 
         # 移除已清理的進程追蹤
@@ -527,11 +527,11 @@ class ResourceManager:
                     handles_to_remove.add(handle_ref)
                     continue
 
-                # 嘗試關閉文件句柄
+                # 嘗試关闭文件句柄
                 if hasattr(handle, "close") and not handle.closed:
                     handle.close()
                     cleaned_count += 1
-                    debug_log(f"關閉文件句柄: {type(handle).__name__}")
+                    debug_log(f"关闭文件句柄: {type(handle).__name__}")
 
                 handles_to_remove.add(handle_ref)
 
@@ -541,7 +541,7 @@ class ResourceManager:
                     context={"operation": "清理文件句柄"},
                     error_type=ErrorType.FILE_IO,
                 )
-                debug_log(f"清理文件句柄失敗 [錯誤ID: {error_id}]: {e}")
+                debug_log(f"清理文件句柄失敗 [错误ID: {error_id}]: {e}")
                 handles_to_remove.add(handle_ref)
 
         # 移除已清理的句柄追蹤
@@ -551,7 +551,7 @@ class ResourceManager:
 
     def cleanup_all(self, force: bool = False) -> dict[str, int]:
         """
-        清理所有資源
+        清理所有资源
 
         Args:
             force: 是否強制清理
@@ -559,7 +559,7 @@ class ResourceManager:
         Returns:
             Dict[str, int]: 清理統計
         """
-        debug_log("開始全面資源清理...")
+        debug_log("開始全面资源清理...")
 
         results = {"temp_files": 0, "temp_dirs": 0, "processes": 0, "file_handles": 0}
 
@@ -581,18 +581,18 @@ class ResourceManager:
             self.stats["last_cleanup"] = time.time()
 
             total_cleaned = sum(results.values())
-            debug_log(f"資源清理完成，共清理 {total_cleaned} 個資源: {results}")
+            debug_log(f"资源清理完成，共清理 {total_cleaned} 個资源: {results}")
 
         except Exception as e:
             error_id = ErrorHandler.log_error_with_context(
-                e, context={"operation": "全面資源清理"}, error_type=ErrorType.SYSTEM
+                e, context={"operation": "全面资源清理"}, error_type=ErrorType.SYSTEM
             )
-            debug_log(f"全面資源清理失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"全面资源清理失敗 [错误ID: {error_id}]: {e}")
 
         return results
 
     def _start_auto_cleanup(self) -> None:
-        """啟動自動清理線程"""
+        """启动自動清理線程"""
         if not self.auto_cleanup_enabled or self._cleanup_thread:
             return
 
@@ -600,7 +600,7 @@ class ResourceManager:
             """清理工作線程"""
             while not self._stop_cleanup.wait(self.cleanup_interval):
                 try:
-                    # 執行定期清理
+                    # 执行定期清理
                     self.cleanup_temp_files()
                     self._check_process_health()
 
@@ -610,16 +610,16 @@ class ResourceManager:
                         context={"operation": "自動清理"},
                         error_type=ErrorType.SYSTEM,
                     )
-                    debug_log(f"自動清理失敗 [錯誤ID: {error_id}]: {e}")
+                    debug_log(f"自動清理失敗 [错误ID: {error_id}]: {e}")
 
         self._cleanup_thread = threading.Thread(
             target=cleanup_worker, name="ResourceManager-AutoCleanup", daemon=True
         )
         self._cleanup_thread.start()
-        debug_log("自動清理線程已啟動")
+        debug_log("自動清理線程已启动")
 
     def _check_process_health(self) -> None:
-        """檢查進程健康狀態"""
+        """检查進程健康狀態"""
         current_time = time.time()
 
         for pid, process_info in self.processes.items():
@@ -627,14 +627,14 @@ class ResourceManager:
                 process_obj = process_info.get("process")
                 last_check = process_info.get("last_check", current_time)
 
-                # 每分鐘檢查一次
+                # 每分鐘检查一次
                 if current_time - last_check < 60:
                     continue
 
-                # 更新檢查時間
+                # 更新检查時間
                 process_info["last_check"] = current_time
 
-                # 檢查進程是否還在運行
+                # 检查進程是否還在运行
                 if process_obj and hasattr(process_obj, "poll"):
                     if process_obj.poll() is not None:
                         # 進程已結束，移除追蹤
@@ -642,7 +642,7 @@ class ResourceManager:
                         self.unregister_process(pid)
 
             except Exception as e:
-                debug_log(f"檢查進程 {pid} 健康狀態失敗: {e}")
+                debug_log(f"检查進程 {pid} 健康狀態失敗: {e}")
 
     def stop_auto_cleanup(self) -> None:
         """停止自動清理"""
@@ -654,10 +654,10 @@ class ResourceManager:
 
     def get_resource_stats(self) -> dict[str, Any]:
         """
-        獲取資源統計信息
+        獲取资源統計信息
 
         Returns:
-            Dict[str, Any]: 資源統計
+            Dict[str, Any]: 资源統計
         """
         current_stats = self.stats.copy()
         current_stats.update(
@@ -672,7 +672,7 @@ class ResourceManager:
             }
         )
 
-        # 添加內存監控統計
+        # 添加內存监控統計
         try:
             if hasattr(self, "memory_monitor") and self.memory_monitor:
                 memory_info = self.memory_monitor.get_current_memory_info()
@@ -696,10 +696,10 @@ class ResourceManager:
 
     def get_detailed_info(self) -> dict[str, Any]:
         """
-        獲取詳細資源信息
+        獲取詳細资源信息
 
         Returns:
-            Dict[str, Any]: 詳細資源信息
+            Dict[str, Any]: 詳細资源信息
         """
         return {
             "temp_files": list(self.temp_files),
@@ -724,7 +724,7 @@ class ResourceManager:
         temp_file_max_age: int | None = None,
     ) -> None:
         """
-        配置資源管理器
+        配置资源管理器
 
         Args:
             auto_cleanup_enabled: 是否啟用自動清理
@@ -740,7 +740,7 @@ class ResourceManager:
             elif not old_enabled and auto_cleanup_enabled:
                 self._start_auto_cleanup()
             elif auto_cleanup_enabled and self._cleanup_thread is None:
-                # 如果啟用了自動清理但線程不存在，重新啟動
+                # 如果啟用了自動清理但線程不存在，重新启动
                 self._start_auto_cleanup()
 
         if cleanup_interval is not None:
@@ -755,16 +755,16 @@ class ResourceManager:
         )
 
 
-# 全局資源管理器實例
+# 全局资源管理器實例
 _resource_manager = None
 
 
 def get_resource_manager() -> ResourceManager:
     """
-    獲取全局資源管理器實例
+    獲取全局资源管理器實例
 
     Returns:
-        ResourceManager: 資源管理器實例
+        ResourceManager: 资源管理器實例
     """
     global _resource_manager
     if _resource_manager is None:
@@ -797,5 +797,5 @@ def register_process(
 
 
 def cleanup_all_resources(force: bool = False) -> dict[str, int]:
-    """清理所有資源的便捷函數"""
+    """清理所有资源的便捷函數"""
     return get_resource_manager().cleanup_all(force=force)

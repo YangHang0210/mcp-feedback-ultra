@@ -3,7 +3,7 @@
 Web UI 主要管理類
 
 基於 FastAPI 的 Web 用戶介面主要管理類，採用現代化架構設計。
-提供完整的回饋收集、圖片上傳、命令執行等功能。
+提供完整的回饋收集、圖片上傳、命令执行等功能。
 """
 
 import asyncio
@@ -58,19 +58,19 @@ class WebUIManager:
     """Web UI 管理器 - 重構為單一活躍會話模式"""
 
     def __init__(self, host: str = "127.0.0.1", port: int | None = None):
-        # 確定偏好主機：環境變數 > 參數 > 預設值 127.0.0.1
+        # 確定偏好主機：环境变量 > 參數 > 预设值 127.0.0.1
         env_host = os.getenv("MCP_WEB_HOST")
         if env_host:
             self.host = env_host
-            debug_log(f"使用環境變數指定的主機: {self.host}")
+            debug_log(f"使用环境变量指定的主機: {self.host}")
         else:
             self.host = host
-            debug_log(f"未設定 MCP_WEB_HOST 環境變數，使用預設主機 {self.host}")
+            debug_log(f"未设定 MCP_WEB_HOST 环境变量，使用预设主機 {self.host}")
 
-        # 確定偏好端口：環境變數 > 參數 > 預設值 8765
+        # 確定偏好端口：环境变量 > 參數 > 预设值 8765
         preferred_port = 8765
 
-        # 檢查環境變數 MCP_WEB_PORT
+        # 检查环境变量 MCP_WEB_PORT
         env_port = os.getenv("MCP_WEB_PORT")
         if env_port:
             try:
@@ -78,33 +78,33 @@ class WebUIManager:
                 if custom_port == 0:
                     # 特殊值 0 表示使用系統自動分配的端口
                     preferred_port = 0
-                    debug_log("使用環境變數指定的自動端口分配 (0)")
+                    debug_log("使用环境变量指定的自動端口分配 (0)")
                 elif 1024 <= custom_port <= 65535:
                     preferred_port = custom_port
-                    debug_log(f"使用環境變數指定的端口: {preferred_port}")
+                    debug_log(f"使用环境变量指定的端口: {preferred_port}")
                 else:
                     debug_log(
-                        f"MCP_WEB_PORT 值無效 ({custom_port})，必須在 1024-65535 範圍內或為 0，使用預設端口 8765"
+                        f"MCP_WEB_PORT 值無效 ({custom_port})，必須在 1024-65535 範圍內或為 0，使用预设端口 8765"
                     )
             except ValueError:
                 debug_log(
-                    f"MCP_WEB_PORT 格式錯誤 ({env_port})，必須為數字，使用預設端口 8765"
+                    f"MCP_WEB_PORT 格式错误 ({env_port})，必須為數字，使用预设端口 8765"
                 )
         else:
-            debug_log(f"未設定 MCP_WEB_PORT 環境變數，使用預設端口 {preferred_port}")
+            debug_log(f"未设定 MCP_WEB_PORT 环境变量，使用预设端口 {preferred_port}")
 
-        # 使用增強的端口管理，測試模式下禁用自動清理避免權限問題
+        # 使用增強的端口管理，测试模式下禁用自動清理避免權限問題
         auto_cleanup = os.environ.get("MCP_TEST_MODE", "").lower() != "true"
 
         if port is not None:
             # 如果明確指定了端口，使用指定的端口
             self.port = port
-            # 檢查指定端口是否可用
+            # 检查指定端口是否可用
             if not PortManager.is_port_available(self.host, self.port):
                 debug_log(f"警告：指定的端口 {self.port} 可能已被佔用")
-                # 在測試模式下，嘗試尋找替代端口
+                # 在测试模式下，嘗試尋找替代端口
                 if os.environ.get("MCP_TEST_MODE", "").lower() == "true":
-                    debug_log("測試模式：自動尋找替代端口")
+                    debug_log("测试模式：自動尋找替代端口")
                     original_port = self.port
                     self.port = PortManager.find_free_port_enhanced(
                         preferred_port=self.port, auto_cleanup=False, host=self.host
@@ -126,10 +126,10 @@ class WebUIManager:
             )
         self.app = FastAPI(title="MCP Feedback Enhanced")
 
-        # 設置壓縮和緩存中間件
+        # 设置壓縮和緩存中間件
         self._setup_compression_middleware()
 
-        # 設置內存監控
+        # 设置內存监控
         self._setup_memory_monitoring()
 
         # 重構：使用單一活躍會話而非會話字典
@@ -155,7 +155,7 @@ class WebUIManager:
 
         self.server_thread: threading.Thread | None = None
         self.server_process = None
-        self.desktop_app_instance: Any = None  # 桌面應用實例引用
+        self.desktop_app_instance: Any = None  # 桌面应用實例引用
 
         # 初始化標記，用於追蹤異步初始化狀態
         self._initialization_complete = False
@@ -164,7 +164,7 @@ class WebUIManager:
         # 同步初始化基本組件
         self._init_basic_components()
 
-        debug_log(f"WebUIManager 基本初始化完成，將在 {self.host}:{self.port} 啟動")
+        debug_log(f"WebUIManager 基本初始化完成，將在 {self.host}:{self.port} 启动")
         debug_log("回饋模式: web")
 
     def _init_basic_components(self):
@@ -172,15 +172,15 @@ class WebUIManager:
         # 基本組件初始化（必須同步）
         # 移除 i18n 管理器，因為翻譯已移至前端
 
-        # 設置靜態文件和模板（必須同步）
+        # 设置靜態文件和模板（必須同步）
         self._setup_static_files()
         self._setup_templates()
 
-        # 設置路由（必須同步）
+        # 设置路由（必須同步）
         setup_routes(self)
 
     async def _init_async_components(self):
-        """異步初始化組件（並行執行）"""
+        """異步初始化組件（並行执行）"""
         with self._initialization_lock:
             if self._initialization_complete:
                 return
@@ -194,11 +194,11 @@ class WebUIManager:
         # 任務：I18N 預載入（如果需要）
         tasks.append(self._preload_i18n_async())
 
-        # 並行執行所有任務
+        # 並行执行所有任務
         if tasks:
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
-            # 檢查結果
+            # 检查結果
             for i, result in enumerate(results):
                 if isinstance(result, Exception):
                     debug_log(f"並行初始化任務 {i} 失敗: {result}")
@@ -210,24 +210,24 @@ class WebUIManager:
         debug_log(f"並行初始化完成，耗時: {elapsed:.2f}秒")
 
     async def _preload_i18n_async(self):
-        """異步預載入 I18N 資源"""
+        """異步預載入 I18N 资源"""
 
         def preload_i18n():
             try:
-                # I18N 在前端處理，這裡只記錄預載入完成
-                debug_log("I18N 資源預載入完成（前端處理）")
+                # I18N 在前端处理，這裡只记录預載入完成
+                debug_log("I18N 资源預載入完成（前端处理）")
                 return True
             except Exception as e:
-                debug_log(f"I18N 資源預載入失敗: {e}")
+                debug_log(f"I18N 资源預載入失敗: {e}")
                 return False
 
-        # 在線程池中執行
+        # 在線程池中执行
         loop = asyncio.get_event_loop()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             await loop.run_in_executor(executor, preload_i18n)
 
     def _setup_compression_middleware(self):
-        """設置壓縮和緩存中間件"""
+        """设置壓縮和緩存中間件"""
         # 獲取壓縮管理器
         compression_manager = get_compression_manager()
         config = compression_manager.config
@@ -264,19 +264,19 @@ class WebUIManager:
                         original_size, content_length, was_compressed
                     )
             except (ValueError, TypeError):
-                # 忽略統計錯誤，不影響正常響應
+                # 忽略統計错误，不影響正常響應
                 pass
 
             return response
 
-        debug_log("壓縮和緩存中間件設置完成")
+        debug_log("壓縮和緩存中間件设置完成")
 
     def _setup_memory_monitoring(self):
-        """設置內存監控"""
+        """设置內存监控"""
         try:
             self.memory_monitor = get_memory_monitor()
 
-            # 添加 Web 應用特定的警告回調
+            # 添加 Web 应用特定的警告回調
             def web_memory_alert(alert):
                 debug_log(f"Web UI 內存警告 [{alert.level}]: {alert.message}")
 
@@ -292,44 +292,44 @@ class WebUIManager:
 
             self.memory_monitor.add_alert_callback(web_memory_alert)
 
-            # 添加會話清理回調到內存監控
+            # 添加會話清理回調到內存监控
             def session_cleanup_callback(force: bool = False):
-                """內存監控觸發的會話清理回調"""
+                """內存监控觸發的會話清理回調"""
                 try:
                     if force:
                         # 強制清理：包括內存壓力清理
                         cleaned = self.cleanup_sessions_by_memory_pressure(force=True)
-                        debug_log(f"內存監控強制清理了 {cleaned} 個會話")
+                        debug_log(f"內存监控強制清理了 {cleaned} 個會話")
                     else:
                         # 常規清理：只清理過期會話
                         cleaned = self.cleanup_expired_sessions()
-                        debug_log(f"內存監控清理了 {cleaned} 個過期會話")
+                        debug_log(f"內存监控清理了 {cleaned} 個過期會話")
                 except Exception as e:
                     error_id = ErrorHandler.log_error_with_context(
                         e,
-                        context={"operation": "內存監控會話清理", "force": force},
+                        context={"operation": "內存监控會話清理", "force": force},
                         error_type=ErrorType.SYSTEM,
                     )
-                    debug_log(f"內存監控會話清理失敗 [錯誤ID: {error_id}]: {e}")
+                    debug_log(f"內存监控會話清理失敗 [错误ID: {error_id}]: {e}")
 
             self.memory_monitor.add_cleanup_callback(session_cleanup_callback)
 
-            # 確保內存監控已啟動（ResourceManager 可能已經啟動了）
+            # 確保內存监控已启动（ResourceManager 可能已經启动了）
             if not self.memory_monitor.is_monitoring:
                 self.memory_monitor.start_monitoring()
 
-            debug_log("Web UI 內存監控設置完成，已集成會話清理回調")
+            debug_log("Web UI 內存监控设置完成，已集成會話清理回調")
 
         except Exception as e:
             error_id = ErrorHandler.log_error_with_context(
                 e,
-                context={"operation": "設置 Web UI 內存監控"},
+                context={"operation": "设置 Web UI 內存监控"},
                 error_type=ErrorType.SYSTEM,
             )
-            debug_log(f"設置 Web UI 內存監控失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"设置 Web UI 內存监控失敗 [错误ID: {error_id}]: {e}")
 
     def _setup_static_files(self):
-        """設置靜態文件服務"""
+        """设置靜態文件服務"""
         # Web UI 靜態文件
         web_static_path = Path(__file__).parent / "static"
         if web_static_path.exists():
@@ -340,7 +340,7 @@ class WebUIManager:
             raise RuntimeError(f"Static files directory not found: {web_static_path}")
 
     def _setup_templates(self):
-        """設置模板引擎"""
+        """设置模板引擎"""
         # Web UI 模板
         web_templates_path = Path(__file__).parent / "templates"
         if web_templates_path.exists():
@@ -350,21 +350,21 @@ class WebUIManager:
 
     def create_session(self, project_directory: str, summary: str) -> str:
         """創建新的回饋會話 - 重構為單一活躍會話模式，保留標籤頁狀態"""
-        # 保存舊會話的引用和 WebSocket 連接
+        # 保存舊會話的引用和 WebSocket 连接
         old_session = self.current_session
         old_websocket = None
         if old_session and old_session.websocket:
             old_websocket = old_session.websocket
-            debug_log("保存舊會話的 WebSocket 連接以發送更新通知")
+            debug_log("保存舊會話的 WebSocket 连接以發送更新通知")
 
         # 創建新會話
         session_id = str(uuid.uuid4())
         session = WebFeedbackSession(session_id, project_directory, summary)
 
-        # 如果有舊會話，處理狀態轉換和清理
+        # 如果有舊會話，处理狀態轉換和清理
         if old_session:
             debug_log(
-                f"處理舊會話 {old_session.session_id} 的狀態轉換，當前狀態: {old_session.status.value}"
+                f"处理舊會話 {old_session.session_id} 的狀態轉換，當前狀態: {old_session.status.value}"
             )
 
             # 保存標籤頁狀態到全局
@@ -376,7 +376,7 @@ class WebUIManager:
                 debug_log(
                     f"舊會話 {old_session.session_id} 進入下一步：已提交 → 已完成"
                 )
-                success = old_session.next_step("反饋已處理，會話完成")
+                success = old_session.next_step("反饋已处理，會話完成")
                 if success:
                     debug_log(f"✅ 舊會話 {old_session.session_id} 成功進入已完成狀態")
                 else:
@@ -393,13 +393,13 @@ class WebUIManager:
                 debug_log(f"⚠️ 舊會話 {old_session.session_id} 不在會話字典中，重新添加")
                 self.sessions[old_session.session_id] = old_session
 
-            # 同步清理會話資源（但保留 WebSocket 連接）
+            # 同步清理會話资源（但保留 WebSocket 连接）
             old_session._cleanup_sync()
 
         # 將全局標籤頁狀態繼承到新會話
         session.active_tabs = self.global_active_tabs.copy()
 
-        # 設置為當前活躍會話
+        # 设置為當前活躍會話
         self.current_session = session
         # 同時保存到字典中以保持向後兼容
         self.sessions[session_id] = session
@@ -407,15 +407,15 @@ class WebUIManager:
         debug_log(f"創建新的活躍會話: {session_id}")
         debug_log(f"繼承 {len(session.active_tabs)} 個活躍標籤頁")
 
-        # 處理WebSocket連接轉移
+        # 处理WebSocket连接轉移
         if old_websocket:
-            # 直接轉移連接到新會話，消息發送由 smart_open_browser 統一處理
+            # 直接轉移连接到新會話，消息發送由 smart_open_browser 統一处理
             session.websocket = old_websocket
-            debug_log("已將舊 WebSocket 連接轉移到新會話")
+            debug_log("已將舊 WebSocket 连接轉移到新會話")
         else:
-            # 沒有舊連接，標記需要發送會話更新通知（當新 WebSocket 連接建立時）
+            # 沒有舊连接，標記需要發送會話更新通知（當新 WebSocket 连接建立時）
             self._pending_session_update = True
-            debug_log("沒有舊 WebSocket 連接，設置待更新標記")
+            debug_log("沒有舊 WebSocket 连接，设置待更新標記")
 
         return session_id
 
@@ -491,7 +491,7 @@ class WebUIManager:
     async def broadcast_to_active_tabs(self, message: dict):
         """向所有活躍標籤頁廣播消息"""
         if not self.current_session or not self.current_session.websocket:
-            debug_log("沒有活躍的 WebSocket 連接，無法廣播消息")
+            debug_log("沒有活躍的 WebSocket 连接，無法廣播消息")
             return
 
         try:
@@ -501,7 +501,7 @@ class WebUIManager:
             debug_log(f"廣播消息失敗: {e}")
 
     def start_server(self):
-        """啟動 Web 伺服器（優化版本，支援並行初始化）"""
+        """启动 Web 伺服器（優化版本，支援並行初始化）"""
 
         def run_server_with_retry():
             max_retries = 5
@@ -510,7 +510,7 @@ class WebUIManager:
 
             while retry_count < max_retries:
                 try:
-                    # 在嘗試啟動前先檢查端口是否可用
+                    # 在嘗試启动前先检查端口是否可用
                     if not PortManager.is_port_available(self.host, self.port):
                         debug_log(f"端口 {self.port} 已被佔用，自動尋找替代端口")
 
@@ -542,14 +542,14 @@ class WebUIManager:
                                 error_type=ErrorType.NETWORK,
                             )
                             debug_log(
-                                f"無法找到可用端口 [錯誤ID: {error_id}]: {port_error}"
+                                f"無法找到可用端口 [错误ID: {error_id}]: {port_error}"
                             )
                             raise RuntimeError(
                                 f"無法找到可用端口，原始端口 {original_port} 被佔用"
                             ) from port_error
 
                     debug_log(
-                        f"嘗試啟動伺服器在 {self.host}:{self.port} (嘗試 {retry_count + 1}/{max_retries})"
+                        f"嘗試启动伺服器在 {self.host}:{self.port} (嘗試 {retry_count + 1}/{max_retries})"
                     )
 
                     config = uvicorn.Config(
@@ -562,9 +562,9 @@ class WebUIManager:
 
                     server_instance = uvicorn.Server(config)
 
-                    # 創建事件循環並啟動服務器
+                    # 創建事件循環並启动服務器
                     async def serve_with_async_init(server=server_instance):
-                        # 在服務器啟動的同時進行異步初始化
+                        # 在服務器启动的同時進行異步初始化
                         server_task = asyncio.create_task(server.serve())
                         init_task = asyncio.create_task(self._init_async_components())
 
@@ -575,10 +575,10 @@ class WebUIManager:
 
                     asyncio.run(serve_with_async_init())
 
-                    # 成功啟動，顯示最終使用的端口
+                    # 成功启动，顯示最終使用的端口
                     if self.port != original_port:
                         debug_log(
-                            f"✅ 服務器成功啟動在替代端口 {self.port} (原端口 {original_port} 被佔用)"
+                            f"✅ 服務器成功启动在替代端口 {self.port} (原端口 {original_port} 被佔用)"
                         )
 
                     break
@@ -591,70 +591,70 @@ class WebUIManager:
                         retry_count += 1
                         if retry_count < max_retries:
                             debug_log(
-                                f"端口 {self.port} 啟動失敗 (OSError)，嘗試下一個端口"
+                                f"端口 {self.port} 启动失敗 (OSError)，嘗試下一個端口"
                             )
                             # 嘗試下一個端口
                             self.port = self.port + 1
                         else:
-                            debug_log("已達到最大重試次數，無法啟動伺服器")
+                            debug_log("已達到最大重試次數，無法启动伺服器")
                             break
                     else:
-                        # 使用統一錯誤處理
+                        # 使用統一错误处理
                         error_id = ErrorHandler.log_error_with_context(
                             e,
                             context={
-                                "operation": "伺服器啟動",
+                                "operation": "伺服器启动",
                                 "host": self.host,
                                 "port": self.port,
                             },
                             error_type=ErrorType.NETWORK,
                         )
-                        debug_log(f"伺服器啟動錯誤 [錯誤ID: {error_id}]: {e}")
+                        debug_log(f"伺服器启动错误 [错误ID: {error_id}]: {e}")
                         break
                 except Exception as e:
-                    # 使用統一錯誤處理
+                    # 使用統一错误处理
                     error_id = ErrorHandler.log_error_with_context(
                         e,
                         context={
-                            "operation": "伺服器運行",
+                            "operation": "伺服器运行",
                             "host": self.host,
                             "port": self.port,
                         },
                         error_type=ErrorType.SYSTEM,
                     )
-                    debug_log(f"伺服器運行錯誤 [錯誤ID: {error_id}]: {e}")
+                    debug_log(f"伺服器运行错误 [错误ID: {error_id}]: {e}")
                     break
 
-        # 在新線程中啟動伺服器
+        # 在新線程中启动伺服器
         self.server_thread = threading.Thread(target=run_server_with_retry, daemon=True)
         self.server_thread.start()
 
-        # 等待伺服器啟動
+        # 等待伺服器启动
         time.sleep(2)
 
     def open_browser(self, url: str):
-        """開啟瀏覽器"""
+        """开启瀏覽器"""
         try:
             browser_opener = get_browser_opener()
             browser_opener(url)
-            debug_log(f"已開啟瀏覽器：{url}")
+            debug_log(f"已开启瀏覽器：{url}")
         except Exception as e:
-            debug_log(f"無法開啟瀏覽器: {e}")
+            debug_log(f"無法开启瀏覽器: {e}")
 
     async def smart_open_browser(self, url: str) -> bool:
-        """智能開啟瀏覽器 - 檢測是否已有活躍標籤頁
+        """智能开启瀏覽器 - 檢測是否已有活躍標籤頁
 
         Returns:
-            bool: True 表示檢測到活躍標籤頁或桌面模式，False 表示開啟了新視窗
+            bool: True 表示檢測到活躍標籤頁或桌面模式，False 表示开启了新視窗
         """
 
         try:
-            # 檢查是否為桌面模式
+            # 检查是否為桌面模式
             if os.environ.get("MCP_DESKTOP_MODE", "").lower() == "true":
-                debug_log("檢測到桌面模式，跳過瀏覽器開啟")
+                debug_log("檢測到桌面模式，跳過瀏覽器开启")
                 return True
 
-            # 檢查是否有活躍標籤頁
+            # 检查是否有活躍標籤頁
             has_active_tabs = await self._check_active_tabs()
 
             if has_active_tabs:
@@ -665,31 +665,31 @@ class WebUIManager:
                 refresh_success = await self.notify_existing_tab_to_refresh()
 
                 debug_log(f"刷新通知發送結果: {refresh_success}")
-                debug_log("檢測到活躍標籤頁，不開啟新瀏覽器視窗")
+                debug_log("檢測到活躍標籤頁，不开启新瀏覽器視窗")
                 return True
 
-            # 沒有活躍標籤頁，開啟新瀏覽器視窗
-            debug_log("沒有檢測到活躍標籤頁，開啟新瀏覽器視窗")
+            # 沒有活躍標籤頁，开启新瀏覽器視窗
+            debug_log("沒有檢測到活躍標籤頁，开启新瀏覽器視窗")
             self.open_browser(url)
             return False
 
         except Exception as e:
-            debug_log(f"智能瀏覽器開啟失敗，回退到普通開啟：{e}")
+            debug_log(f"智能瀏覽器开启失敗，回退到普通开启：{e}")
             self.open_browser(url)
             return False
 
     async def launch_desktop_app(self, url: str) -> bool:
         """
-        啟動桌面應用程式
+        启动桌面应用程序
 
         Args:
             url: Web 服務 URL
 
         Returns:
-            bool: True 表示成功啟動桌面應用程式
+            bool: True 表示成功启动桌面应用程序
         """
         try:
-            # 嘗試導入桌面應用程式模組
+            # 嘗試導入桌面应用程序模組
             def import_desktop_app():
                 # 首先嘗試從發佈包位置導入
                 try:
@@ -697,12 +697,12 @@ class WebUIManager:
                         launch_desktop_app as desktop_func,
                     )
 
-                    debug_log("使用發佈包中的桌面應用程式模組")
+                    debug_log("使用發佈包中的桌面应用程序模組")
                     return desktop_func
                 except ImportError:
-                    debug_log("發佈包中未找到桌面應用程式模組，嘗試開發環境...")
+                    debug_log("發佈包中未找到桌面应用程序模組，嘗試开发环境...")
 
-                # 回退到開發環境路徑
+                # 回退到开发环境路徑
                 import sys
 
                 project_root = os.path.dirname(
@@ -716,68 +716,68 @@ class WebUIManager:
                         launch_desktop_app as dev_func,
                     )
 
-                    debug_log("使用開發環境桌面應用程式模組")
+                    debug_log("使用开发环境桌面应用程序模組")
                     return dev_func
                 except ImportError:
-                    debug_log("無法從開發環境路徑導入桌面應用程式模組")
-                    debug_log("這可能是 PyPI 安裝的版本，桌面應用功能不可用")
+                    debug_log("無法從开发环境路徑導入桌面应用程序模組")
+                    debug_log("這可能是 PyPI 安裝的版本，桌面应用功能不可用")
                     raise
 
             launch_desktop_app_func = import_desktop_app()
 
-            # 啟動桌面應用程式
+            # 启动桌面应用程序
             desktop_app = await launch_desktop_app_func()
-            # 保存桌面應用實例引用，以便後續控制
+            # 保存桌面应用實例引用，以便後續控制
             self.desktop_app_instance = desktop_app
-            debug_log("桌面應用程式啟動成功")
+            debug_log("桌面应用程序启动成功")
             return True
 
         except ImportError as e:
-            debug_log(f"無法導入桌面應用程式模組: {e}")
+            debug_log(f"無法導入桌面应用程序模組: {e}")
             debug_log("回退到瀏覽器模式...")
             self.open_browser(url)
             return False
         except Exception as e:
-            debug_log(f"桌面應用程式啟動失敗: {e}")
+            debug_log(f"桌面应用程序启动失敗: {e}")
             debug_log("回退到瀏覽器模式...")
             self.open_browser(url)
             return False
 
     def close_desktop_app(self):
-        """關閉桌面應用程式"""
+        """关闭桌面应用程序"""
         if self.desktop_app_instance:
             try:
-                debug_log("正在關閉桌面應用程式...")
+                debug_log("正在关闭桌面应用程序...")
                 self.desktop_app_instance.stop()
                 self.desktop_app_instance = None
-                debug_log("桌面應用程式已關閉")
+                debug_log("桌面应用程序已关闭")
             except Exception as e:
-                debug_log(f"關閉桌面應用程式失敗: {e}")
+                debug_log(f"关闭桌面应用程序失敗: {e}")
         else:
-            debug_log("沒有活躍的桌面應用程式實例")
+            debug_log("沒有活躍的桌面应用程序實例")
 
     async def _safe_close_websocket(self, websocket):
-        """安全關閉 WebSocket 連接，避免事件循環衝突 - 僅在連接已轉移後調用"""
+        """安全关闭 WebSocket 连接，避免事件循環衝突 - 僅在连接已轉移後調用"""
         if not websocket:
             return
 
-        # 注意：此方法現在主要用於清理，因為連接已經轉移到新會話
-        # 只有在確認連接沒有被新會話使用時才關閉
+        # 注意：此方法現在主要用於清理，因為连接已經轉移到新會話
+        # 只有在确认连接沒有被新會話使用時才关闭
         try:
-            # 檢查連接狀態
+            # 检查连接狀態
             if (
                 hasattr(websocket, "client_state")
                 and websocket.client_state.DISCONNECTED
             ):
-                debug_log("WebSocket 已斷開，跳過關閉操作")
+                debug_log("WebSocket 已斷開，跳過关闭操作")
                 return
 
-            # 由於連接已轉移到新會話，這裡不再主動關閉
-            # 讓新會話管理這個連接的生命週期
-            debug_log("WebSocket 連接已轉移到新會話，跳過關閉操作")
+            # 由於连接已轉移到新會話，這裡不再主動关闭
+            # 讓新會話管理這個连接的生命週期
+            debug_log("WebSocket 连接已轉移到新會話，跳過关闭操作")
 
         except Exception as e:
-            debug_log(f"檢查 WebSocket 連接狀態時發生錯誤: {e}")
+            debug_log(f"检查 WebSocket 连接狀態時發生错误: {e}")
 
     async def notify_existing_tab_to_refresh(self) -> bool:
         """通知現有標籤頁刷新顯示新會話內容
@@ -787,10 +787,10 @@ class WebUIManager:
         """
         try:
             if not self.current_session or not self.current_session.websocket:
-                debug_log("沒有活躍的WebSocket連接，無法發送刷新通知")
+                debug_log("沒有活躍的WebSocket连接，無法發送刷新通知")
                 return False
 
-            # 構建刷新通知消息
+            # 构建刷新通知消息
             refresh_message = {
                 "type": "session_updated",
                 "action": "new_session_created",
@@ -817,30 +817,30 @@ class WebUIManager:
             return False
 
     async def _check_active_tabs(self) -> bool:
-        """檢查是否有活躍標籤頁 - 使用分層檢測機制"""
+        """检查是否有活躍標籤頁 - 使用分層檢測機制"""
         try:
-            # 快速檢測層：檢查 WebSocket 物件是否存在
+            # 快速檢測層：检查 WebSocket 物件是否存在
             if not self.current_session or not self.current_session.websocket:
-                debug_log("快速檢測：沒有當前會話或 WebSocket 連接")
+                debug_log("快速檢測：沒有當前會話或 WebSocket 连接")
                 return False
 
-            # 檢查心跳（如果有心跳記錄）
+            # 检查心跳（如果有心跳记录）
             last_heartbeat = getattr(self.current_session, "last_heartbeat", None)
             if last_heartbeat:
                 heartbeat_age = time.time() - last_heartbeat
                 if heartbeat_age > 10:  # 超過 10 秒沒有心跳
                     debug_log(f"快速檢測：心跳超時 ({heartbeat_age:.1f}秒)")
-                    # 可能連接已死，需要進一步檢測
+                    # 可能连接已死，需要進一步檢測
                 else:
                     debug_log(f"快速檢測：心跳正常 ({heartbeat_age:.1f}秒前)")
-                    return True  # 心跳正常，認為連接活躍
+                    return True  # 心跳正常，認為连接活躍
 
-            # 準確檢測層：實際測試連接是否活著
+            # 準確檢測層：實際测试连接是否活著
             try:
-                # 檢查 WebSocket 連接狀態
+                # 检查 WebSocket 连接狀態
                 websocket = self.current_session.websocket
 
-                # 檢查連接是否已關閉
+                # 检查连接是否已关闭
                 if hasattr(websocket, "client_state"):
                     try:
                         # 嘗試從 starlette 導入（FastAPI 基於 Starlette）
@@ -852,29 +852,29 @@ class WebUIManager:
                                 debug_log(
                                     f"準確檢測：WebSocket 狀態不是 CONNECTED，而是 {websocket.client_state}"
                                 )
-                                # 清理死連接
+                                # 清理死连接
                                 self.current_session.websocket = None
                                 return False
                     except ImportError:
                         # 如果導入失敗，使用替代方法
-                        debug_log("無法導入 WebSocketState，使用替代方法檢測連接")
-                        # 跳過狀態檢查，直接測試連接
+                        debug_log("無法導入 WebSocketState，使用替代方法檢測连接")
+                        # 跳過狀態检查，直接测试连接
 
-                # 如果連接看起來是活的，嘗試發送 ping（非阻塞）
+                # 如果连接看起來是活的，嘗試發送 ping（非阻塞）
                 # 注意：FastAPI WebSocket 沒有內建的 ping 方法，這裡使用自定義消息
                 await websocket.send_json({"type": "ping", "timestamp": time.time()})
-                debug_log("準確檢測：成功發送 ping 消息，連接是活躍的")
+                debug_log("準確檢測：成功發送 ping 消息，连接是活躍的")
                 return True
 
             except Exception as e:
-                debug_log(f"準確檢測：連接測試失敗 - {e}")
-                # 連接已死，清理它
+                debug_log(f"準確檢測：连接测试失敗 - {e}")
+                # 连接已死，清理它
                 if self.current_session:
                     self.current_session.websocket = None
                 return False
 
         except Exception as e:
-            debug_log(f"檢查活躍連接時發生錯誤：{e}")
+            debug_log(f"检查活躍连接時發生错误：{e}")
             return False
 
     def get_server_url(self) -> str:
@@ -916,7 +916,7 @@ class WebUIManager:
                     context={"session_id": session_id, "operation": "清理過期會話"},
                     error_type=ErrorType.SYSTEM,
                 )
-                debug_log(f"清理過期會話 {session_id} 失敗 [錯誤ID: {error_id}]: {e}")
+                debug_log(f"清理過期會話 {session_id} 失敗 [错误ID: {error_id}]: {e}")
 
         # 更新統計
         cleanup_duration = time.time() - cleanup_start_time
@@ -945,7 +945,7 @@ class WebUIManager:
         sessions_to_clean = []
 
         # 根據優先級選擇要清理的會話
-        # 優先級：已完成 > 已提交反饋 > 錯誤狀態 > 空閒時間最長
+        # 優先級：已完成 > 已提交反饋 > 错误狀態 > 空閒時間最長
         for session_id, session in self.sessions.items():
             # 跳過當前活躍會話（除非強制清理）
             if (
@@ -955,7 +955,7 @@ class WebUIManager:
             ):
                 continue
 
-            # 優先清理已完成或錯誤狀態的會話
+            # 優先清理已完成或错误狀態的會話
             if session.status in [
                 SessionStatus.COMPLETED,
                 SessionStatus.ERROR,
@@ -1001,7 +1001,7 @@ class WebUIManager:
                     error_type=ErrorType.SYSTEM,
                 )
                 debug_log(
-                    f"內存壓力清理會話 {session_id} 失敗 [錯誤ID: {error_id}]: {e}"
+                    f"內存壓力清理會話 {session_id} 失敗 [错误ID: {error_id}]: {e}"
                 )
 
         # 更新統計
@@ -1101,7 +1101,7 @@ class WebUIManager:
             f"停止服務時清理了 {session_count} 個會話，耗時: {cleanup_duration:.2f}秒"
         )
 
-        # 停止伺服器（注意：uvicorn 的 graceful shutdown 需要額外處理）
+        # 停止伺服器（注意：uvicorn 的 graceful shutdown 需要額外处理）
         if self.server_thread is not None and self.server_thread.is_alive():
             debug_log("正在停止 Web UI 服務")
 
@@ -1122,7 +1122,7 @@ async def launch_web_feedback_ui(
     project_directory: str, summary: str, timeout: int = 600
 ) -> dict:
     """
-    啟動 Web 回饋介面並等待用戶回饋 - 重構為使用根路徑
+    启动 Web 回饋介面並等待用戶回饋 - 重構為使用根路徑
 
     Args:
         project_directory: 專案目錄路徑
@@ -1141,27 +1141,27 @@ async def launch_web_feedback_ui(
     if not session:
         raise RuntimeError("無法創建回饋會話")
 
-    # 啟動伺服器（如果尚未啟動）
+    # 启动伺服器（如果尚未启动）
     if manager.server_thread is None or not manager.server_thread.is_alive():
         manager.start_server()
 
-    # 檢查是否為桌面模式
+    # 检查是否為桌面模式
     desktop_mode = os.environ.get("MCP_DESKTOP_MODE", "").lower() == "true"
 
     # 使用根路徑 URL
     feedback_url = manager.get_server_url()  # 直接使用根路徑
 
     if desktop_mode:
-        # 桌面模式：啟動桌面應用程式
-        debug_log("檢測到桌面模式，啟動桌面應用程式...")
+        # 桌面模式：启动桌面应用程序
+        debug_log("檢測到桌面模式，启动桌面应用程序...")
         has_active_tabs = await manager.launch_desktop_app(feedback_url)
     else:
-        # Web 模式：智能開啟瀏覽器
+        # Web 模式：智能开启瀏覽器
         has_active_tabs = await manager.smart_open_browser(feedback_url)
 
     debug_log(f"[DEBUG] 服務器地址: {feedback_url}")
 
-    # 如果檢測到活躍標籤頁，消息已在 smart_open_browser 中發送，無需額外處理
+    # 如果檢測到活躍標籤頁，消息已在 smart_open_browser 中發送，無需額外处理
     if has_active_tabs:
         debug_log("檢測到活躍標籤頁，會話更新通知已發送")
 
@@ -1172,10 +1172,10 @@ async def launch_web_feedback_ui(
         return result
     except TimeoutError:
         debug_log("會話超時")
-        # 資源已在 wait_for_feedback 中清理，這裡只需要記錄和重新拋出
+        # 资源已在 wait_for_feedback 中清理，這裡只需要记录和重新拋出
         raise
     except Exception as e:
-        debug_log(f"會話發生錯誤: {e}")
+        debug_log(f"會話發生错误: {e}")
         raise
     finally:
         # 注意：不再自動清理會話和停止服務器，保持持久性
@@ -1192,13 +1192,13 @@ def stop_web_ui():
         debug_log("Web UI 服務已停止")
 
 
-# 測試用主函數
+# 测试用主函數
 if __name__ == "__main__":
 
     async def main():
         try:
             project_dir = os.getcwd()
-            summary = """# Markdown 功能測試
+            summary = """# Markdown 功能测试
 
 ## 🎯 任務完成摘要
 
@@ -1210,8 +1210,8 @@ if __name__ == "__main__":
 2. **文字格式化**
    - **粗體文字** 使用雙星號
    - *斜體文字* 使用單星號
-   - `行內程式碼` 使用反引號
-3. **程式碼區塊**
+   - `行內程序碼` 使用反引號
+3. **程序碼區塊**
 4. **列表功能**
    - 無序列表項目
    - 有序列表項目
@@ -1233,11 +1233,11 @@ element.innerHTML = renderedContent;
 
 ---
 
-**測試狀態**: ✅ 功能正常運作"""
+**测试狀態**: ✅ 功能正常運作"""
 
             from ..debug import debug_log
 
-            debug_log("啟動 Web UI 測試...")
+            debug_log("启动 Web UI 测试...")
             debug_log(f"專案目錄: {project_dir}")
             debug_log("等待用戶回饋...")
 
@@ -1251,7 +1251,7 @@ element.innerHTML = renderedContent;
         except KeyboardInterrupt:
             debug_log("\n用戶取消操作")
         except Exception as e:
-            debug_log(f"錯誤: {e}")
+            debug_log(f"错误: {e}")
         finally:
             stop_web_ui()
 

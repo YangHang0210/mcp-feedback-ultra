@@ -16,11 +16,11 @@ from typing import Any
 class CompressionConfig:
     """壓縮配置類"""
 
-    # Gzip 壓縮設定
+    # Gzip 壓縮设定
     minimum_size: int = 1000  # 最小壓縮大小（bytes）
     compression_level: int = 6  # 壓縮級別 (1-9, 6為平衡點)
 
-    # 緩存設定
+    # 緩存设定
     static_cache_max_age: int = 3600  # 靜態文件緩存時間（秒）
     api_cache_max_age: int = 0  # API 響應緩存時間（秒，0表示不緩存）
 
@@ -31,7 +31,7 @@ class CompressionConfig:
     exclude_paths: list[str] = field(default_factory=list)
 
     def __post_init__(self):
-        """初始化後處理"""
+        """初始化後处理"""
         if not self.compressible_types:
             self.compressible_types = [
                 "text/html",
@@ -48,14 +48,14 @@ class CompressionConfig:
 
         if not self.exclude_paths:
             self.exclude_paths = [
-                "/ws",  # WebSocket 連接
+                "/ws",  # WebSocket 连接
                 "/api/ws",  # WebSocket API
-                "/health",  # 健康檢查
+                "/health",  # 健康检查
             ]
 
     @classmethod
     def from_env(cls) -> "CompressionConfig":
-        """從環境變數創建配置"""
+        """從环境变量創建配置"""
         return cls(
             minimum_size=int(os.getenv("MCP_GZIP_MIN_SIZE", "1000")),
             compression_level=int(os.getenv("MCP_GZIP_LEVEL", "6")),
@@ -71,7 +71,7 @@ class CompressionConfig:
         if not content_type:
             return False
 
-        # 檢查 MIME 類型
+        # 检查 MIME 類型
         for mime_type in self.compressible_types:
             if content_type.startswith(mime_type):
                 return True

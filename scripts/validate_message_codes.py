@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-訊息代碼驗證腳本
+訊息代碼验证腳本
 
-驗證後端訊息代碼、前端常量和翻譯文件的一致性。
+验证後端訊息代碼、前端常量和翻譯文件的一致性。
 確保所有訊息代碼都有對應的定義和翻譯。
 
 使用方式：
@@ -94,8 +94,8 @@ def extract_translation_keys(locale="zh-TW"):
 
 
 def validate_message_codes():
-    """執行驗證"""
-    print("🔍 開始驗證訊息代碼一致性...\n")
+    """执行验证"""
+    print("🔍 開始验证訊息代碼一致性...\n")
 
     # 提取所有代碼
     backend_codes = extract_backend_codes()
@@ -115,8 +115,8 @@ def validate_message_codes():
         print(f"  - {locale} 翻譯 key 數量: {len(translation_keys[locale])}")
     print()
 
-    # 驗證後端代碼是否都有前端定義
-    print("🔍 檢查後端代碼是否都有前端定義...")
+    # 验证後端代碼是否都有前端定義
+    print("🔍 检查後端代碼是否都有前端定義...")
     missing_in_frontend = backend_codes - frontend_codes
     if missing_in_frontend:
         print("❌ 以下後端代碼在前端沒有定義:")
@@ -126,12 +126,12 @@ def validate_message_codes():
         print("✅ 所有後端代碼都有前端定義")
     print()
 
-    # 驗證前端代碼是否都有翻譯
-    print("🔍 檢查前端代碼是否都有翻譯...")
+    # 验证前端代碼是否都有翻譯
+    print("🔍 检查前端代碼是否都有翻譯...")
     all_frontend_codes = backend_codes | frontend_codes
 
     for locale in locales:
-        print(f"\n  檢查 {locale} 翻譯:")
+        print(f"\n  检查 {locale} 翻譯:")
         missing_translations = set()
 
         for code in all_frontend_codes:
@@ -145,8 +145,8 @@ def validate_message_codes():
         else:
             print("  ✅ 所有代碼都有翻譯")
 
-    # 檢查是否有多餘的翻譯
-    print("\n🔍 檢查是否有多餘的翻譯...")
+    # 检查是否有多餘的翻譯
+    print("\n🔍 检查是否有多餘的翻譯...")
     for locale in locales:
         # 過濾掉非訊息代碼的 key（如 buttons, labels 等）
         message_keys = {
@@ -173,9 +173,9 @@ def validate_message_codes():
             for key in sorted(extra_translations):
                 print(f"     - {key}")
 
-    print("\n✅ 驗證完成！")
+    print("\n✅ 验证完成！")
 
-    # 返回是否有錯誤
+    # 返回是否有错误
     return len(missing_in_frontend) == 0 and all(
         len(
             [
@@ -197,6 +197,6 @@ if __name__ == "__main__":
 
     os.chdir(project_root)
 
-    # 執行驗證
+    # 执行验证
     success = validate_message_codes()
     sys.exit(0 if success else 1)

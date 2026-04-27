@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Gzip 壓縮功能測試
+Gzip 壓縮功能测试
 ================
 
-測試 FastAPI Gzip 壓縮中間件的功能，包括：
-- 壓縮效果驗證
+测试 FastAPI Gzip 壓縮中間件的功能，包括：
+- 壓縮效果验证
 - WebSocket 兼容性
 - 靜態文件緩存
-- 性能提升測試
+- 性能提升测试
 """
 
 import gzip
@@ -31,10 +31,10 @@ from mcp_feedback_ultra.web.utils.compression_monitor import (
 
 
 class TestCompressionConfig:
-    """測試壓縮配置類"""
+    """测试壓縮配置類"""
 
     def test_default_config(self):
-        """測試預設配置"""
+        """测试预设配置"""
         config = CompressionConfig()
 
         assert config.minimum_size == 1000
@@ -46,7 +46,7 @@ class TestCompressionConfig:
         assert "/ws" in config.exclude_paths
 
     def test_from_env(self):
-        """測試從環境變數創建配置"""
+        """测试從环境变量創建配置"""
         with patch.dict(
             "os.environ",
             {
@@ -62,7 +62,7 @@ class TestCompressionConfig:
             assert config.static_cache_max_age == 7200
 
     def test_should_compress(self):
-        """測試壓縮判斷邏輯"""
+        """测试壓縮判斷邏輯"""
         config = CompressionConfig()
 
         # 應該壓縮的情況
@@ -75,7 +75,7 @@ class TestCompressionConfig:
         assert config.should_compress("", 2000) == False  # 無內容類型
 
     def test_should_exclude_path(self):
-        """測試路徑排除邏輯"""
+        """测试路徑排除邏輯"""
         config = CompressionConfig()
 
         assert config.should_exclude_path("/ws") == True
@@ -85,7 +85,7 @@ class TestCompressionConfig:
         assert config.should_exclude_path("/api/feedback") == False
 
     def test_get_cache_headers(self):
-        """測試緩存頭生成"""
+        """测试緩存頭生成"""
         config = CompressionConfig()
 
         # 靜態文件
@@ -93,7 +93,7 @@ class TestCompressionConfig:
         assert "Cache-Control" in static_headers
         assert "public, max-age=3600" in static_headers["Cache-Control"]
 
-        # API 路徑（預設不緩存）
+        # API 路徑（预设不緩存）
         api_headers = config.get_cache_headers("/api/feedback")
         assert "no-cache" in api_headers["Cache-Control"]
 
@@ -103,10 +103,10 @@ class TestCompressionConfig:
 
 
 class TestCompressionManager:
-    """測試壓縮管理器"""
+    """测试壓縮管理器"""
 
     def test_manager_initialization(self):
-        """測試管理器初始化"""
+        """测试管理器初始化"""
         manager = CompressionManager()
 
         assert manager.config is not None
@@ -114,10 +114,10 @@ class TestCompressionManager:
         assert manager._stats["requests_compressed"] == 0
 
     def test_update_stats(self):
-        """測試統計更新"""
+        """测试統計更新"""
         manager = CompressionManager()
 
-        # 測試壓縮請求
+        # 测试壓縮請求
         manager.update_stats(1000, 600, True)
         stats = manager.get_stats()
 
@@ -127,7 +127,7 @@ class TestCompressionManager:
         assert stats["bytes_compressed"] == 600
         assert stats["compression_ratio"] == 40.0  # (1000-600)/1000 * 100
 
-        # 測試未壓縮請求
+        # 测试未壓縮請求
         manager.update_stats(500, 500, False)
         stats = manager.get_stats()
 
@@ -136,7 +136,7 @@ class TestCompressionManager:
         assert stats["compression_percentage"] == 50.0  # 1/2 * 100
 
     def test_reset_stats(self):
-        """測試統計重置"""
+        """测试統計重置"""
         manager = CompressionManager()
         manager.update_stats(1000, 600, True)
 
@@ -149,10 +149,10 @@ class TestCompressionManager:
 
 
 class TestCompressionMonitor:
-    """測試壓縮監控器"""
+    """测试壓縮监控器"""
 
     def test_monitor_initialization(self):
-        """測試監控器初始化"""
+        """测试监控器初始化"""
         monitor = CompressionMonitor()
 
         assert monitor.max_metrics == 1000
@@ -160,7 +160,7 @@ class TestCompressionMonitor:
         assert len(monitor.path_stats) == 0
 
     def test_record_request(self):
-        """測試請求記錄"""
+        """测试請求记录"""
         monitor = CompressionMonitor()
 
         monitor.record_request(
@@ -177,17 +177,17 @@ class TestCompressionMonitor:
         assert metric.path == "/static/css/style.css"
         assert metric.compression_ratio == 40.0  # (2000-1200)/2000 * 100
 
-        # 檢查路徑統計
+        # 检查路徑統計
         path_stats = monitor.get_path_stats()
         assert "/static/css/style.css" in path_stats
         assert path_stats["/static/css/style.css"]["requests"] == 1
         assert path_stats["/static/css/style.css"]["compressed_requests"] == 1
 
     def test_get_summary(self):
-        """測試摘要統計"""
+        """测试摘要統計"""
         monitor = CompressionMonitor()
 
-        # 記錄多個請求
+        # 记录多個請求
         monitor.record_request(
             "/static/css/style.css", 2000, 1200, 0.05, "text/css", True
         )
@@ -208,7 +208,7 @@ class TestCompressionMonitor:
         )  # (2000-1200) + (3000-1800) + 0 = 800 + 1200 + 0 = 2000
 
     def test_export_stats(self):
-        """測試統計導出"""
+        """测试統計導出"""
         monitor = CompressionMonitor()
 
         monitor.record_request(
@@ -227,10 +227,10 @@ class TestCompressionMonitor:
 
 
 class TestGzipIntegration:
-    """測試 Gzip 壓縮集成"""
+    """测试 Gzip 壓縮集成"""
 
     def create_test_app(self):
-        """創建測試應用"""
+        """創建测试应用"""
         app = FastAPI()
 
         # 添加 Gzip 中間件
@@ -254,7 +254,7 @@ class TestGzipIntegration:
         return app
 
     def test_gzip_compression_large_content(self):
-        """測試大內容的 Gzip 壓縮"""
+        """测试大內容的 Gzip 壓縮"""
         app = self.create_test_app()
         client = TestClient(app)
 
@@ -264,13 +264,13 @@ class TestGzipIntegration:
         assert response.status_code == 200
         assert response.headers.get("content-encoding") == "gzip"
 
-        # 驗證內容正確性
+        # 验证內容正確性
         data = response.json()
         assert "data" in data
         assert len(data["data"]) == 1000
 
     def test_gzip_compression_small_content(self):
-        """測試小內容不壓縮"""
+        """测试小內容不壓縮"""
         app = self.create_test_app()
         client = TestClient(app)
 
@@ -281,7 +281,7 @@ class TestGzipIntegration:
         assert response.headers.get("content-encoding") != "gzip"
 
     def test_gzip_compression_html_content(self):
-        """測試 HTML 內容壓縮"""
+        """测试 HTML 內容壓縮"""
         app = self.create_test_app()
         client = TestClient(app)
 
@@ -292,11 +292,11 @@ class TestGzipIntegration:
         assert response.headers.get("content-type") == "text/html; charset=utf-8"
 
     def test_no_compression_without_accept_encoding(self):
-        """測試不支援壓縮的客戶端"""
+        """测试不支援壓縮的客戶端"""
         app = self.create_test_app()
         client = TestClient(app)
 
-        # FastAPI 的 TestClient 預設會添加 Accept-Encoding，所以我們測試明確拒絕壓縮
+        # FastAPI 的 TestClient 预设會添加 Accept-Encoding，所以我們测试明確拒絕壓縮
         response = client.get("/test-large", headers={"Accept-Encoding": "identity"})
 
         assert response.status_code == 200
@@ -305,11 +305,11 @@ class TestGzipIntegration:
 
 
 class TestWebSocketCompatibility:
-    """測試 WebSocket 兼容性"""
+    """测试 WebSocket 兼容性"""
 
     def test_websocket_not_compressed(self):
-        """測試 WebSocket 連接不受壓縮影響"""
-        # 這個測試確保 WebSocket 路徑被正確排除
+        """测试 WebSocket 连接不受壓縮影響"""
+        # 這個测试確保 WebSocket 路徑被正確排除
         config = CompressionConfig()
 
         # WebSocket 路徑應該被排除
@@ -324,15 +324,15 @@ class TestWebSocketCompatibility:
 
 @pytest.mark.asyncio
 async def test_compression_performance():
-    """測試壓縮性能"""
-    # 創建測試數據
+    """测试壓縮性能"""
+    # 創建测试數據
     test_data = {"message": "test " * 1000}  # 大約 5KB 的 JSON
     json_data = json.dumps(test_data)
 
-    # 手動壓縮測試
+    # 手動壓縮测试
     compressed_data = gzip.compress(json_data.encode("utf-8"))
 
-    # 驗證壓縮效果
+    # 验证壓縮效果
     original_size = len(json_data.encode("utf-8"))
     compressed_size = len(compressed_data)
     compression_ratio = (1 - compressed_size / original_size) * 100
@@ -341,19 +341,19 @@ async def test_compression_performance():
     assert compression_ratio > 50
     assert compressed_size < original_size
 
-    # 驗證解壓縮正確性
+    # 验证解壓縮正確性
     decompressed_data = gzip.decompress(compressed_data).decode("utf-8")
     assert decompressed_data == json_data
 
 
 def test_global_instances():
-    """測試全域實例"""
-    # 測試壓縮管理器全域實例
+    """测试全域實例"""
+    # 测试壓縮管理器全域實例
     manager1 = get_compression_manager()
     manager2 = get_compression_manager()
     assert manager1 is manager2
 
-    # 測試壓縮監控器全域實例
+    # 测试壓縮监控器全域實例
     monitor1 = get_compression_monitor()
     monitor2 = get_compression_monitor()
     assert monitor1 is monitor2

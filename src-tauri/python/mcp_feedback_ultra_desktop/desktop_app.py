@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-桌面應用程式主要模組
+桌面应用程序主要模組
 
-此模組提供桌面應用程式的核心功能，包括：
+此模組提供桌面应用程序的核心功能，包括：
 - 桌面模式檢測
-- Tauri 應用程式啟動
+- Tauri 应用程序启动
 - 與現有 Web UI 的整合
 """
 
@@ -24,7 +24,7 @@ except ImportError as e:
 
 
 class DesktopApp:
-    """桌面應用程式管理器"""
+    """桌面应用程序管理器"""
 
     def __init__(self):
         self.web_manager: WebUIManager | None = None
@@ -32,41 +32,41 @@ class DesktopApp:
         self.app_handle = None
 
     def set_desktop_mode(self, enabled: bool = True):
-        """設置桌面模式"""
+        """设置桌面模式"""
         self.desktop_mode = enabled
         if enabled:
-            # 設置環境變數，防止開啟瀏覽器
+            # 设置环境变量，防止开启瀏覽器
             os.environ["MCP_DESKTOP_MODE"] = "true"
-            debug_log("桌面模式已啟用，將禁止開啟瀏覽器")
+            debug_log("桌面模式已啟用，將禁止开启瀏覽器")
         else:
             os.environ.pop("MCP_DESKTOP_MODE", None)
             debug_log("桌面模式已禁用")
 
     def is_desktop_mode(self) -> bool:
-        """檢查是否為桌面模式"""
+        """检查是否為桌面模式"""
         return (
             self.desktop_mode
             or os.environ.get("MCP_DESKTOP_MODE", "").lower() == "true"
         )
 
     async def start_web_backend(self) -> str:
-        """啟動 Web 後端服務"""
-        debug_log("啟動 Web 後端服務...")
+        """启动 Web 後端服務"""
+        debug_log("启动 Web 後端服務...")
 
         # 獲取 Web UI 管理器
         self.web_manager = get_web_ui_manager()
 
-        # 設置桌面模式，禁止自動開啟瀏覽器
+        # 设置桌面模式，禁止自動开启瀏覽器
         self.set_desktop_mode(True)
 
-        # 啟動服務器
+        # 启动服務器
         if (
             self.web_manager.server_thread is None
             or not self.web_manager.server_thread.is_alive()
         ):
             self.web_manager.start_server()
 
-        # 等待服務器啟動
+        # 等待服務器启动
         max_wait = 10  # 最多等待 10 秒
         wait_count = 0
         while wait_count < max_wait:
@@ -81,14 +81,14 @@ class DesktopApp:
         if not (
             self.web_manager.server_thread and self.web_manager.server_thread.is_alive()
         ):
-            raise RuntimeError("Web 服務器啟動失敗")
+            raise RuntimeError("Web 服務器启动失敗")
 
         server_url = self.web_manager.get_server_url()
-        debug_log(f"Web 後端服務已啟動: {server_url}")
+        debug_log(f"Web 後端服務已启动: {server_url}")
         return server_url
 
     def create_test_session(self):
-        """創建測試會話"""
+        """創建测试會話"""
         if not self.web_manager:
             raise RuntimeError("Web 管理器未初始化")
 
@@ -96,20 +96,20 @@ class DesktopApp:
 
         with tempfile.TemporaryDirectory() as temp_dir:
             session_id = self.web_manager.create_session(
-                temp_dir, "桌面應用程式測試 - 驗證 Tauri 整合功能"
+                temp_dir, "桌面应用程序测试 - 验证 Tauri 整合功能"
             )
-            debug_log(f"測試會話已創建: {session_id}")
+            debug_log(f"测试會話已創建: {session_id}")
             return session_id
 
     async def launch_tauri_app(self, server_url: str):
-        """啟動 Tauri 桌面應用程式"""
-        debug_log("正在啟動 Tauri 桌面視窗...")
+        """启动 Tauri 桌面应用程序"""
+        debug_log("正在启动 Tauri 桌面視窗...")
 
         import os
         import subprocess
         from pathlib import Path
 
-        # 找到 Tauri 可執行檔案
+        # 找到 Tauri 可执行文件
         # 首先嘗試從打包後的位置找（PyPI 安裝後的位置）
         try:
             from mcp_feedback_ultra.desktop_release import __file__ as desktop_init
@@ -142,7 +142,7 @@ class DesktopApp:
                 tauri_exe = desktop_dir / "mcp-feedback-ultra-desktop"
 
             if tauri_exe.exists():
-                debug_log(f"找到打包後的 Tauri 可執行檔案: {tauri_exe}")
+                debug_log(f"找到打包後的 Tauri 可执行文件: {tauri_exe}")
             else:
                 # 嘗試回退選項
                 fallback_files = [
@@ -156,16 +156,16 @@ class DesktopApp:
                 for fallback in fallback_files:
                     if fallback.exists():
                         tauri_exe = fallback
-                        debug_log(f"使用回退的可執行檔案: {tauri_exe}")
+                        debug_log(f"使用回退的可执行文件: {tauri_exe}")
                         break
                 else:
                     raise FileNotFoundError(
-                        f"找不到任何可執行檔案，檢查的路徑: {tauri_exe}"
+                        f"找不到任何可执行文件，检查的路徑: {tauri_exe}"
                     )
 
         except (ImportError, FileNotFoundError):
-            # 回退到開發環境路徑
-            debug_log("未找到打包後的可執行檔案，嘗試開發環境路徑...")
+            # 回退到开发环境路徑
+            debug_log("未找到打包後的可执行文件，嘗試开发环境路徑...")
             project_root = Path(__file__).parent.parent.parent.parent
             tauri_exe = (
                 project_root
@@ -205,17 +205,17 @@ class DesktopApp:
 
             if not tauri_exe.exists():
                 raise FileNotFoundError(
-                    "找不到 Tauri 可執行檔案，已嘗試的路徑包括開發和發布目錄"
+                    "找不到 Tauri 可执行文件，已嘗試的路徑包括开发和發布目錄"
                 ) from None
 
-        debug_log(f"找到 Tauri 可執行檔案: {tauri_exe}")
+        debug_log(f"找到 Tauri 可执行文件: {tauri_exe}")
 
-        # 設置環境變數
+        # 设置环境变量
         env = os.environ.copy()
         env["MCP_DESKTOP_MODE"] = "true"
         env["MCP_WEB_URL"] = server_url
 
-        # 啟動 Tauri 應用程式
+        # 启动 Tauri 应用程序
         try:
             # Windows 下隱藏控制台視窗
             creation_flags = 0
@@ -229,27 +229,27 @@ class DesktopApp:
                 stderr=subprocess.PIPE,
                 creationflags=creation_flags,
             )
-            debug_log("Tauri 桌面應用程式已啟動")
+            debug_log("Tauri 桌面应用程序已启动")
 
-            # 等待一下確保應用程式啟動
+            # 等待一下確保应用程序启动
             await asyncio.sleep(2)
 
         except Exception as e:
-            debug_log(f"啟動 Tauri 應用程式失敗: {e}")
+            debug_log(f"启动 Tauri 应用程序失敗: {e}")
             raise
 
     def stop(self):
-        """停止桌面應用程式"""
-        debug_log("正在停止桌面應用程式...")
+        """停止桌面应用程序"""
+        debug_log("正在停止桌面应用程序...")
 
-        # 停止 Tauri 應用程式
+        # 停止 Tauri 应用程序
         if self.app_handle:
             try:
                 self.app_handle.terminate()
                 self.app_handle.wait(timeout=5)
-                debug_log("Tauri 應用程式已停止")
+                debug_log("Tauri 应用程序已停止")
             except Exception as e:
-                debug_log(f"停止 Tauri 應用程式時發生錯誤: {e}")
+                debug_log(f"停止 Tauri 应用程序時發生错误: {e}")
                 try:
                     self.app_handle.kill()
                 except:
@@ -259,63 +259,63 @@ class DesktopApp:
 
         if self.web_manager:
             # 注意：不停止 Web 服務器，保持持久性
-            debug_log("Web 服務器保持運行狀態")
+            debug_log("Web 服務器保持运行狀態")
 
-        # 注意：不清除桌面模式設置，保持 MCP_DESKTOP_MODE 環境變數
-        # 這樣下次 MCP 調用時仍然會啟動桌面應用程式
+        # 注意：不清除桌面模式设置，保持 MCP_DESKTOP_MODE 环境变量
+        # 這樣下次 MCP 調用時仍然會启动桌面应用程序
         # self.set_desktop_mode(False)  # 註釋掉這行
-        debug_log("桌面應用程式已停止")
+        debug_log("桌面应用程序已停止")
 
 
 async def launch_desktop_app(test_mode: bool = False) -> DesktopApp:
-    """啟動桌面應用程式
+    """启动桌面应用程序
 
     Args:
-        test_mode: 是否為測試模式，測試模式下會創建測試會話
+        test_mode: 是否為测试模式，测试模式下會創建测试會話
     """
-    debug_log("正在啟動桌面應用程式...")
+    debug_log("正在启动桌面应用程序...")
 
     app = DesktopApp()
 
     try:
-        # 啟動 Web 後端
+        # 启动 Web 後端
         server_url = await app.start_web_backend()
 
         if test_mode:
-            # 測試模式：創建測試會話
-            debug_log("測試模式：創建測試會話")
+            # 测试模式：創建测试會話
+            debug_log("测试模式：創建测试會話")
             app.create_test_session()
         else:
             # MCP 調用模式：使用現有會話
-            debug_log("MCP 調用模式：使用現有 MCP 會話，不創建新的測試會話")
+            debug_log("MCP 調用模式：使用現有 MCP 會話，不創建新的测试會話")
 
-        # 啟動 Tauri 桌面應用程式
+        # 启动 Tauri 桌面应用程序
         await app.launch_tauri_app(server_url)
 
-        debug_log(f"桌面應用程式已啟動，後端服務: {server_url}")
+        debug_log(f"桌面应用程序已启动，後端服務: {server_url}")
         return app
 
     except Exception as e:
-        debug_log(f"桌面應用程式啟動失敗: {e}")
+        debug_log(f"桌面应用程序启动失敗: {e}")
         app.stop()
         raise
 
 
 def run_desktop_app():
-    """同步方式運行桌面應用程式"""
+    """同步方式运行桌面应用程序"""
     try:
-        # 設置事件循環策略（Windows）
+        # 设置事件循環策略（Windows）
         if sys.platform == "win32":
             asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
-        # 運行應用程式
+        # 运行应用程序
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
         app = loop.run_until_complete(launch_desktop_app())
 
-        # 保持應用程式運行
-        debug_log("桌面應用程式正在運行，按 Ctrl+C 停止...")
+        # 保持应用程序运行
+        debug_log("桌面应用程序正在运行，按 Ctrl+C 停止...")
         try:
             while True:
                 time.sleep(1)
@@ -326,7 +326,7 @@ def run_desktop_app():
             loop.close()
 
     except Exception as e:
-        print(f"桌面應用程式運行失敗: {e}")
+        print(f"桌面应用程序运行失敗: {e}")
         sys.exit(1)
 
 

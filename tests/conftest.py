@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-測試配置和共用 fixtures
+测试配置和共用 fixtures
 """
 
 import asyncio
@@ -36,11 +36,11 @@ def temp_dir() -> Generator[Path, None, None]:
 
 @pytest.fixture
 def test_project_dir(temp_dir: Path) -> Path:
-    """創建測試專案目錄"""
+    """創建测试專案目錄"""
     project_dir = temp_dir / "test_project"
     project_dir.mkdir()
 
-    # 創建一些測試文件
+    # 創建一些测试文件
     (project_dir / "README.md").write_text("# Test Project")
     (project_dir / "main.py").write_text("print('Hello World')")
 
@@ -52,21 +52,21 @@ def web_ui_manager() -> Generator[WebUIManager, None, None]:
     """創建 WebUIManager fixture"""
     import os
 
-    # 設置測試模式環境變數
+    # 设置测试模式环境变量
     original_test_mode = os.environ.get("MCP_TEST_MODE")
     original_web_host = os.environ.get("MCP_WEB_HOST")
     original_web_port = os.environ.get("MCP_WEB_PORT")
 
     os.environ["MCP_TEST_MODE"] = "true"
-    os.environ["MCP_WEB_HOST"] = "127.0.0.1"  # 確保測試使用本地主機
+    os.environ["MCP_WEB_HOST"] = "127.0.0.1"  # 確保测试使用本地主機
     # 使用動態端口範圍避免衝突
     os.environ["MCP_WEB_PORT"] = "0"  # 讓系統自動分配端口
 
     try:
-        manager = WebUIManager()  # 使用環境變數控制主機和端口
+        manager = WebUIManager()  # 使用环境变量控制主機和端口
         yield manager
     finally:
-        # 恢復原始環境變數
+        # 恢復原始环境变量
         if original_test_mode is not None:
             os.environ["MCP_TEST_MODE"] = original_test_mode
         else:
@@ -96,26 +96,26 @@ def i18n_manager():
 
 @pytest.fixture
 def test_config() -> dict[str, Any]:
-    """測試配置 fixture"""
+    """测试配置 fixture"""
     return {
         "timeout": 30,
         "debug": True,
         "web_port": 8765,
-        "test_summary": "測試摘要 - 這是一個自動化測試",
-        "test_feedback": "這是測試回饋內容",
+        "test_summary": "测试摘要 - 這是一個自動化测试",
+        "test_feedback": "這是测试回饋內容",
     }
 
 
 @pytest.fixture(autouse=True)
 def setup_test_env():
-    """自動設置測試環境"""
-    # 設置測試環境變數
+    """自動设置测试环境"""
+    # 设置测试环境变量
     original_debug = os.environ.get("MCP_DEBUG")
     os.environ["MCP_DEBUG"] = "true"
 
     yield
 
-    # 恢復原始環境
+    # 恢復原始环境
     if original_debug is not None:
         os.environ["MCP_DEBUG"] = original_debug
     else:

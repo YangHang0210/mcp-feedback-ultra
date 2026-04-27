@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-主要路由處理
+主要路由处理
 ============
 
-設置 Web UI 的主要路由和處理邏輯。
+设置 Web UI 的主要路由和处理邏輯。
 """
 
 import json
@@ -24,9 +24,9 @@ if TYPE_CHECKING:
 
 
 def load_user_layout_settings() -> str:
-    """載入用戶的佈局模式設定"""
+    """載入用戶的佈局模式设定"""
     try:
-        # 使用統一的設定檔案路徑
+        # 使用統一的设定文件路徑
         config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
         settings_file = config_dir / "ui_settings.json"
 
@@ -34,24 +34,24 @@ def load_user_layout_settings() -> str:
             with open(settings_file, encoding="utf-8") as f:
                 settings = json.load(f)
                 layout_mode = settings.get("layoutMode", "combined-vertical")
-                debug_log(f"從設定檔案載入佈局模式: {layout_mode}")
-                # 修復 no-any-return 錯誤 - 確保返回 str 類型
+                debug_log(f"從设定文件載入佈局模式: {layout_mode}")
+                # 修復 no-any-return 错误 - 確保返回 str 類型
                 return str(layout_mode)
         else:
-            debug_log("設定檔案不存在，使用預設佈局模式: combined-vertical")
+            debug_log("设定文件不存在，使用预设佈局模式: combined-vertical")
             return "combined-vertical"
     except Exception as e:
-        debug_log(f"載入佈局設定失敗: {e}，使用預設佈局模式: combined-vertical")
+        debug_log(f"載入佈局设定失敗: {e}，使用预设佈局模式: combined-vertical")
         return "combined-vertical"
 
 
 # 使用統一的訊息代碼系統
-# 從 ..constants 導入的 get_msg_code 函數會處理所有訊息代碼
+# 從 ..constants 導入的 get_msg_code 函數會处理所有訊息代碼
 # 舊的 key 會自動映射到新的常量
 
 
 def setup_routes(manager: "WebUIManager"):
-    """設置路由"""
+    """设置路由"""
 
     @manager.app.get("/", response_class=HTMLResponse)
     async def index(request: Request):
@@ -72,7 +72,7 @@ def setup_routes(manager: "WebUIManager"):
             )
 
         # 有活躍會話時顯示回饋頁面
-        # 載入用戶的佈局模式設定
+        # 載入用戶的佈局模式设定
         layout_mode = load_user_layout_settings()
 
         return manager.templates.TemplateResponse(
@@ -90,10 +90,10 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.get("/api/translations")
     async def get_translations():
-        """獲取翻譯數據 - 從 Web 專用翻譯檔案載入"""
+        """獲取翻譯數據 - 從 Web 專用翻譯文件載入"""
         translations = {}
 
-        # 獲取 Web 翻譯檔案目錄
+        # 獲取 Web 翻譯文件目錄
         web_locales_dir = Path(__file__).parent.parent / "locales"
         supported_languages = ["zh-TW", "zh-CN", "en"]
 
@@ -108,10 +108,10 @@ def setup_routes(manager: "WebUIManager"):
                         translations[lang_code] = lang_data
                         debug_log(f"成功載入 Web 翻譯: {lang_code}")
                 else:
-                    debug_log(f"Web 翻譯檔案不存在: {translation_file}")
+                    debug_log(f"Web 翻譯文件不存在: {translation_file}")
                     translations[lang_code] = {}
             except Exception as e:
-                debug_log(f"載入 Web 翻譯檔案失敗 {lang_code}: {e}")
+                debug_log(f"載入 Web 翻譯文件失敗 {lang_code}: {e}")
                 translations[lang_code] = {}
 
         debug_log(f"Web 翻譯 API 返回 {len(translations)} 種語言的數據")
@@ -197,7 +197,7 @@ def setup_routes(manager: "WebUIManager"):
                     "feedback_completed": session.feedback_completed.is_set(),
                     "has_websocket": session.websocket is not None,
                     "is_current": session == manager.current_session,
-                    "user_messages": session.user_messages,  # 包含用戶消息記錄
+                    "user_messages": session.user_messages,  # 包含用戶消息记录
                 }
                 sessions_data.append(session_info)
 
@@ -266,17 +266,17 @@ def setup_routes(manager: "WebUIManager"):
 
         await websocket.accept()
 
-        # 語言由前端處理，不需要在後端設置
-        debug_log(f"WebSocket 連接建立，語言由前端處理: {lang}")
+        # 語言由前端处理，不需要在後端设置
+        debug_log(f"WebSocket 连接建立，語言由前端处理: {lang}")
 
-        # 檢查會話是否已有 WebSocket 連接
+        # 检查會話是否已有 WebSocket 连接
         if session.websocket and session.websocket != websocket:
-            debug_log("會話已有 WebSocket 連接，替換為新連接")
+            debug_log("會話已有 WebSocket 连接，替換為新连接")
 
         session.websocket = websocket
-        debug_log(f"WebSocket 連接建立: 當前活躍會話 {session.session_id}")
+        debug_log(f"WebSocket 连接建立: 當前活躍會話 {session.session_id}")
 
-        # 發送連接成功消息
+        # 發送连接成功消息
         try:
             await websocket.send_json(
                 {
@@ -285,7 +285,7 @@ def setup_routes(manager: "WebUIManager"):
                 }
             )
 
-            # 檢查是否有待發送的會話更新
+            # 检查是否有待發送的會話更新
             if getattr(manager, "_pending_session_update", False):
                 debug_log("檢測到待發送的會話更新，準備發送通知")
                 await websocket.send_json(
@@ -310,7 +310,7 @@ def setup_routes(manager: "WebUIManager"):
                 debug_log("已發送當前會話狀態到前端")
 
         except Exception as e:
-            debug_log(f"發送連接確認失敗: {e}")
+            debug_log(f"發送连接确认失敗: {e}")
 
         try:
             while True:
@@ -322,39 +322,39 @@ def setup_routes(manager: "WebUIManager"):
                 if current_session and current_session.websocket == websocket:
                     await handle_websocket_message(manager, current_session, message)
                 else:
-                    debug_log("會話已切換或 WebSocket 連接不匹配，忽略消息")
+                    debug_log("會話已切換或 WebSocket 连接不匹配，忽略消息")
                     break
 
         except WebSocketDisconnect:
-            debug_log("WebSocket 連接正常斷開")
+            debug_log("WebSocket 连接正常斷開")
         except ConnectionResetError:
-            debug_log("WebSocket 連接被重置")
+            debug_log("WebSocket 连接被重置")
         except Exception as e:
-            debug_log(f"WebSocket 錯誤: {e}")
+            debug_log(f"WebSocket 错误: {e}")
         finally:
-            # 安全清理 WebSocket 連接
+            # 安全清理 WebSocket 连接
             current_session = manager.get_current_session()
             if current_session and current_session.websocket == websocket:
                 current_session.websocket = None
-                debug_log("已清理會話中的 WebSocket 連接")
+                debug_log("已清理會話中的 WebSocket 连接")
 
     @manager.app.post("/api/save-settings")
     async def save_settings(request: Request):
-        """保存設定到檔案"""
+        """保存设定到文件"""
 
         try:
             data = await request.json()
 
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             config_dir.mkdir(parents=True, exist_ok=True)
             settings_file = config_dir / "ui_settings.json"
 
-            # 保存設定到檔案
+            # 保存设定到文件
             with open(settings_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
 
-            debug_log(f"設定已保存到: {settings_file}")
+            debug_log(f"设定已保存到: {settings_file}")
 
             return JSONResponse(
                 content={
@@ -364,7 +364,7 @@ def setup_routes(manager: "WebUIManager"):
             )
 
         except Exception as e:
-            debug_log(f"保存設定失敗: {e}")
+            debug_log(f"保存设定失敗: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
@@ -376,10 +376,10 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.get("/api/load-settings")
     async def load_settings(request: Request):
-        """從檔案載入設定"""
+        """從文件載入设定"""
 
         try:
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             settings_file = config_dir / "ui_settings.json"
 
@@ -387,13 +387,13 @@ def setup_routes(manager: "WebUIManager"):
                 with open(settings_file, encoding="utf-8") as f:
                     settings = json.load(f)
 
-                debug_log(f"設定已從檔案載入: {settings_file}")
+                debug_log(f"设定已從文件載入: {settings_file}")
                 return JSONResponse(content=settings)
-            debug_log("設定檔案不存在，返回空設定")
+            debug_log("设定文件不存在，返回空设定")
             return JSONResponse(content={})
 
         except Exception as e:
-            debug_log(f"載入設定失敗: {e}")
+            debug_log(f"載入设定失敗: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
@@ -405,18 +405,18 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.post("/api/clear-settings")
     async def clear_settings(request: Request):
-        """清除設定檔案"""
+        """清除设定文件"""
 
         try:
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             settings_file = config_dir / "ui_settings.json"
 
             if settings_file.exists():
                 settings_file.unlink()
-                debug_log(f"設定檔案已刪除: {settings_file}")
+                debug_log(f"设定文件已刪除: {settings_file}")
             else:
-                debug_log("設定檔案不存在，無需刪除")
+                debug_log("设定文件不存在，無需刪除")
 
             return JSONResponse(
                 content={
@@ -426,7 +426,7 @@ def setup_routes(manager: "WebUIManager"):
             )
 
         except Exception as e:
-            debug_log(f"清除設定失敗: {e}")
+            debug_log(f"清除设定失敗: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
@@ -438,10 +438,10 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.get("/api/load-session-history")
     async def load_session_history(request: Request):
-        """從檔案載入會話歷史"""
+        """從文件載入會話歷史"""
 
         try:
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             history_file = config_dir / "session_history.json"
 
@@ -449,11 +449,11 @@ def setup_routes(manager: "WebUIManager"):
                 with open(history_file, encoding="utf-8") as f:
                     history_data = json.load(f)
 
-                debug_log(f"會話歷史已從檔案載入: {history_file}")
+                debug_log(f"會話歷史已從文件載入: {history_file}")
 
-                # 確保資料格式相容性
+                # 確保资料格式相容性
                 if isinstance(history_data, dict):
-                    # 新格式：包含版本資訊和其他元資料
+                    # 新格式：包含版本資訊和其他元资料
                     sessions = history_data.get("sessions", [])
                     last_cleanup = history_data.get("lastCleanup", 0)
                 else:
@@ -461,12 +461,12 @@ def setup_routes(manager: "WebUIManager"):
                     sessions = history_data if isinstance(history_data, list) else []
                     last_cleanup = 0
 
-                # 回傳會話歷史資料
+                # 回傳會話歷史资料
                 return JSONResponse(
                     content={"sessions": sessions, "lastCleanup": last_cleanup}
                 )
 
-            debug_log("會話歷史檔案不存在，返回空歷史")
+            debug_log("會話歷史文件不存在，返回空歷史")
             return JSONResponse(content={"sessions": [], "lastCleanup": 0})
 
         except Exception as e:
@@ -482,17 +482,17 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.post("/api/save-session-history")
     async def save_session_history(request: Request):
-        """保存會話歷史到檔案"""
+        """保存會話歷史到文件"""
 
         try:
             data = await request.json()
 
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             config_dir.mkdir(parents=True, exist_ok=True)
             history_file = config_dir / "session_history.json"
 
-            # 建立新格式的資料結構
+            # 建立新格式的资料結構
             history_data = {
                 "version": "1.0",
                 "sessions": data.get("sessions", []),
@@ -500,13 +500,13 @@ def setup_routes(manager: "WebUIManager"):
                 "savedAt": int(time.time() * 1000),  # 當前時間戳
             }
 
-            # 保存會話歷史到檔案
+            # 保存會話歷史到文件
             with open(history_file, "w", encoding="utf-8") as f:
                 json.dump(history_data, f, ensure_ascii=False, indent=2)
 
             debug_log(f"會話歷史已保存到: {history_file}")
             session_count = len(history_data["sessions"])
-            debug_log(f"保存了 {session_count} 個會話記錄")
+            debug_log(f"保存了 {session_count} 個會話记录")
 
             return JSONResponse(
                 content={
@@ -529,10 +529,10 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.get("/api/log-level")
     async def get_log_level(request: Request):
-        """獲取日誌等級設定"""
+        """獲取日誌等級设定"""
 
         try:
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             settings_file = config_dir / "ui_settings.json"
 
@@ -540,12 +540,12 @@ def setup_routes(manager: "WebUIManager"):
                 with open(settings_file, encoding="utf-8") as f:
                     settings_data = json.load(f)
                     log_level = settings_data.get("logLevel", "INFO")
-                    debug_log(f"從設定檔案載入日誌等級: {log_level}")
+                    debug_log(f"從设定文件載入日誌等級: {log_level}")
                     return JSONResponse(content={"logLevel": log_level})
             else:
-                # 預設日誌等級
+                # 预设日誌等級
                 default_log_level = "INFO"
-                debug_log(f"使用預設日誌等級: {default_log_level}")
+                debug_log(f"使用预设日誌等級: {default_log_level}")
                 return JSONResponse(content={"logLevel": default_log_level})
 
         except Exception as e:
@@ -560,7 +560,7 @@ def setup_routes(manager: "WebUIManager"):
 
     @manager.app.post("/api/log-level")
     async def set_log_level(request: Request):
-        """設定日誌等級"""
+        """设定日誌等級"""
 
         try:
             data = await request.json()
@@ -575,12 +575,12 @@ def setup_routes(manager: "WebUIManager"):
                     },
                 )
 
-            # 使用統一的設定檔案路徑
+            # 使用統一的设定文件路徑
             config_dir = Path.home() / ".config" / "mcp-feedback-ultra"
             config_dir.mkdir(parents=True, exist_ok=True)
             settings_file = config_dir / "ui_settings.json"
 
-            # 載入現有設定或創建新設定
+            # 載入現有设定或創建新设定
             settings_data = {}
             if settings_file.exists():
                 with open(settings_file, encoding="utf-8") as f:
@@ -589,11 +589,11 @@ def setup_routes(manager: "WebUIManager"):
             # 更新日誌等級
             settings_data["logLevel"] = log_level
 
-            # 保存設定到檔案
+            # 保存设定到文件
             with open(settings_file, "w", encoding="utf-8") as f:
                 json.dump(settings_data, f, ensure_ascii=False, indent=2)
 
-            debug_log(f"日誌等級已設定為: {log_level}")
+            debug_log(f"日誌等級已设定為: {log_level}")
 
             return JSONResponse(
                 content={
@@ -604,7 +604,7 @@ def setup_routes(manager: "WebUIManager"):
             )
 
         except Exception as e:
-            debug_log(f"設定日誌等級失敗: {e}")
+            debug_log(f"设定日誌等級失敗: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
@@ -616,7 +616,7 @@ def setup_routes(manager: "WebUIManager"):
 
 
 async def handle_websocket_message(manager: "WebUIManager", session, data: dict):
-    """處理 WebSocket 消息"""
+    """处理 WebSocket 消息"""
     message_type = data.get("type")
 
     if message_type == "submit_feedback":
@@ -627,7 +627,7 @@ async def handle_websocket_message(manager: "WebUIManager", session, data: dict)
         await session.submit_feedback(feedback, images, settings)
 
     elif message_type == "run_command":
-        # 執行命令
+        # 执行命令
         command = data.get("command", "")
         if command.strip():
             await session.run_command(command)
@@ -643,7 +643,7 @@ async def handle_websocket_message(manager: "WebUIManager", session, data: dict)
                 debug_log(f"發送狀態更新失敗: {e}")
 
     elif message_type == "heartbeat":
-        # WebSocket 心跳處理（簡化版）
+        # WebSocket 心跳处理（簡化版）
         # 更新心跳時間
         session.last_heartbeat = time.time()
         session.last_activity = time.time()
@@ -661,21 +661,21 @@ async def handle_websocket_message(manager: "WebUIManager", session, data: dict)
                 debug_log(f"發送心跳回應失敗: {e}")
 
     elif message_type == "user_timeout":
-        # 用戶設置的超時已到
+        # 用戶设置的超時已到
         debug_log(f"收到用戶超時通知: {session.session_id}")
-        # 清理會話資源
+        # 清理會話资源
         await session._cleanup_resources_on_timeout()
-        # 重構：不再自動停止服務器，保持服務器運行以支援持久性
+        # 重構：不再自動停止服務器，保持服務器运行以支援持久性
 
     elif message_type == "pong":
-        # 處理來自前端的 pong 回應（用於連接檢測）
+        # 处理來自前端的 pong 回應（用於连接檢測）
         debug_log(f"收到 pong 回應，時間戳: {data.get('timestamp', 'N/A')}")
-        # 可以在這裡記錄延遲或更新連接狀態
+        # 可以在這裡记录延遲或更新连接狀態
 
     elif message_type == "update_timeout_settings":
-        # 處理超時設定更新
+        # 处理超時设定更新
         settings = data.get("settings", {})
-        debug_log(f"收到超時設定更新: {settings}")
+        debug_log(f"收到超時设定更新: {settings}")
         if settings.get("enabled"):
             session.update_timeout_settings(
                 enabled=True, timeout_seconds=settings.get("seconds", 3600)
@@ -691,7 +691,7 @@ async def _delayed_server_stop(manager: "WebUIManager"):
     """延遲停止服務器"""
     import asyncio
 
-    await asyncio.sleep(5)  # 等待 5 秒讓前端有時間關閉
+    await asyncio.sleep(5)  # 等待 5 秒讓前端有時間关闭
     from ..main import stop_web_ui
 
     stop_web_ui()

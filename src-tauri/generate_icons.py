@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-生成基本的應用程式圖標
+生成基本的应用程序圖標
 
-這個腳本會生成 Tauri 應用程式所需的基本圖標文件。
+這個腳本會生成 Tauri 应用程序所需的基本圖標文件。
 在實際部署中，應該使用專業的圖標設計。
 """
 
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     try:
         main()
     except ImportError:
-        print("錯誤：需要安裝 Pillow 庫")
-        print("請運行：pip install Pillow")
+        print("错误：需要安裝 Pillow 庫")
+        print("請运行：pip install Pillow")
     except Exception as e:
-        print(f"生成圖標時發生錯誤: {e}")
+        print(f"生成圖標時發生错误: {e}")

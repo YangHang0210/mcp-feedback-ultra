@@ -25,7 +25,7 @@ class PortManager:
         查找占用指定端口的進程
 
         Args:
-            port: 要檢查的端口號
+            port: 要检查的端口號
 
         Returns:
             Dict[str, Any]: 進程信息字典，包含 pid, name, cmdline 等
@@ -47,7 +47,7 @@ class PortManager:
                         # 進程可能已經結束或無權限訪問
                         continue
         except Exception as e:
-            debug_log(f"查找端口 {port} 占用進程時發生錯誤: {e}")
+            debug_log(f"查找端口 {port} 占用進程時發生错误: {e}")
 
         return None
 
@@ -75,7 +75,7 @@ class PortManager:
 
             debug_log(f"發現進程 {process_name} (PID: {pid}) 占用端口 {port}")
 
-            # 檢查是否是自己的進程（避免誤殺）
+            # 检查是否是自己的進程（避免誤殺）
             if "mcp-feedback-ultra" in process_info["cmdline"].lower():
                 debug_log("檢測到 MCP Feedback Enhanced 相關進程，嘗試優雅終止")
 
@@ -104,13 +104,13 @@ class PortManager:
             debug_log(f"無法終止進程 (PID: {process_info['pid']}): {e}")
             return False
         except Exception as e:
-            debug_log(f"終止端口 {port} 占用進程時發生錯誤: {e}")
+            debug_log(f"終止端口 {port} 占用進程時發生错误: {e}")
             return False
 
     @staticmethod
     def is_port_available(host: str, port: int) -> bool:
         """
-        檢查端口是否可用
+        检查端口是否可用
 
         Args:
             host: 主機地址
@@ -125,8 +125,8 @@ class PortManager:
                 sock.bind((host, port))
                 return True
         except OSError:
-            # 如果綁定失敗，再檢查是否真的有進程在監聽
-            # 使用 psutil 檢查是否有進程在監聽該端口
+            # 如果綁定失敗，再检查是否真的有進程在監聽
+            # 使用 psutil 检查是否有進程在監聽該端口
             try:
                 import psutil
 
@@ -140,7 +140,7 @@ class PortManager:
                 # 沒有找到監聽的進程，可能是臨時占用，認為可用
                 return True
             except Exception:
-                # 如果 psutil 檢查失敗，保守地認為端口不可用
+                # 如果 psutil 检查失敗，保守地認為端口不可用
                 return False
 
     @staticmethod
@@ -209,7 +209,7 @@ class PortManager:
 
         raise RuntimeError(
             f"無法在 {preferred_port}±{max_attempts} 範圍內找到可用端口。"
-            f"請檢查是否有過多進程占用端口，或手動指定其他端口。"
+            f"請检查是否有過多進程占用端口，或手動指定其他端口。"
         )
 
     @staticmethod
@@ -223,7 +223,7 @@ class PortManager:
         Returns:
             bool: 是否應該清理該進程
         """
-        # 檢查是否是 MCP Feedback Enhanced 相關進程
+        # 检查是否是 MCP Feedback Enhanced 相關進程
         cmdline = process_info.get("cmdline", "").lower()
         process_name = process_info.get("name", "").lower()
 
@@ -267,7 +267,7 @@ class PortManager:
         }
 
         try:
-            # 檢查端口是否可用
+            # 检查端口是否可用
             status["available"] = PortManager.is_port_available(host, port)
 
             # 如果不可用，查找占用進程
@@ -276,7 +276,7 @@ class PortManager:
 
         except Exception as e:
             status["error"] = str(e)
-            debug_log(f"獲取端口 {port} 狀態時發生錯誤: {e}")
+            debug_log(f"獲取端口 {port} 狀態時發生错误: {e}")
 
         return status
 
@@ -316,6 +316,6 @@ class PortManager:
                         continue
 
         except Exception as e:
-            debug_log(f"列出監聽端口時發生錯誤: {e}")
+            debug_log(f"列出監聽端口時發生错误: {e}")
 
         return listening_ports

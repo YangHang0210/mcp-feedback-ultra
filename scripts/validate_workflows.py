@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-GitHub Actions 工作流程驗證腳本
+GitHub Actions 工作流程验证腳本
 
-此腳本驗證 GitHub Actions 工作流程文件的語法和配置正確性。
+此腳本验证 GitHub Actions 工作流程文件的語法和配置正確性。
 """
 
 import sys
@@ -12,14 +12,14 @@ import yaml
 
 
 def validate_yaml_syntax(file_path: Path) -> bool:
-    """驗證 YAML 文件語法"""
+    """验证 YAML 文件語法"""
     try:
         with open(file_path, encoding="utf-8") as f:
             yaml.safe_load(f)
         print(f"✅ {file_path.name}: YAML 語法正確")
         return True
     except yaml.YAMLError as e:
-        print(f"❌ {file_path.name}: YAML 語法錯誤 - {e}")
+        print(f"❌ {file_path.name}: YAML 語法错误 - {e}")
         return False
     except Exception as e:
         print(f"❌ {file_path.name}: 讀取文件失敗 - {e}")
@@ -27,18 +27,18 @@ def validate_yaml_syntax(file_path: Path) -> bool:
 
 
 def validate_workflow_structure(file_path: Path) -> bool:
-    """驗證工作流程結構"""
+    """验证工作流程結構"""
     try:
         with open(file_path, encoding="utf-8") as f:
             workflow = yaml.safe_load(f)
 
-        # 檢查是否成功解析
+        # 检查是否成功解析
         if workflow is None:
             print(f"❌ {file_path.name}: 文件為空或解析失敗")
             return False
 
-        # 檢查必需的頂級字段
-        # 注意：YAML 會將 'on' 解析為 True，所以我們需要特殊處理
+        # 检查必需的頂級字段
+        # 注意：YAML 會將 'on' 解析為 True，所以我們需要特殊处理
         required_fields = ["name", "jobs"]
         for field in required_fields:
             if field not in workflow:
@@ -46,13 +46,13 @@ def validate_workflow_structure(file_path: Path) -> bool:
                 print(f"   實際字段: {list(workflow.keys())}")
                 return False
 
-        # 檢查 'on' 字段（可能被解析為 True）
+        # 检查 'on' 字段（可能被解析為 True）
         if "on" not in workflow and True not in workflow:
             print(f"❌ {file_path.name}: 缺少觸發條件 'on'")
             print(f"   實際字段: {list(workflow.keys())}")
             return False
 
-        # 檢查 jobs 結構
+        # 检查 jobs 結構
         if not isinstance(workflow["jobs"], dict):
             print(f"❌ {file_path.name}: 'jobs' 必須是字典")
             return False
@@ -65,17 +65,17 @@ def validate_workflow_structure(file_path: Path) -> bool:
         return True
 
     except Exception as e:
-        print(f"❌ {file_path.name}: 結構驗證失敗 - {e}")
+        print(f"❌ {file_path.name}: 結構验证失敗 - {e}")
         return False
 
 
 def validate_build_desktop_workflow(file_path: Path) -> bool:
-    """驗證桌面構建工作流程的特定配置"""
+    """验证桌面构建工作流程的特定配置"""
     try:
         with open(file_path, encoding="utf-8") as f:
             workflow = yaml.safe_load(f)
 
-        # 檢查 matrix 配置
+        # 检查 matrix 配置
         build_job = workflow["jobs"].get("build-desktop", {})
         strategy = build_job.get("strategy", {})
         matrix = strategy.get("matrix", {})
@@ -84,7 +84,7 @@ def validate_build_desktop_workflow(file_path: Path) -> bool:
             print(f"❌ {file_path.name}: 缺少 matrix.include 配置")
             return False
 
-        # 檢查平台配置
+        # 检查平台配置
         platforms = matrix["include"]
         expected_platforms = {"windows", "macos-intel", "macos-arm64", "linux"}
         actual_platforms = {item.get("name") for item in platforms}
@@ -94,21 +94,21 @@ def validate_build_desktop_workflow(file_path: Path) -> bool:
             print(f"❌ {file_path.name}: 缺少平台配置: {missing}")
             return False
 
-        print(f"✅ {file_path.name}: 桌面構建配置正確")
+        print(f"✅ {file_path.name}: 桌面构建配置正確")
         return True
 
     except Exception as e:
-        print(f"❌ {file_path.name}: 桌面構建驗證失敗 - {e}")
+        print(f"❌ {file_path.name}: 桌面构建验证失敗 - {e}")
         return False
 
 
 def validate_publish_workflow(file_path: Path) -> bool:
-    """驗證發佈工作流程的特定配置"""
+    """验证發佈工作流程的特定配置"""
     try:
         with open(file_path, encoding="utf-8") as f:
             workflow = yaml.safe_load(f)
 
-        # 檢查輸入參數 - 注意 'on' 可能被解析為 True
+        # 检查輸入參數 - 注意 'on' 可能被解析為 True
         on_section = workflow.get("on") or workflow.get(True)
         if not on_section:
             print(f"❌ {file_path.name}: 找不到觸發條件")
@@ -126,7 +126,7 @@ def validate_publish_workflow(file_path: Path) -> bool:
             print(f"   實際輸入參數: {actual_inputs}")
             return False
 
-        # 檢查是否有桌面應用處理步驟
+        # 检查是否有桌面应用处理步驟
         release_job = workflow["jobs"].get("release", {})
         steps = release_job.get("steps", [])
 
@@ -135,20 +135,20 @@ def validate_publish_workflow(file_path: Path) -> bool:
         )
 
         if not has_desktop_steps:
-            print(f"❌ {file_path.name}: 缺少桌面應用處理步驟")
+            print(f"❌ {file_path.name}: 缺少桌面应用处理步驟")
             return False
 
         print(f"✅ {file_path.name}: 發佈工作流程配置正確")
         return True
 
     except Exception as e:
-        print(f"❌ {file_path.name}: 發佈工作流程驗證失敗 - {e}")
+        print(f"❌ {file_path.name}: 發佈工作流程验证失敗 - {e}")
         return False
 
 
 def main():
     """主函數"""
-    print("🔍 驗證 GitHub Actions 工作流程...")
+    print("🔍 验证 GitHub Actions 工作流程...")
     print()
 
     # 獲取工作流程目錄
@@ -170,23 +170,23 @@ def main():
     print(f"📁 找到 {len(workflow_files)} 個工作流程文件")
     print()
 
-    # 驗證每個文件
+    # 验证每個文件
     all_valid = True
 
     for workflow_file in sorted(workflow_files):
-        print(f"🔍 驗證 {workflow_file.name}...")
+        print(f"🔍 验证 {workflow_file.name}...")
 
-        # 基本語法驗證
+        # 基本語法验证
         if not validate_yaml_syntax(workflow_file):
             all_valid = False
             continue
 
-        # 結構驗證
+        # 結構验证
         if not validate_workflow_structure(workflow_file):
             all_valid = False
             continue
 
-        # 特定工作流程驗證
+        # 特定工作流程验证
         if workflow_file.name == "build-desktop.yml":
             if not validate_build_desktop_workflow(workflow_file):
                 all_valid = False
@@ -198,16 +198,16 @@ def main():
 
     # 總結
     if all_valid:
-        print("🎉 所有工作流程文件驗證通過！")
+        print("🎉 所有工作流程文件验证通過！")
         print()
         print("📋 下一步:")
         print("  1. 提交並推送更改到 GitHub")
-        print("  2. 測試 'Build Desktop Applications' 工作流程")
-        print("  3. 測試 'Build Desktop & Release' 工作流程")
-        print("  4. 驗證桌面應用是否正確包含在發佈中")
+        print("  2. 测试 'Build Desktop Applications' 工作流程")
+        print("  3. 测试 'Build Desktop & Release' 工作流程")
+        print("  4. 验证桌面应用是否正確包含在發佈中")
     else:
-        print("❌ 部分工作流程文件驗證失敗")
-        print("請修復上述問題後重新運行驗證")
+        print("❌ 部分工作流程文件验证失敗")
+        print("請修復上述問題後重新运行验证")
         sys.exit(1)
 
 

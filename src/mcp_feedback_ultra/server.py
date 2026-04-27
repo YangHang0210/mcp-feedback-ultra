@@ -3,23 +3,23 @@
 MCP Feedback Enhanced 伺服器主要模組
 
 此模組提供 MCP (Model Context Protocol) 的增強回饋收集功能，
-支援智能環境檢測，自動使用 Web UI 介面。
+支援智能环境檢測，自動使用 Web UI 介面。
 
 主要功能：
 - MCP 工具實現
 - 介面選擇（Web UI）
-- 環境檢測 (SSH Remote, WSL, Local)
+- 环境檢測 (SSH Remote, WSL, Local)
 - 國際化支援
-- 圖片處理與上傳
-- 命令執行與結果展示
+- 圖片处理與上傳
+- 命令执行與結果展示
 - 專案目錄管理
 
 主要 MCP 工具：
 - interactive_feedback: 收集用戶互動回饋
-- get_system_info: 獲取系統環境資訊
+- get_system_info: 獲取系統环境資訊
 
 作者: Fábio Ferreira (原作者)
-增強: Minidoracat (Web UI, 圖片支援, 環境檢測)
+增強: Minidoracat (Web UI, 圖片支援, 环境檢測)
 重構: 模塊化設計
 """
 
@@ -41,27 +41,27 @@ from pydantic import Field
 from .debug import server_debug_log as debug_log
 
 # 導入多語系支援
-# 導入錯誤處理框架
+# 導入错误处理框架
 from .utils.error_handler import ErrorHandler, ErrorType
 
-# 導入資源管理器
+# 導入资源管理器
 from .utils.resource_manager import create_temp_file
 
 
 # ===== 編碼初始化 =====
 def init_encoding():
-    """初始化編碼設置，確保正確處理中文字符"""
+    """初始化編碼设置，確保正確处理中文字符"""
     try:
-        # Windows 特殊處理
+        # Windows 特殊处理
         if sys.platform == "win32":
             import msvcrt
 
-            # 設置為二進制模式
+            # 设置為二進制模式
             msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
             msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
             # 重新包裝為 UTF-8 文本流，並禁用緩衝
-            # 修復 union-attr 錯誤 - 安全獲取 buffer 或 detach
+            # 修復 union-attr 错误 - 安全獲取 buffer 或 detach
             stdin_buffer = getattr(sys.stdin, "buffer", None)
             if stdin_buffer is None and hasattr(sys.stdin, "detach"):
                 stdin_buffer = sys.stdin.detach()
@@ -81,19 +81,19 @@ def init_encoding():
                 write_through=True,  # 關鍵：禁用寫入緩衝
             )
         else:
-            # 非 Windows 系統的標準設置
+            # 非 Windows 系統的標準设置
             if hasattr(sys.stdout, "reconfigure"):
                 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
             if hasattr(sys.stdin, "reconfigure"):
                 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
-        # 設置 stderr 編碼（用於調試訊息）
+        # 设置 stderr 編碼（用於調試訊息）
         if hasattr(sys.stderr, "reconfigure"):
             sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
         return True
     except Exception:
-        # 如果編碼設置失敗，嘗試基本設置
+        # 如果編碼设置失敗，嘗試基本设置
         try:
             if hasattr(sys.stdout, "reconfigure"):
                 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -106,7 +106,7 @@ def init_encoding():
         return False
 
 
-# 初始化編碼（在導入時就執行）
+# 初始化編碼（在導入時就执行）
 _encoding_initialized = init_encoding()
 
 # ===== 常數定義 =====
@@ -119,15 +119,15 @@ REMOTE_ENV_VARS = ["REMOTE_CONTAINERS", "CODESPACES"]
 from . import __version__
 
 
-# 確保 log_level 設定為正確的大寫格式
+# 確保 log_level 设定為正確的大寫格式
 fastmcp_settings = {}
 
-# 檢查環境變數並設定正確的 log_level
+# 检查环境变量並设定正確的 log_level
 env_log_level = os.getenv("FASTMCP_LOG_LEVEL", "").upper()
 if env_log_level in ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
     fastmcp_settings["log_level"] = env_log_level
 else:
-    # 預設使用 INFO 等級
+    # 预设使用 INFO 等級
     fastmcp_settings["log_level"] = "INFO"
 
 mcp: Any = FastMCP(SERVER_NAME)
@@ -136,28 +136,28 @@ mcp: Any = FastMCP(SERVER_NAME)
 # ===== 工具函數 =====
 def is_wsl_environment() -> bool:
     """
-    檢測是否在 WSL (Windows Subsystem for Linux) 環境中運行
+    檢測是否在 WSL (Windows Subsystem for Linux) 环境中运行
 
     Returns:
-        bool: True 表示 WSL 環境，False 表示其他環境
+        bool: True 表示 WSL 环境，False 表示其他环境
     """
     try:
-        # 檢查 /proc/version 文件是否包含 WSL 標識
+        # 检查 /proc/version 文件是否包含 WSL 標識
         if os.path.exists("/proc/version"):
             with open("/proc/version") as f:
                 version_info = f.read().lower()
                 if "microsoft" in version_info or "wsl" in version_info:
-                    debug_log("偵測到 WSL 環境（通過 /proc/version）")
+                    debug_log("偵測到 WSL 环境（通過 /proc/version）")
                     return True
 
-        # 檢查 WSL 相關環境變數
+        # 检查 WSL 相關环境变量
         wsl_env_vars = ["WSL_DISTRO_NAME", "WSL_INTEROP", "WSLENV"]
         for env_var in wsl_env_vars:
             if os.getenv(env_var):
-                debug_log(f"偵測到 WSL 環境變數: {env_var}")
+                debug_log(f"偵測到 WSL 环境变量: {env_var}")
                 return True
 
-        # 檢查是否存在 WSL 特有的路徑
+        # 检查是否存在 WSL 特有的路徑
         wsl_paths = ["/mnt/c", "/mnt/d", "/proc/sys/fs/binfmt_misc/WSLInterop"]
         for path in wsl_paths:
             if os.path.exists(path):
@@ -165,54 +165,54 @@ def is_wsl_environment() -> bool:
                 return True
 
     except Exception as e:
-        debug_log(f"WSL 檢測過程中發生錯誤: {e}")
+        debug_log(f"WSL 檢測過程中發生错误: {e}")
 
     return False
 
 
 def is_remote_environment() -> bool:
     """
-    檢測是否在遠端環境中運行
+    檢測是否在遠端环境中运行
 
     Returns:
-        bool: True 表示遠端環境，False 表示本地環境
+        bool: True 表示遠端环境，False 表示本地环境
     """
-    # WSL 不應被視為遠端環境，因為它可以訪問 Windows 瀏覽器
+    # WSL 不應被視為遠端环境，因為它可以訪問 Windows 瀏覽器
     if is_wsl_environment():
-        debug_log("WSL 環境不被視為遠端環境")
+        debug_log("WSL 环境不被視為遠端环境")
         return False
 
-    # 檢查 SSH 連線指標
+    # 检查 SSH 连线指標
     for env_var in SSH_ENV_VARS:
         if os.getenv(env_var):
-            debug_log(f"偵測到 SSH 環境變數: {env_var}")
+            debug_log(f"偵測到 SSH 环境变量: {env_var}")
             return True
 
-    # 檢查遠端開發環境
+    # 检查遠端开发环境
     for env_var in REMOTE_ENV_VARS:
         if os.getenv(env_var):
-            debug_log(f"偵測到遠端開發環境: {env_var}")
+            debug_log(f"偵測到遠端开发环境: {env_var}")
             return True
 
-    # 檢查 Docker 容器
+    # 检查 Docker 容器
     if os.path.exists("/.dockerenv"):
-        debug_log("偵測到 Docker 容器環境")
+        debug_log("偵測到 Docker 容器环境")
         return True
 
-    # Windows 遠端桌面檢查
+    # Windows 遠端桌面检查
     if sys.platform == "win32":
         session_name = os.getenv("SESSIONNAME", "")
         if session_name and "RDP" in session_name:
             debug_log(f"偵測到 Windows 遠端桌面: {session_name}")
             return True
 
-    # Linux 無顯示環境檢查（但排除 WSL）
+    # Linux 無顯示环境检查（但排除 WSL）
     if (
         sys.platform.startswith("linux")
         and not os.getenv("DISPLAY")
         and not is_wsl_environment()
     ):
-        debug_log("偵測到 Linux 無顯示環境")
+        debug_log("偵測到 Linux 無顯示环境")
         return True
 
     return False
@@ -220,17 +220,17 @@ def is_remote_environment() -> bool:
 
 def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> str:
     """
-    將回饋資料儲存到 JSON 文件
+    將回饋资料儲存到 JSON 文件
 
     Args:
-        feedback_data: 回饋資料字典
+        feedback_data: 回饋资料字典
         file_path: 儲存路徑，若為 None 則自動產生臨時文件
 
     Returns:
         str: 儲存的文件路徑
     """
     if file_path is None:
-        # 使用資源管理器創建臨時文件
+        # 使用资源管理器創建臨時文件
         file_path = create_temp_file(suffix=".json", prefix="feedback_")
 
     # 確保目錄存在
@@ -241,7 +241,7 @@ def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> 
     # 複製數據以避免修改原始數據
     json_data = feedback_data.copy()
 
-    # 處理圖片數據：將 bytes 轉換為 base64 字符串以便 JSON 序列化
+    # 处理圖片數據：將 bytes 轉換為 base64 字符串以便 JSON 序列化
     if "images" in json_data and isinstance(json_data["images"], list):
         processed_images = []
         for img in json_data["images"]:
@@ -258,11 +258,11 @@ def save_feedback_to_file(feedback_data: dict, file_path: str | None = None) -> 
                 processed_images.append(img)
         json_data["images"] = processed_images
 
-    # 儲存資料
+    # 儲存资料
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(json_data, f, ensure_ascii=False, indent=2)
 
-    debug_log(f"回饋資料已儲存至: {file_path}")
+    debug_log(f"回饋资料已儲存至: {file_path}")
     return file_path
 
 
@@ -271,7 +271,7 @@ def create_feedback_text(feedback_data: dict) -> str:
     建立格式化的回饋文字
 
     Args:
-        feedback_data: 回饋資料字典
+        feedback_data: 回饋资料字典
 
     Returns:
         str: 格式化後的回饋文字
@@ -282,9 +282,9 @@ def create_feedback_text(feedback_data: dict) -> str:
     if feedback_data.get("interactive_feedback"):
         text_parts.append(f"=== 用戶回饋 ===\n{feedback_data['interactive_feedback']}")
 
-    # 命令執行日誌
+    # 命令执行日誌
     if feedback_data.get("command_logs"):
-        text_parts.append(f"=== 命令執行日誌 ===\n{feedback_data['command_logs']}")
+        text_parts.append(f"=== 命令执行日誌 ===\n{feedback_data['command_logs']}")
 
     # 圖片附件概要
     if feedback_data.get("images"):
@@ -330,13 +330,13 @@ def create_feedback_text(feedback_data: dict) -> str:
                         # 如果 AI 助手不支援 MCP 圖片，可以提供完整 base64
                         debug_log(f"圖片 {i} Base64 已準備，長度: {len(img_base64)}")
 
-                        # 檢查是否啟用 Base64 詳細模式（從 UI 設定中獲取）
+                        # 检查是否啟用 Base64 詳細模式（從 UI 设定中獲取）
                         include_full_base64 = feedback_data.get("settings", {}).get(
                             "enable_base64_detail", False
                         )
 
                         if include_full_base64:
-                            # 根據檔案名推斷 MIME 類型
+                            # 根據文件名推斷 MIME 類型
                             file_name = img.get("name", "image.png")
                             if file_name.lower().endswith((".jpg", ".jpeg")):
                                 mime_type = "image/jpeg"
@@ -350,7 +350,7 @@ def create_feedback_text(feedback_data: dict) -> str:
                             img_info += f"\n     完整 Base64: data:{mime_type};base64,{img_base64}"
 
                 except Exception as e:
-                    debug_log(f"圖片 {i} Base64 處理失敗: {e}")
+                    debug_log(f"圖片 {i} Base64 处理失敗: {e}")
 
             text_parts.append(img_info)
 
@@ -364,10 +364,10 @@ def create_feedback_text(feedback_data: dict) -> str:
 
 def process_images(images_data: list[dict]) -> list[MCPImage]:
     """
-    處理圖片資料，轉換為 MCP 圖片對象
+    处理圖片资料，轉換為 MCP 圖片對象
 
     Args:
-        images_data: 圖片資料列表
+        images_data: 圖片资料列表
 
     Returns:
         List[MCPImage]: MCP 圖片對象列表
@@ -377,10 +377,10 @@ def process_images(images_data: list[dict]) -> list[MCPImage]:
     for i, img in enumerate(images_data, 1):
         try:
             if not img.get("data"):
-                debug_log(f"圖片 {i} 沒有資料，跳過")
+                debug_log(f"圖片 {i} 沒有资料，跳過")
                 continue
 
-            # 檢查數據類型並相應處理
+            # 检查數據類型並相應处理
             if isinstance(img["data"], bytes):
                 # 如果是原始 bytes 數據，直接使用
                 image_bytes = img["data"]
@@ -412,18 +412,18 @@ def process_images(images_data: list[dict]) -> list[MCPImage]:
             mcp_image = MCPImage(data=image_bytes, format=image_format)
             mcp_images.append(mcp_image)
 
-            debug_log(f"圖片 {i} ({file_name}) 處理成功，格式: {image_format}")
+            debug_log(f"圖片 {i} ({file_name}) 处理成功，格式: {image_format}")
 
         except Exception as e:
-            # 使用統一錯誤處理（不影響 JSON RPC）
+            # 使用統一错误处理（不影響 JSON RPC）
             error_id = ErrorHandler.log_error_with_context(
                 e,
-                context={"operation": "圖片處理", "image_index": i},
+                context={"operation": "圖片处理", "image_index": i},
                 error_type=ErrorType.FILE_IO,
             )
-            debug_log(f"圖片 {i} 處理失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"圖片 {i} 处理失敗 [错误ID: {error_id}]: {e}")
 
-    debug_log(f"共處理 {len(mcp_images)} 張圖片")
+    debug_log(f"共处理 {len(mcp_images)} 張圖片")
     return mcp_images
 
 
@@ -458,11 +458,11 @@ async def interactive_feedback(
     Returns:
         list: List containing TextContent and MCPImage objects representing user feedback
     """
-    # 環境偵測
+    # 环境偵測
     is_remote = is_remote_environment()
     is_wsl = is_wsl_environment()
 
-    debug_log(f"環境偵測結果 - 遠端: {is_remote}, WSL: {is_wsl}")
+    debug_log(f"环境偵測結果 - 遠端: {is_remote}, WSL: {is_wsl}")
     debug_log("使用介面: Web UI")
 
     try:
@@ -471,7 +471,7 @@ async def interactive_feedback(
             project_directory = os.getcwd()
         project_directory = os.path.abspath(project_directory)
 
-        # 超時時間優先級: 環境變數 MCP_FEEDBACK_TIMEOUT > 工具參數 timeout > 預設值 600
+        # 超時時間優先級: 环境变量 MCP_FEEDBACK_TIMEOUT > 工具參數 timeout > 预设值 600
         effective_timeout = timeout
         env_timeout = os.getenv("MCP_FEEDBACK_TIMEOUT")
         if env_timeout:
@@ -480,11 +480,11 @@ async def interactive_feedback(
                 if env_timeout_value > 0:
                     effective_timeout = env_timeout_value
                     debug_log(
-                        f"使用環境變數 MCP_FEEDBACK_TIMEOUT 覆蓋超時時間: {effective_timeout} 秒"
+                        f"使用环境变量 MCP_FEEDBACK_TIMEOUT 覆蓋超時時間: {effective_timeout} 秒"
                     )
             except ValueError:
                 debug_log(
-                    f"MCP_FEEDBACK_TIMEOUT 格式錯誤 ({env_timeout})，使用工具參數值: {timeout} 秒"
+                    f"MCP_FEEDBACK_TIMEOUT 格式错误 ({env_timeout})，使用工具參數值: {timeout} 秒"
                 )
 
         # 使用 Web 模式
@@ -492,7 +492,7 @@ async def interactive_feedback(
 
         result = await launch_web_feedback_ui(project_directory, summary, effective_timeout)
 
-        # 處理取消情況
+        # 处理取消情況
         if not result:
             return [TextContent(type="text", text="用戶取消了回饋。")]
 
@@ -515,7 +515,7 @@ async def interactive_feedback(
         # 添加圖片回饋
         if result.get("images"):
             mcp_images = process_images(result["images"])
-            # 修復 arg-type 錯誤 - 直接擴展列表
+            # 修復 arg-type 错误 - 直接擴展列表
             feedback_items.extend(mcp_images)
             debug_log(f"已添加 {len(mcp_images)} 張圖片")
 
@@ -535,16 +535,16 @@ async def interactive_feedback(
         return feedback_items
 
     except Exception as e:
-        # 使用統一錯誤處理，但不影響 JSON RPC 響應
+        # 使用統一错误处理，但不影響 JSON RPC 響應
         error_id = ErrorHandler.log_error_with_context(
             e,
             context={"operation": "回饋收集", "project_dir": project_directory},
             error_type=ErrorType.SYSTEM,
         )
 
-        # 生成用戶友好的錯誤信息
+        # 生成用戶友好的错误信息
         user_error_msg = ErrorHandler.format_user_error(e, include_technical=False)
-        debug_log(f"回饋收集錯誤 [錯誤ID: {error_id}]: {e!s}")
+        debug_log(f"回饋收集错误 [错误ID: {error_id}]: {e!s}")
 
         return [TextContent(type="text", text=user_error_msg)]
 
@@ -583,7 +583,7 @@ def _get_feedback_reminder(result: dict) -> str | None:
 
 async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -> dict:
     """
-    啟動 Web UI 收集回饋，支援自訂超時時間
+    启动 Web UI 收集回饋，支援自訂超時時間
 
     Args:
         project_dir: 專案目錄路徑
@@ -591,9 +591,9 @@ async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -
         timeout: 超時時間（秒）
 
     Returns:
-        dict: 收集到的回饋資料
+        dict: 收集到的回饋资料
     """
-    debug_log(f"啟動 Web UI 介面，超時時間: {timeout} 秒")
+    debug_log(f"启动 Web UI 介面，超時時間: {timeout} 秒")
 
     try:
         # 使用新的 web 模組
@@ -602,7 +602,7 @@ async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -
         # 傳遞 timeout 參數給 Web UI
         return await web_launch(project_dir, summary, timeout)
     except ImportError as e:
-        # 使用統一錯誤處理
+        # 使用統一错误处理
         error_id = ErrorHandler.log_error_with_context(
             e,
             context={"operation": "Web UI 模組導入", "module": "web"},
@@ -611,7 +611,7 @@ async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -
         user_error_msg = ErrorHandler.format_user_error(
             e, ErrorType.DEPENDENCY, include_technical=False
         )
-        debug_log(f"Web UI 模組導入失敗 [錯誤ID: {error_id}]: {e}")
+        debug_log(f"Web UI 模組導入失敗 [错误ID: {error_id}]: {e}")
 
         return {
             "command_logs": "",
@@ -623,7 +623,7 @@ async def launch_web_feedback_ui(project_dir: str, summary: str, timeout: int) -
 @mcp.tool()
 def get_system_info() -> str:
     """
-    獲取系統環境資訊
+    獲取系統环境資訊
 
     Returns:
         str: JSON 格式的系統資訊
@@ -634,10 +634,10 @@ def get_system_info() -> str:
     system_info = {
         "平台": sys.platform,
         "Python 版本": sys.version.split()[0],
-        "WSL 環境": is_wsl,
-        "遠端環境": is_remote,
+        "WSL 环境": is_wsl,
+        "遠端环境": is_remote,
         "介面類型": "Web UI",
-        "環境變數": {
+        "环境变量": {
             "SSH_CONNECTION": os.getenv("SSH_CONNECTION"),
             "SSH_CLIENT": os.getenv("SSH_CLIENT"),
             "DISPLAY": os.getenv("DISPLAY"),
@@ -652,28 +652,28 @@ def get_system_info() -> str:
     return json.dumps(system_info, ensure_ascii=False, indent=2)
 
 
-# ===== 主程式入口 =====
+# ===== 主程序入口 =====
 def main():
-    """主要入口點，用於套件執行
+    """主要入口點，用於套件执行
     收集用戶的互動回饋，支援文字和圖片
-    此工具使用 Web UI 介面收集用戶回饋，支援智能環境檢測。
+    此工具使用 Web UI 介面收集用戶回饋，支援智能环境檢測。
 
     用戶可以：
-    1. 執行命令來驗證結果
+    1. 执行命令來验证結果
     2. 提供文字回饋
     3. 上傳圖片作為回饋
     4. 查看 AI 的工作摘要
 
     調試模式：
-    - 設置環境變數 MCP_DEBUG=true 可啟用詳細調試輸出
-    - 生產環境建議關閉調試模式以避免輸出干擾
+    - 设置环境变量 MCP_DEBUG=true 可啟用詳細調試輸出
+    - 生產环境建議关闭調試模式以避免輸出干擾
 
 
     """
-    # 檢查是否啟用調試模式
+    # 检查是否啟用調試模式
     debug_enabled = os.getenv("MCP_DEBUG", "").lower() in ("true", "1", "yes", "on")
 
-    # 檢查是否啟用桌面模式
+    # 检查是否啟用桌面模式
     desktop_mode = os.getenv("MCP_DESKTOP_MODE", "").lower() in (
         "true",
         "1",
@@ -682,17 +682,17 @@ def main():
     )
 
     if debug_enabled:
-        debug_log("🚀 啟動互動式回饋收集 MCP 服務器")
+        debug_log("🚀 启动互動式回饋收集 MCP 服務器")
         debug_log(f"   服務器名稱: {SERVER_NAME}")
         debug_log(f"   版本: {__version__}")
         debug_log(f"   平台: {sys.platform}")
         debug_log(f"   編碼初始化: {'成功' if _encoding_initialized else '失敗'}")
-        debug_log(f"   遠端環境: {is_remote_environment()}")
-        debug_log(f"   WSL 環境: {is_wsl_environment()}")
+        debug_log(f"   遠端环境: {is_remote_environment()}")
+        debug_log(f"   WSL 环境: {is_wsl_environment()}")
         debug_log(f"   桌面模式: {'啟用' if desktop_mode else '禁用'}")
         debug_log("   介面類型: Web UI")
         debug_log("   等待來自 AI 助手的調用...")
-        debug_log("準備啟動 MCP 伺服器...")
+        debug_log("準備启动 MCP 伺服器...")
         debug_log("調用 mcp.run()...")
 
     try:
@@ -706,10 +706,10 @@ def main():
         sys.exit(0)
     except Exception as e:
         if debug_enabled:
-            debug_log(f"MCP 服務器啟動失敗: {e}")
+            debug_log(f"MCP 服務器启动失敗: {e}")
             import traceback
 
-            debug_log(f"詳細錯誤: {traceback.format_exc()}")
+            debug_log(f"詳細错误: {traceback.format_exc()}")
         sys.exit(1)
 
 

@@ -18,7 +18,7 @@ def find_free_port(
     Args:
         start_port: 起始端口號
         max_attempts: 最大嘗試次數
-        preferred_port: 偏好端口號（用於保持設定持久性）
+        preferred_port: 偏好端口號（用於保持设定持久性）
 
     Returns:
         int: 可用的端口號
@@ -49,7 +49,7 @@ def find_free_port(
 
 def is_port_available(host: str, port: int) -> bool:
     """
-    檢查端口是否可用
+    检查端口是否可用
 
     Args:
         host: 主機地址

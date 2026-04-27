@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-測試數據和常量
+测试數據和常量
 """
 
 from typing import Dict, Any, List
 
 
 class TestData:
-    """測試數據類"""
+    """测试數據類"""
 
-    # 測試會話數據
+    # 测试會話數據
     SAMPLE_SESSION: Dict[str, Any] = {
         "session_id": "test-session-12345",
         "project_directory": "/test/project",
-        "summary": "測試 AI 工作摘要 - 已完成代碼重構",
+        "summary": "测试 AI 工作摘要 - 已完成代碼重構",
         "status": "waiting",
         "timeout": 600
     }
 
-    # 測試回饋數據
+    # 测试回饋數據
     SAMPLE_FEEDBACK: Dict[str, Any] = {
-        "feedback": "測試回饋內容 - 代碼看起來不錯，請繼續",
+        "feedback": "测试回饋內容 - 代碼看起來不錯，請繼續",
         "images": [],
         "settings": {
             "image_size_limit": 1024 * 1024,
@@ -29,14 +29,14 @@ class TestData:
         }
     }
     
-    # 測試圖片數據（Base64 編碼的小圖片）
+    # 测试圖片數據（Base64 編碼的小圖片）
     SAMPLE_IMAGE_BASE64: str = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
 
-    # 測試 WebSocket 消息
+    # 测试 WebSocket 消息
     WEBSOCKET_MESSAGES: Dict[str, Dict[str, Any]] = {
         "connection_established": {
             "type": "connection_established",
-            "message": "WebSocket 連接已建立"
+            "message": "WebSocket 连接已建立"
         },
         "session_updated": {
             "type": "session_updated",
@@ -57,7 +57,7 @@ class TestData:
         }
     }
     
-    # I18N 測試數據
+    # I18N 测试數據
     I18N_TEST_KEYS: List[str] = [
         "common.submit",
         "common.cancel",
@@ -73,14 +73,14 @@ class TestData:
     # 支援的語言列表
     SUPPORTED_LANGUAGES: List[str] = ["zh-TW", "zh-CN", "en"]
 
-    # 測試環境變數
+    # 测试环境变量
     TEST_ENV_VARS: Dict[str, str] = {
         "MCP_DEBUG": "true",
         "MCP_WEB_PORT": "8765",
         "MCP_TEST_MODE": "true"
     }
 
-    # 測試配置
+    # 测试配置
     TEST_CONFIG: Dict[str, Dict[str, Any]] = {
         "web_ui": {
             "host": "127.0.0.1",
@@ -106,7 +106,7 @@ class MockResponses:
         """成功的回饋回應"""
         return {
             "command_logs": "$ echo 'test'\ntest\n",
-            "interactive_feedback": "用戶確認：功能正常運作",
+            "interactive_feedback": "用戶确认：功能正常運作",
             "images": []
         }
     
@@ -136,7 +136,7 @@ class MockResponses:
     
     @staticmethod
     def error_response(error_message: str) -> Dict[str, Any]:
-        """錯誤回應"""
+        """错误回應"""
         return {
             "error": error_message,
             "command_logs": "",
@@ -199,16 +199,16 @@ class MockResponses:
 
 
 class TestScenarios:
-    """測試場景數據"""
+    """测试場景數據"""
     
     BASIC_WORKFLOW = {
         "name": "basic_workflow",
-        "description": "基本 MCP 工作流程測試",
+        "description": "基本 MCP 工作流程测试",
         "steps": [
-            "啟動 MCP 服務器",
-            "初始化連接",
+            "启动 MCP 服務器",
+            "初始化连接",
             "調用 interactive_feedback 工具",
-            "驗證回應格式"
+            "验证回應格式"
         ],
         "expected_result": {
             "success": True,
@@ -219,12 +219,12 @@ class TestScenarios:
     
     WEB_UI_TEST = {
         "name": "web_ui_startup",
-        "description": "Web UI 啟動測試",
+        "description": "Web UI 启动测试",
         "steps": [
             "創建 WebUIManager",
-            "啟動 Web 服務器",
-            "驗證服務器可訪問",
-            "測試基本路由"
+            "启动 Web 服務器",
+            "验证服務器可訪問",
+            "测试基本路由"
         ],
         "expected_result": {
             "server_started": True,
@@ -235,12 +235,12 @@ class TestScenarios:
     
     I18N_TEST = {
         "name": "i18n_functionality",
-        "description": "國際化功能測試",
+        "description": "國際化功能测试",
         "steps": [
             "載入 I18N 管理器",
-            "測試語言切換",
-            "驗證翻譯完整性",
-            "測試回退機制"
+            "测试語言切換",
+            "验证翻譯完整性",
+            "测试回退機制"
         ],
         "expected_result": {
             "languages_loaded": True,

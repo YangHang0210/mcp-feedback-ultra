@@ -14,13 +14,13 @@ from pathlib import Path
 
 
 def run_cmd(cmd, check=True):
-    """執行命令並返回結果"""
-    print(f"🔨 執行: {cmd}")
+    """执行命令並返回結果"""
+    print(f"🔨 执行: {cmd}")
     result = subprocess.run(
         cmd, shell=True, capture_output=True, text=True, check=False
     )
     if check and result.returncode != 0:
-        print(f"❌ 錯誤: {result.stderr}")
+        print(f"❌ 错误: {result.stderr}")
         sys.exit(1)
     return result
 
@@ -62,12 +62,12 @@ def main():
 
     print("🚀 開始發布流程...")
 
-    # 檢查 Git 狀態（僅提示，不阻止）
+    # 检查 Git 狀態（僅提示，不阻止）
     result = run_cmd("git status --porcelain", check=False)
     if result.stdout.strip():
         print("⚠️  有未提交的變更：")
         print(result.stdout)
-        print("💡 將繼續執行（使用 --allow-dirty 模式）")
+        print("💡 將繼續执行（使用 --allow-dirty 模式）")
 
     # 更新版本
     old_version, new_version = bump_version(version_type)
@@ -76,8 +76,8 @@ def main():
     print("📦 建置套件...")
     run_cmd("uv build")
 
-    # 檢查套件
-    print("🔍 檢查套件...")
+    # 检查套件
+    print("🔍 检查套件...")
     run_cmd("uv run twine check dist/*")
 
     # 提交所有變更（包括版本更新）

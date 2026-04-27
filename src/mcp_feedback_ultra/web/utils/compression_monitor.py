@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-壓縮性能監控工具
+壓縮性能监控工具
 ================
 
-監控 Gzip 壓縮的性能效果，包括壓縮比率、響應時間和文件大小統計。
+监控 Gzip 壓縮的性能效果，包括壓縮比率、響應時間和文件大小統計。
 提供實時性能數據和優化建議。
 """
 
@@ -42,7 +42,7 @@ class CompressionSummary:
 
 
 class CompressionMonitor:
-    """壓縮性能監控器"""
+    """壓縮性能监控器"""
 
     def __init__(self, max_metrics: int = 1000):
         self.max_metrics = max_metrics
@@ -65,7 +65,7 @@ class CompressionMonitor:
         content_type: str = "",
         was_compressed: bool = False,
     ):
-        """記錄請求的壓縮數據"""
+        """记录請求的壓縮數據"""
 
         compression_ratio = 0.0
         if original_size > 0 and was_compressed:
@@ -85,7 +85,7 @@ class CompressionMonitor:
         with self.lock:
             self.metrics.append(metric)
 
-            # 限制記錄數量
+            # 限制记录數量
             if len(self.metrics) > self.max_metrics:
                 self.metrics = self.metrics[-self.max_metrics :]
 
@@ -302,12 +302,12 @@ class CompressionMonitor:
         }
 
 
-# 全域監控器實例
+# 全域监控器實例
 _compression_monitor: CompressionMonitor | None = None
 
 
 def get_compression_monitor() -> CompressionMonitor:
-    """獲取全域壓縮監控器實例"""
+    """獲取全域壓縮监控器實例"""
     global _compression_monitor
     if _compression_monitor is None:
         _compression_monitor = CompressionMonitor()

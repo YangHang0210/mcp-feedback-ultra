@@ -3,15 +3,15 @@
 MCP Interactive Feedback Enhanced
 ==================================
 
-互動式用戶回饋 MCP 伺服器，提供 AI 輔助開發中的回饋收集功能。
+互動式用戶回饋 MCP 伺服器，提供 AI 輔助开发中的回饋收集功能。
 
 作者: Fábio Ferreira
 增強功能: Web UI 支援、圖片上傳、現代化界面設計
 
 特色：
 - Web UI 介面支援
-- 智慧環境檢測
-- 命令執行功能
+- 智慧环境檢測
+- 命令执行功能
 - 圖片上傳支援
 - 現代化深色主題
 - 重構的模組化架構
@@ -46,7 +46,7 @@ __all__ = [
 
 
 def main():
-    """主要入口點，用於 uvx 執行"""
+    """主要入口點，用於 uvx 执行"""
     from .__main__ import main as cli_main
 
     return cli_main()

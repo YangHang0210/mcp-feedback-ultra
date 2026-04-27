@@ -3,8 +3,8 @@
 會話清理管理器
 ==============
 
-統一管理 Web 會話的清理策略、統計和性能監控。
-與內存監控系統深度集成，提供智能清理決策。
+統一管理 Web 會話的清理策略、統計和性能监控。
+與內存监控系統深度集成，提供智能清理決策。
 """
 
 import threading
@@ -83,20 +83,20 @@ class SessionCleanupManager:
         self.cleanup_callbacks: list[Callable] = []
         self.stats_callbacks: list[Callable] = []
 
-        # 清理歷史記錄
+        # 清理歷史记录
         self.cleanup_history: list[dict[str, Any]] = []
         self.max_history = 100
 
         debug_log("SessionCleanupManager 初始化完成")
 
     def start_auto_cleanup(self) -> bool:
-        """啟動自動清理"""
+        """启动自動清理"""
         if not self.policy.enable_auto_cleanup:
             debug_log("自動清理已禁用")
             return False
 
         if self.is_running:
-            debug_log("自動清理已在運行")
+            debug_log("自動清理已在运行")
             return True
 
         try:
@@ -110,21 +110,21 @@ class SessionCleanupManager:
             )
             self.cleanup_thread.start()
 
-            debug_log(f"自動清理已啟動，間隔 {self.policy.cleanup_interval} 秒")
+            debug_log(f"自動清理已启动，間隔 {self.policy.cleanup_interval} 秒")
             return True
 
         except Exception as e:
             self.is_running = False
             error_id = ErrorHandler.log_error_with_context(
-                e, context={"operation": "啟動自動清理"}, error_type=ErrorType.SYSTEM
+                e, context={"operation": "启动自動清理"}, error_type=ErrorType.SYSTEM
             )
-            debug_log(f"啟動自動清理失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"启动自動清理失敗 [错误ID: {error_id}]: {e}")
             return False
 
     def stop_auto_cleanup(self) -> bool:
         """停止自動清理"""
         if not self.is_running:
-            debug_log("自動清理未在運行")
+            debug_log("自動清理未在运行")
             return True
 
         try:
@@ -141,7 +141,7 @@ class SessionCleanupManager:
             error_id = ErrorHandler.log_error_with_context(
                 e, context={"operation": "停止自動清理"}, error_type=ErrorType.SYSTEM
             )
-            debug_log(f"停止自動清理失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"停止自動清理失敗 [错误ID: {error_id}]: {e}")
             return False
 
     def _auto_cleanup_loop(self):
@@ -150,7 +150,7 @@ class SessionCleanupManager:
 
         while not self._stop_event.is_set():
             try:
-                # 執行清理檢查
+                # 执行清理检查
                 self._perform_auto_cleanup()
 
                 # 等待下次清理
@@ -163,21 +163,21 @@ class SessionCleanupManager:
                     context={"operation": "自動清理循環"},
                     error_type=ErrorType.SYSTEM,
                 )
-                debug_log(f"自動清理循環錯誤 [錯誤ID: {error_id}]: {e}")
+                debug_log(f"自動清理循環错误 [错误ID: {error_id}]: {e}")
 
-                # 發生錯誤時等待較短時間後重試
+                # 發生错误時等待較短時間後重試
                 if self._stop_event.wait(30):
                     break
 
         debug_log("自動清理循環結束")
 
     def _perform_auto_cleanup(self):
-        """執行自動清理"""
+        """执行自動清理"""
         cleanup_start_time = time.time()
         cleaned_sessions = 0
 
         try:
-            # 1. 檢查會話數量限制
+            # 1. 检查會話數量限制
             if len(self.web_ui_manager.sessions) > self.policy.max_sessions:
                 cleaned = self._cleanup_by_capacity()
                 cleaned_sessions += cleaned
@@ -204,9 +204,9 @@ class SessionCleanupManager:
 
         except Exception as e:
             error_id = ErrorHandler.log_error_with_context(
-                e, context={"operation": "執行自動清理"}, error_type=ErrorType.SYSTEM
+                e, context={"operation": "执行自動清理"}, error_type=ErrorType.SYSTEM
             )
-            debug_log(f"執行自動清理失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"执行自動清理失敗 [错误ID: {error_id}]: {e}")
 
     def trigger_cleanup(self, trigger: CleanupTrigger, force: bool = False) -> int:
         """觸發清理操作"""
@@ -255,7 +255,7 @@ class SessionCleanupManager:
                 },
                 error_type=ErrorType.SYSTEM,
             )
-            debug_log(f"觸發清理操作失敗 [錯誤ID: {error_id}]: {e}")
+            debug_log(f"觸發清理操作失敗 [错误ID: {error_id}]: {e}")
             return 0
 
     def _cleanup_by_capacity(self) -> int:
@@ -321,7 +321,7 @@ class SessionCleanupManager:
         expired_sessions = []
 
         for session_id, session in self.web_ui_manager.sessions.items():
-            # 檢查是否過期
+            # 检查是否過期
             if session.is_expired() or session.get_age() > self.policy.max_session_age:
                 expired_sessions.append(session_id)
 
@@ -360,7 +360,7 @@ class SessionCleanupManager:
             ):
                 continue
 
-            # 檢查是否空閒時間過長
+            # 检查是否空閒時間過長
             if session.get_idle_time() > self.policy.max_idle_time:
                 idle_sessions.append(session_id)
 
@@ -409,7 +409,7 @@ class SessionCleanupManager:
         elif trigger == CleanupTrigger.MANUAL:
             self.stats.manual_cleanups += 1
 
-        # 記錄清理歷史
+        # 记录清理歷史
         cleanup_record = {
             "timestamp": datetime.now().isoformat(),
             "trigger": trigger.value,
@@ -421,7 +421,7 @@ class SessionCleanupManager:
 
         self.cleanup_history.append(cleanup_record)
 
-        # 限制歷史記錄數量
+        # 限制歷史记录數量
         if len(self.cleanup_history) > self.max_history:
             self.cleanup_history = self.cleanup_history[-self.max_history :]
 
@@ -430,7 +430,7 @@ class SessionCleanupManager:
             try:
                 callback(self.stats, cleanup_record)
             except Exception as e:
-                debug_log(f"統計回調執行失敗: {e}")
+                debug_log(f"統計回調执行失敗: {e}")
 
     def get_cleanup_statistics(self) -> dict[str, Any]:
         """獲取清理統計數據"""
@@ -462,7 +462,7 @@ class SessionCleanupManager:
         return stats_dict
 
     def get_cleanup_history(self, limit: int = 20) -> list[dict[str, Any]]:
-        """獲取清理歷史記錄"""
+        """獲取清理歷史记录"""
         return self.cleanup_history[-limit:] if self.cleanup_history else []
 
     def add_cleanup_callback(self, callback: Callable):

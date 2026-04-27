@@ -45,7 +45,7 @@ class MessageCodes:
     SESSION_MANUAL_CLEANUP = "session.manualCleanup"
     SESSION_ERROR_CLEANUP = "session.errorCleanup"
 
-    # ========== 設定相關 ==========
+    # ========== 设定相關 ==========
     SETTINGS_SAVED = "settingsAPI.saved"
     SETTINGS_LOADED = "settingsAPI.loaded"
     SETTINGS_CLEARED = "settingsAPI.cleared"
@@ -57,7 +57,7 @@ class MessageCodes:
     SETTINGS_LOG_LEVEL_UPDATED = "settingsAPI.logLevelUpdated"
     SETTINGS_INVALID_LOG_LEVEL = "settingsAPI.invalidLogLevel"
 
-    # ========== 命令執行相關 ==========
+    # ========== 命令执行相關 ==========
     COMMAND_EXECUTING = "commandStatus.executing"
     COMMAND_COMPLETED = "commandStatus.completed"
     COMMAND_FAILED = "commandStatus.failed"
@@ -65,7 +65,7 @@ class MessageCodes:
     COMMAND_OUTPUT_RECEIVED = "commandStatus.outputReceived"
     COMMAND_ERROR = "commandStatus.error"
 
-    # ========== 錯誤相關 ==========
+    # ========== 错误相關 ==========
     ERROR_GENERIC = "error.generic"
     ERROR_NETWORK = "error.network"
     ERROR_SERVER = "error.server"
@@ -78,7 +78,7 @@ class MessageCodes:
     ERROR_RESOURCE_CLEANUP = "error.resourceCleanup"
     ERROR_PROCESSING = "error.processing"
 
-    # ========== 檔案相關 ==========
+    # ========== 文件相關 ==========
     FILE_UPLOAD_SUCCESS = "file.uploadSuccess"
     FILE_UPLOAD_FAILED = "file.uploadFailed"
     FILE_SIZE_TOO_LARGE = "file.sizeTooLarge"
@@ -169,5 +169,5 @@ def get_message_code(key: str) -> str:
         if hasattr(MessageCodes, constant_name):
             return str(getattr(MessageCodes, constant_name))
 
-    # 如果都找不到，返回一個預設格式
+    # 如果都找不到，返回一個预设格式
     return f"unknown.{key}"

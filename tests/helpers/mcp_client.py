@@ -24,9 +24,9 @@ class SimpleMCPClient:
         self.initialized = False
 
     async def start_server(self) -> bool:
-        """啟動 MCP 服務器"""
+        """启动 MCP 服務器"""
         try:
-            # 使用正確的 uv run 命令啟動 MCP 服務器
+            # 使用正確的 uv run 命令启动 MCP 服務器
             cmd = ["uv", "run", "python", "-m", "mcp_feedback_ultra"]
 
             self.server_process = subprocess.Popen(
@@ -38,14 +38,14 @@ class SimpleMCPClient:
                 bufsize=0,
                 cwd=Path.cwd(),
                 encoding="utf-8",  # 明確指定 UTF-8 編碼
-                errors="replace",  # 處理編碼錯誤
+                errors="replace",  # 处理編碼错误
             )
 
             self.stdin = self.server_process.stdin
             self.stdout = self.server_process.stdout
             self.stderr = self.server_process.stderr
 
-            # 等待服務器啟動
+            # 等待服務器启动
             await asyncio.sleep(2)
 
             if self.server_process.poll() is not None:
@@ -54,11 +54,11 @@ class SimpleMCPClient:
             return True
 
         except Exception as e:
-            print(f"啟動 MCP 服務器失敗: {e}")
+            print(f"启动 MCP 服務器失敗: {e}")
             return False
 
     async def initialize(self) -> bool:
-        """初始化 MCP 連接"""
+        """初始化 MCP 连接"""
         if not self.server_process or self.server_process.poll() is not None:
             return False
 
@@ -116,7 +116,7 @@ class SimpleMCPClient:
             if response and "result" in response:
                 result = response["result"]
                 result["performance"] = {"duration": timer.duration}
-                # 修復 no-any-return 錯誤 - 確保返回明確類型
+                # 修復 no-any-return 错误 - 確保返回明確類型
                 return dict(result)  # 明確返回 dict[str, Any] 類型
             return {"error": "無效的回應格式", "response": response}
 
@@ -147,7 +147,7 @@ class SimpleMCPClient:
 
             if response_line:
                 response_data = json.loads(response_line.strip())
-                # 修復 no-any-return 錯誤 - 確保返回明確類型
+                # 修復 no-any-return 错误 - 確保返回明確類型
                 return (
                     dict(response_data)
                     if isinstance(response_data, dict)
@@ -158,11 +158,11 @@ class SimpleMCPClient:
         except TimeoutError:
             raise
         except json.JSONDecodeError as e:
-            print(f"JSON 解析錯誤: {e}, 原始數據: {response_line}")
+            print(f"JSON 解析错误: {e}, 原始數據: {response_line}")
             return None
 
     async def cleanup(self):
-        """清理資源"""
+        """清理资源"""
         if self.server_process:
             try:
                 # 嘗試正常終止
@@ -189,7 +189,7 @@ class SimpleMCPClient:
 
 
 class MCPWorkflowTester:
-    """MCP 工作流程測試器"""
+    """MCP 工作流程测试器"""
 
     def __init__(self, timeout: int = 60):
         self.timeout = timeout
@@ -198,7 +198,7 @@ class MCPWorkflowTester:
     async def test_basic_workflow(
         self, project_dir: str, summary: str
     ) -> dict[str, Any]:
-        """測試基本工作流程"""
+        """测试基本工作流程"""
         result: dict[str, Any] = {
             "success": False,
             "steps": {},
@@ -208,14 +208,14 @@ class MCPWorkflowTester:
 
         with PerformanceTimer() as timer:
             try:
-                # 1. 啟動服務器
+                # 1. 启动服務器
                 if await self.client.start_server():
                     result["steps"]["server_started"] = True
                 else:
-                    result["errors"].append("服務器啟動失敗")
+                    result["errors"].append("服務器启动失敗")
                     return result
 
-                # 2. 初始化連接
+                # 2. 初始化连接
                 if await self.client.initialize():
                     result["steps"]["initialized"] = True
                 else:
@@ -237,7 +237,7 @@ class MCPWorkflowTester:
                     )
 
             except Exception as e:
-                result["errors"].append(f"測試異常: {e!s}")
+                result["errors"].append(f"测试異常: {e!s}")
             finally:
                 await self.client.cleanup()
                 result["performance"]["total_duration"] = timer.duration
